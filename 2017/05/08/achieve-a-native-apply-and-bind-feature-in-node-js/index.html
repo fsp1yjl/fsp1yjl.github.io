@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="JavaScript," />
+  <meta name="keywords" content="JavaScript,node.js," />
 
 
 
@@ -90,14 +90,14 @@
 <meta name="description" content="这两天看sf,偶然看到一些讨论js中原生实现apply和bind方法等帖子，觉得挺好玩儿，自己也照着思路试了一下，发现果然还是要自己写代码跑跑看，本来觉得思路已经有了，自己在实现的时候还是遇到了一些思路卡顿的状况，所以就记录一下啦。先上一个MDN上对Function.prototype.apply 和 Function.prototype.bind的解释：
 apply(thisArg[, args">
 <meta property="og:type" content="article">
-<meta property="og:title" content="achieve a native apply and bind feature in node.js">
+<meta property="og:title" content="在node.js中手工实现apply 和 bind方法">
 <meta property="og:url" content="http://yoursite.com/2017/05/08/achieve-a-native-apply-and-bind-feature-in-node-js/index.html">
 <meta property="og:site_name" content="不知火">
 <meta property="og:description" content="这两天看sf,偶然看到一些讨论js中原生实现apply和bind方法等帖子，觉得挺好玩儿，自己也照着思路试了一下，发现果然还是要自己写代码跑跑看，本来觉得思路已经有了，自己在实现的时候还是遇到了一些思路卡顿的状况，所以就记录一下啦。先上一个MDN上对Function.prototype.apply 和 Function.prototype.bind的解释：
 apply(thisArg[, args">
-<meta property="og:updated_time" content="2017-05-08T06:35:53.000Z">
+<meta property="og:updated_time" content="2017-05-08T06:43:02.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="achieve a native apply and bind feature in node.js">
+<meta name="twitter:title" content="在node.js中手工实现apply 和 bind方法">
 <meta name="twitter:description" content="这两天看sf,偶然看到一些讨论js中原生实现apply和bind方法等帖子，觉得挺好玩儿，自己也照着思路试了一下，发现果然还是要自己写代码跑跑看，本来觉得思路已经有了，自己在实现的时候还是遇到了一些思路卡顿的状况，所以就记录一下啦。先上一个MDN上对Function.prototype.apply 和 Function.prototype.bind的解释：
 apply(thisArg[, args">
 
@@ -133,7 +133,7 @@ apply(thisArg[, args">
 
 
 
-  <title> achieve a native apply and bind feature in node.js | 不知火 </title>
+  <title> 在node.js中手工实现apply 和 bind方法 | 不知火 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -283,7 +283,7 @@ apply(thisArg[, args">
             
             
               
-                achieve a native apply and bind feature in node.js
+                在node.js中手工实现apply 和 bind方法
               
             
           </h1>
@@ -321,8 +321,8 @@ apply(thisArg[, args">
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/node-js-JavaScript/" itemprop="url" rel="index">
-                    <span itemprop="name">node.js JavaScript</span>
+                  <a href="/categories/node-js/" itemprop="url" rel="index">
+                    <span itemprop="name">node.js</span>
                   </a>
                 </span>
 
@@ -402,6 +402,8 @@ apply(thisArg[, args">
         <div class="post-tags">
           
             <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+            <a href="/tags/node-js/" rel="tag"># node.js</a>
           
         </div>
       
@@ -516,7 +518,7 @@ apply(thisArg[, args">
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
