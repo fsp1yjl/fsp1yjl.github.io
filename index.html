@@ -630,12 +630,14 @@
 
       
         
-          
-            <p>mongodb术语概念：<br>database,collection(对应table)， document(对应记录行)，field（对应数据字段）</p>
-<p>保留数据库：<br>admin： 从权限的角度来看，这是”root”数据库。要是将一个用户添加到这个数据库，这个用户自动继承所有数据库的权限。一些特定的服务器端命令也只能从这个数据库运行，比如列出所有的数据库或者关闭服务器。<br>local: 这个数据永远不会被复制，可以用来存储限于本地单台服务器的任意集合<br>config: 当Mongo用于分片设置时，config数据库在内部使用，用于保存分片的相关信息。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">show dbs //查看所有数据列表</div><div class="line">db     //显示当前对象或集合</div><div class="line">use dbname  //切换到对应对象</div></pre></td></tr></table></figure>
-
-          
+          <p>mongodb术语概念：<br>database,collection(对应table)， document(对应记录行)，field（对应数据字段）</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/08/11/mongodb-command-tutorial/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -775,48 +777,14 @@
 
       
         
-          
-            <p>redis-cli中有大量的命令，针对不同的数据类型（string, hash, list, set, zset)，使用的命令也不尽相同，这里根据自己常用的数据类型进行分类记录。</p>
-<h3 id="全局命令"><a href="#全局命令" class="headerlink" title="全局命令"></a>全局命令</h3><blockquote>
-<ol>
-<li>scan (时间复杂度O(1),浏览全部key列表， 从0开始，每次列出10条  命令：scan 0)</li>
-<li>keys （KEYS pattern ，时间复杂度O(n),n表示key数量，根据筛选条件筛选，可正则匹配，  列出全部key  keys *)</li>
-<li>dbsize (统计key记录总数目)</li>
-<li>type (时间复杂度O(1),查询特定key的对应类型， type eric表示查询keyname为eric的键类型，返回值为none,string,list,set,zset,hash)</li>
-<li>exists （EXISTS key,时间复杂度O(1),判断key是否存在）</li>
-<li>expire （时间复杂度O(1),设置key的过期时间）</li>
-<li>rename (时间复杂度O(1),修改keyname, 如果新name与原名相同，或者原key不存在，则报错)</li>
-<li>del (DEL key [key …] ,时间复杂度O(n),n为被删除key的数目,删除key,)</li>
-</ol>
-</blockquote>
-<p>注：<br>scan每次返回两个结果集，0表示下次索引开始下表， 如果返回0表示一次遍历完成<br>当数据量很大的时候，执行keys 可能会造成redis进程阻塞，因为会全局遍历</p>
-<h3 id="字符串-string-命令"><a href="#字符串-string-命令" class="headerlink" title="字符串(string)命令"></a>字符串(string)命令</h3><blockquote>
-<ol>
-<li>get (获取string  key的值)</li>
-<li>set （设置单个string key的值）</li>
-<li>mget （一次获取多个string key的值）</li>
-<li>mset （一次设置多个string key)</li>
-<li>strlen (返回string key 存储字符串的长度)</li>
-</ol>
-</blockquote>
-<h3 id="哈希-hash-命令"><a href="#哈希-hash-命令" class="headerlink" title="哈希(hash)命令"></a>哈希(hash)命令</h3><blockquote>
-<ol>
-<li>hget (HGET key field , 时间复杂度O(1), 获取哈希表key中filed域的值 )</li>
-<li>hset （HSET key field value，时间复杂度O(1),向哈希表key中设置field域，值为value)</li>
-<li>hmset (HMSET key field value [field value …]，时间复杂度O(n),n表示查询key数目. 设置多个域）</li>
-<li>hmget (HMGET key field [field …], 时间复杂度O(n),n表示查询key数目,查询多个域)</li>
-<li>hdel （HDEL key field [field …]，时间复杂度O(n), 删除哈希表key中对应域）</li>
-<li>hkeys （仅仅返回key下域名的列表）</li>
-<li>hscan （返回key下 域名 和 域值的列表）</li>
-<li>hvals (仅仅返回全部域的值，不返回域名称)</li>
-<li>hlen （HLEN key，，时间复杂度O(1),返回哈希表key中field数目）</li>
-</ol>
-</blockquote>
-<p>string 和 hash的区别：<br>string为key-value 形式，一个key的值为一个字符串， 例子： eric: “fengsp”<br>hash为key:object形式，一个key对应一个对象，对象可以有多个属性域，object类似js中的对象 ,<br>例子： eric: {first_name:”sp”, last_name:”feng”}</p>
-<p>…待续</p>
-<p><a href="http://redisdoc.com/" target="_blank" rel="external">参考网址</a></p>
-
-          
+          <p>redis-cli中有大量的命令，针对不同的数据类型（string, hash, list, set, zset)，使用的命令也不尽相同，这里根据自己常用的数据类型进行分类记录。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/08/10/redis-cli-commands/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>

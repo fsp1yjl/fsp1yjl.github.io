@@ -87,28 +87,16 @@
 
 
 
-<meta name="description" content="redis-cli中有大量的命令，针对不同的数据类型（string, hash, list, set, zset)，使用的命令也不尽相同，这里根据自己常用的数据类型进行分类记录。
-全局命令
-
-scan (时间复杂度O(1),浏览全部key列表， 从0开始，每次列出10条  命令：scan 0)
-keys （KEYS pattern ，时间复杂度O(n),n表示key数量，根据筛选条件筛选，可正则匹">
+<meta name="description" content="redis-cli中有大量的命令，针对不同的数据类型（string, hash, list, set, zset)，使用的命令也不尽相同，这里根据自己常用的数据类型进行分类记录。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis-cli常用命令记录">
 <meta property="og:url" content="http://yoursite.com/2017/08/10/redis-cli-commands/index.html">
 <meta property="og:site_name" content="不知火">
-<meta property="og:description" content="redis-cli中有大量的命令，针对不同的数据类型（string, hash, list, set, zset)，使用的命令也不尽相同，这里根据自己常用的数据类型进行分类记录。
-全局命令
-
-scan (时间复杂度O(1),浏览全部key列表， 从0开始，每次列出10条  命令：scan 0)
-keys （KEYS pattern ，时间复杂度O(n),n表示key数量，根据筛选条件筛选，可正则匹">
-<meta property="og:updated_time" content="2018-12-18T02:34:54.566Z">
+<meta property="og:description" content="redis-cli中有大量的命令，针对不同的数据类型（string, hash, list, set, zset)，使用的命令也不尽相同，这里根据自己常用的数据类型进行分类记录。">
+<meta property="og:updated_time" content="2018-12-18T06:53:07.127Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis-cli常用命令记录">
-<meta name="twitter:description" content="redis-cli中有大量的命令，针对不同的数据类型（string, hash, list, set, zset)，使用的命令也不尽相同，这里根据自己常用的数据类型进行分类记录。
-全局命令
-
-scan (时间复杂度O(1),浏览全部key列表， 从0开始，每次列出10条  命令：scan 0)
-keys （KEYS pattern ，时间复杂度O(n),n表示key数量，根据筛选条件筛选，可正则匹">
+<meta name="twitter:description" content="redis-cli中有大量的命令，针对不同的数据类型（string, hash, list, set, zset)，使用的命令也不尽相同，这里根据自己常用的数据类型进行分类记录。">
 
 
 
@@ -366,6 +354,7 @@ keys （KEYS pattern ，时间复杂度O(n),n表示key数量，根据筛选条�
 
       
         <p>redis-cli中有大量的命令，针对不同的数据类型（string, hash, list, set, zset)，使用的命令也不尽相同，这里根据自己常用的数据类型进行分类记录。</p>
+<a id="more"></a>
 <h3 id="全局命令"><a href="#全局命令" class="headerlink" title="全局命令"></a>全局命令</h3><blockquote>
 <ol>
 <li>scan (时间复杂度O(1),浏览全部key列表， 从0开始，每次列出10条  命令：scan 0)</li>
@@ -376,6 +365,7 @@ keys （KEYS pattern ，时间复杂度O(n),n表示key数量，根据筛选条�
 <li>expire （时间复杂度O(1),设置key的过期时间）</li>
 <li>rename (时间复杂度O(1),修改keyname, 如果新name与原名相同，或者原key不存在，则报错)</li>
 <li>del (DEL key [key …] ,时间复杂度O(n),n为被删除key的数目,删除key,)</li>
+<li>monitor 监控当前redis的正在执行命令情况</li>
 </ol>
 </blockquote>
 <p>注：<br>scan每次返回两个结果集，0表示下次索引开始下表， 如果返回0表示一次遍历完成<br>当数据量很大的时候，执行keys 可能会造成redis进程阻塞，因为会全局遍历</p>

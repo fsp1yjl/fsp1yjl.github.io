@@ -87,19 +87,16 @@
 
 
 
-<meta name="description" content="mongodb术语概念：database,collection(对应table)， document(对应记录行)，field（对应数据字段）
-保留数据库：admin： 从权限的角度来看，这是”root”数据库。要是将一个用户添加到这个数据库，这个用户自动继承所有数据库的权限。一些特定的服务器端命令也只能从这个数据库运行，比如列出所有的数据库或者关闭服务器。local: 这个数据永远不会被复制，可">
+<meta name="description" content="mongodb术语概念：database,collection(对应table)， document(对应记录行)，field（对应数据字段）">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mongodb command tutorial">
 <meta property="og:url" content="http://yoursite.com/2017/08/11/mongodb-command-tutorial/index.html">
 <meta property="og:site_name" content="不知火">
-<meta property="og:description" content="mongodb术语概念：database,collection(对应table)， document(对应记录行)，field（对应数据字段）
-保留数据库：admin： 从权限的角度来看，这是”root”数据库。要是将一个用户添加到这个数据库，这个用户自动继承所有数据库的权限。一些特定的服务器端命令也只能从这个数据库运行，比如列出所有的数据库或者关闭服务器。local: 这个数据永远不会被复制，可">
-<meta property="og:updated_time" content="2018-12-18T02:38:00.193Z">
+<meta property="og:description" content="mongodb术语概念：database,collection(对应table)， document(对应记录行)，field（对应数据字段）">
+<meta property="og:updated_time" content="2018-12-18T06:53:31.395Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mongodb command tutorial">
-<meta name="twitter:description" content="mongodb术语概念：database,collection(对应table)， document(对应记录行)，field（对应数据字段）
-保留数据库：admin： 从权限的角度来看，这是”root”数据库。要是将一个用户添加到这个数据库，这个用户自动继承所有数据库的权限。一些特定的服务器端命令也只能从这个数据库运行，比如列出所有的数据库或者关闭服务器。local: 这个数据永远不会被复制，可">
+<meta name="twitter:description" content="mongodb术语概念：database,collection(对应table)， document(对应记录行)，field（对应数据字段）">
 
 
 
@@ -357,8 +354,9 @@
 
       
         <p>mongodb术语概念：<br>database,collection(对应table)， document(对应记录行)，field（对应数据字段）</p>
+<a id="more"></a>
 <p>保留数据库：<br>admin： 从权限的角度来看，这是”root”数据库。要是将一个用户添加到这个数据库，这个用户自动继承所有数据库的权限。一些特定的服务器端命令也只能从这个数据库运行，比如列出所有的数据库或者关闭服务器。<br>local: 这个数据永远不会被复制，可以用来存储限于本地单台服务器的任意集合<br>config: 当Mongo用于分片设置时，config数据库在内部使用，用于保存分片的相关信息。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">show dbs //查看所有数据列表</div><div class="line">db     //显示当前对象或集合</div><div class="line">use dbname  //切换到对应对象</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">show dbs //查看所有数据列表</div><div class="line">db     //显示当前对象或集合</div><div class="line">use dbname  //切换到对应对象</div></pre></td></tr></table></figure>
 
       
     </div>
