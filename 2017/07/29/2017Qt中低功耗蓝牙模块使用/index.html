@@ -1,0 +1,714 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Qt,低功耗蓝牙," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近在Qt下使用opencv库，进行一些图像识别和处理相关的工作，主要是通过摄像头采集运动采样视频，然后进行一些跑姿分析和稳定性测试。但仅仅从视频帧来分析，还是有很多缺陷，后来就想着，如果结合公司的智能鞋垫产品，获取跑步实时的脚上各个部位的压力数据可以对视频分析提供很大的数据补充。跟硬件组的小伙伴聊了聊，得知可以通过蓝牙通讯，配对后实时获取鞋垫压力数据。从小伙伴那里搞来一套鞋垫样品，并拿了一份通讯">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qt中低功耗蓝牙模块使用">
+<meta property="og:url" content="http://yoursite.com/2017/07/29/2017Qt中低功耗蓝牙模块使用/index.html">
+<meta property="og:site_name" content="不知火">
+<meta property="og:description" content="最近在Qt下使用opencv库，进行一些图像识别和处理相关的工作，主要是通过摄像头采集运动采样视频，然后进行一些跑姿分析和稳定性测试。但仅仅从视频帧来分析，还是有很多缺陷，后来就想着，如果结合公司的智能鞋垫产品，获取跑步实时的脚上各个部位的压力数据可以对视频分析提供很大的数据补充。跟硬件组的小伙伴聊了聊，得知可以通过蓝牙通讯，配对后实时获取鞋垫压力数据。从小伙伴那里搞来一套鞋垫样品，并拿了一份通讯">
+<meta property="og:updated_time" content="2018-12-18T05:38:12.132Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Qt中低功耗蓝牙模块使用">
+<meta name="twitter:description" content="最近在Qt下使用opencv库，进行一些图像识别和处理相关的工作，主要是通过摄像头采集运动采样视频，然后进行一些跑姿分析和稳定性测试。但仅仅从视频帧来分析，还是有很多缺陷，后来就想着，如果结合公司的智能鞋垫产品，获取跑步实时的脚上各个部位的压力数据可以对视频分析提供很大的数据补充。跟硬件组的小伙伴聊了聊，得知可以通过蓝牙通讯，配对后实时获取鞋垫压力数据。从小伙伴那里搞来一套鞋垫样品，并拿了一份通讯">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/29/2017Qt中低功耗蓝牙模块使用/"/>
+
+
+
+
+
+  <title> Qt中低功耗蓝牙模块使用 | 不知火 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不知火</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/29/2017Qt中低功耗蓝牙模块使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="不知火">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知火">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Qt中低功耗蓝牙模块使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-29T00:06:21+08:00">
+                2017-07-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c++</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在Qt下使用opencv库，进行一些图像识别和处理相关的工作，主要是通过摄像头采集运动采样视频，然后进行一些跑姿分析和稳定性测试。但仅仅从视频帧来分析，还是有很多缺陷，后来就想着，如果结合公司的智能鞋垫产品，获取跑步实时的脚上各个部位的压力数据可以对视频分析提供很大的数据补充。跟硬件组的小伙伴聊了聊，得知可以通过蓝牙通讯，配对后实时获取鞋垫压力数据。从小伙伴那里搞来一套鞋垫样品，并拿了一份通讯协议列表，就抓紧搞起了。<br>得益于Qt详尽的文档说明，对照Qt官方<a href="http://doc.qt.io/qt-5/qtbluetooth-le-overview.html" target="_blank" rel="external">Bluetooth Low Enegy文档</a>,再结合一下官网的例子，断断续续搞了一天，算是在我的客户端程序里看到鞋垫传过来的压力数据了。官网的文档流程讲得很清楚，这里自己还是给整个通讯的流程梳理一下。</p>
+<a id="more"></a>
+<blockquote>
+<ol>
+<li>搜寻附近全部的蓝牙设备</li>
+<li>根据搜寻出的蓝牙设备信息，筛选出要连接的蓝牙设备进行连接</li>
+<li>建立连接后，去获取该蓝牙设备等services列表，根据约定好的服务uuid筛选出自己需要的服务</li>
+<li>发现对应的服务后，根据约定好的服务下characteristic特性id,创建特征对象，并监听特征对象内容的变化</li>
+<li>向客户端特征配置对象写入特征生效消息，开始接收外围蓝牙设备。</li>
+</ol>
+</blockquote>
+<p>蓝牙模块代码如下：<br>bluedevice.h<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">#ifndef BLUEDEVICE_H</div><div class="line">#define BLUEDEVICE_H</div><div class="line">#include &lt;QObject&gt;</div><div class="line">#include&lt;QBluetoothDeviceDiscoveryAgent&gt;</div><div class="line">#include&lt;QBluetoothDeviceInfo&gt;</div><div class="line">#include&lt;QBluetoothUuid&gt;</div><div class="line">#include&lt;QBluetoothServiceInfo&gt;</div><div class="line">#include&lt;QLowEnergyController&gt;</div><div class="line">#include&lt;QLowEnergyService&gt;</div><div class="line">#include&lt;QLowEnergyDescriptor&gt;</div><div class="line">class BlueDevice: public QObject&#123;</div><div class="line">    Q_OBJECT</div><div class="line">public:</div><div class="line"></div><div class="line">    BlueDevice();</div><div class="line">    QString getAddress(QBluetoothDeviceInfo device) const;</div><div class="line">private:</div><div class="line">        QList&lt;QBluetoothDeviceInfo&gt; device_list;  //存放搜索到到蓝牙设备列表</div><div class="line">        QBluetoothDeviceDiscoveryAgent *m_deviceDiscoveryAgent;  //设备搜索对象</div><div class="line">        QLowEnergyController *m_controler;   //单个蓝牙设备控制器</div><div class="line">        QLowEnergyService *m_service; //服务对象实例</div><div class="line">&#125;;</div><div class="line"></div><div class="line">#endif // BLUEDEVICE_H</div></pre></td></tr></table></figure></p>
+<p>bluedevice.cpp<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">#include &quot;bluedevice.h&quot;</div><div class="line">#include &lt;QDebug&gt;</div><div class="line">#include&lt;QTimer&gt;</div><div class="line"></div><div class="line">BlueDevice::BlueDevice() &#123;</div><div class="line">    qDebug() &lt;&lt; &quot;enter bludedevice constructor....&quot;;</div><div class="line"></div><div class="line">    m_deviceDiscoveryAgent = new QBluetoothDeviceDiscoveryAgent(this);</div><div class="line">    m_deviceDiscoveryAgent-&gt;setLowEnergyDiscoveryTimeout(5000);</div><div class="line"></div><div class="line">    //每次发现新设备时触发</div><div class="line">    connect(m_deviceDiscoveryAgent, &amp;QBluetoothDeviceDiscoveryAgent::deviceDiscovered, this ,[this]() &#123;</div><div class="line">        qDebug() &lt;&lt; &quot;find a new bluebooth device&quot;;</div><div class="line">    &#125;);</div><div class="line">    </div><div class="line">    //蓝牙设备搜索完成后，筛选出目标设备进行连接，并进行相关信号与槽函数的绑定</div><div class="line">    connect(m_deviceDiscoveryAgent,&amp;QBluetoothDeviceDiscoveryAgent::finished, this, [this]() &#123;</div><div class="line">        device_list = this-&gt;m_deviceDiscoveryAgent-&gt;discoveredDevices();</div><div class="line"></div><div class="line">        //遍历显示设备详情</div><div class="line">        QList&lt;QBluetoothDeviceInfo&gt;::iterator it;</div><div class="line">        for(it=device_list.begin(); it != device_list.end(); it++) &#123;</div><div class="line">            </div><div class="line">            // 外围蓝牙设备对象</div><div class="line">            QBluetoothDeviceInfo tmp_device = *it;  </div><div class="line">            QString device_name = tmp_device.name();</div><div class="line">            //qDebug() &lt;&lt;&quot;device name:::&quot; &lt;&lt; device_name;</div><div class="line">            //qDebug() &lt;&lt; &quot;device address:::&quot; &lt;&lt; this-&gt;getAddress(tmp_device);</div><div class="line">            </div><div class="line">           //打印搜索出来的全部低功耗蓝牙</div><div class="line">           if (tmp_device.coreConfigurations() &amp; QBluetoothDeviceInfo::LowEnergyCoreConfiguration) &#123;</div><div class="line">                qDebug() &lt;&lt; &quot; low Energy device ....&quot;;</div><div class="line">                qDebug() &lt;&lt;&quot;22222device name:::&quot; &lt;&lt; device_name;</div><div class="line">              &#125;</div><div class="line">            </div><div class="line">            //正则匹配目标设备，</div><div class="line">            QString pattern_str = &quot;^Eric.*&quot;;  //qt中正则匹配任意个字符，需要使用.*而不是*</div><div class="line">            QRegExp rx(pattern_str);</div><div class="line">            if(!rx.exactMatch(device_name)) &#123;</div><div class="line">                continue;</div><div class="line">            &#125;</div><div class="line">            qDebug() &lt;&lt;&quot;device name:::&quot; &lt;&lt; device_name;</div><div class="line">            qDebug() &lt;&lt; &quot;device address:::&quot; &lt;&lt; this-&gt;getAddress(tmp_device);</div><div class="line"></div><div class="line">            // 创建蓝牙设备控制器对象 </div><div class="line">            m_controler = new QLowEnergyController(tmp_device, this);</div><div class="line">            </div><div class="line">            // 监听目标设备连接成功消息，连接成功后，搜索目标设备等服务列表</div><div class="line">            connect(m_controler, &amp;QLowEnergyController::connected, this, [this]()&#123;</div><div class="line">                qDebug() &lt;&lt; &quot;m_controler connected ......&quot;;</div><div class="line">                //必须要在连接建立后 执行开始寻找service的函数 </div><div class="line">                //之前调试，就是因为没有在设备连接后主动请求获取服务列表信息，后续监听便没有触发</div><div class="line">                m_controler-&gt;discoverServices();</div><div class="line">            &#125;);</div><div class="line">            </div><div class="line">            // 监听发现服务消息，如果服务的uuid 为约定好的要使用服务类型，则进行后续处理</div><div class="line">            connect(m_controler,&amp;QLowEnergyController::serviceDiscovered, this, [this](QBluetoothUuid serviceUuid) &#123;</div><div class="line">                if(serviceUuid == QBluetoothUuid( quint16(0xffd0))) &#123;  //我们用的服务类型是0xffd0对应的uuid</div><div class="line">                    </div><div class="line">                    //发现匹配的服务后，使用控制器对象创建服务对象</div><div class="line">                    m_service = m_controler-&gt;createServiceObject(serviceUuid,this);</div><div class="line">                    if(m_service) &#123;</div><div class="line"></div><div class="line">                        // 服务对象创建成功后，坚挺服务状态变化，如果状态变成已发现，则进行后续服务下特征对象获取</div><div class="line">                        connect(m_service,&amp;QLowEnergyService::stateChanged, this, [this]() &#123;</div><div class="line">                            qDebug() &lt;&lt; &quot;service state change&quot; &lt;&lt; m_service-&gt;state() &lt;&lt; &quot;,||||||&quot;;</div><div class="line"></div><div class="line">                            //发现服务, 建立characteristic对象实例</div><div class="line">                            if(m_service-&gt;state() == QLowEnergyService::ServiceDiscovered) &#123;</div><div class="line">                                QLowEnergyCharacteristic hrChar = m_service-&gt;characteristic(QBluetoothUuid(quint16(0xfff6)));</div><div class="line">                                if(!hrChar.isValid()) &#123;</div><div class="line">                                    qDebug() &lt;&lt; &quot;characteristic fff6 error:::&quot;;</div><div class="line">                                &#125;</div><div class="line">                                // 设置特征对象可用</div><div class="line">                                //enable the chracteristic notification by write 0x01 to client characteristic configuration</div><div class="line">                                QLowEnergyDescriptor m_notificationDesc = hrChar.descriptor(QBluetoothUuid::ClientCharacteristicConfiguration);</div><div class="line">                                if (m_notificationDesc.isValid()) &#123;</div><div class="line">                                    if(hrChar.properties() &amp; QLowEnergyCharacteristic::Notify) &#123;</div><div class="line">                                        qDebug() &lt;&lt; &quot;&quot;;</div><div class="line">                                    &#125;</div><div class="line">                                    m_service-&gt;writeDescriptor(m_notificationDesc, QByteArray::fromHex(&quot;0100&quot;));</div><div class="line">                                &#125;</div><div class="line">                            &#125;</div><div class="line">                        &#125;);</div><div class="line"></div><div class="line">                        // 通过监听特征对象的变化，不断获得鞋垫压力数据。 </div><div class="line">                        connect(m_service,&amp;QLowEnergyService::characteristicChanged, this,</div><div class="line">                                [this](QLowEnergyCharacteristic c,QByteArray value) &#123;</div><div class="line">                                    qDebug() &lt;&lt; &quot;characteristicChanged state change::&quot; &lt;&lt;c.uuid()&lt;&lt; &quot;,||||||&quot;;</div><div class="line">                                    qDebug() &lt;&lt; &quot;value length::&quot; &lt;&lt; value.length();</div><div class="line">                                    qDebug() &lt;&lt; &quot;value length::&quot; &lt;&lt; value;</div><div class="line"></div><div class="line">                                    QByteArray sub_1 = value.mid(0,2);</div><div class="line">                                    QByteArray sub_2 = value.mid(2,2);</div><div class="line">                                    QByteArray sub_3 = value.mid(4,2);</div><div class="line"></div><div class="line">                                    bool ok;</div><div class="line">                                    // num 1,2,3  分别对应三个压力感应点的压力值</div><div class="line">                                    int num_1 =  QString(sub_1.toHex()).toInt(&amp;ok,16);</div><div class="line">                                    qDebug() &lt;&lt; &quot;num_1:::&quot; &lt;&lt; num_1;</div><div class="line">                                    int num_2 =  QString(sub_2.toHex()).toInt(&amp;ok,16);</div><div class="line">                                    qDebug() &lt;&lt; &quot;num_1:::&quot; &lt;&lt; num_2;</div><div class="line">                                    int num_3 =  QString(sub_3.toHex()).toInt(&amp;ok,16);</div><div class="line">                                    qDebug() &lt;&lt; &quot;num_1:::&quot; &lt;&lt; num_3;</div><div class="line"></div><div class="line">                                &#125;</div><div class="line">                        );</div><div class="line">                        </div><div class="line">                        // 触发服务详情发现函数 ，不要忘记调用</div><div class="line">                        m_service-&gt;discoverDetails();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line"></div><div class="line">            connect(m_controler,&amp;QLowEnergyController::discoveryFinished, this, [this]() &#123;</div><div class="line">                qDebug() &lt;&lt; &quot;finish service discovery&quot;;</div><div class="line">            &#125;);</div><div class="line"></div><div class="line">            //连接外围设备</div><div class="line">            m_controler-&gt;connectToDevice();</div><div class="line"></div><div class="line">            //QTimer *timer = new QTimer(this);</div><div class="line">            //connect(timer, &amp;QTimer::timeout, this, [this]()&#123; qDebug() &lt;&lt;&quot;state:::&quot; &lt;&lt;  this-&gt;m_controler-&gt;state();&#125;);</div><div class="line">            //timer-&gt;start(1000);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">   </div><div class="line">    // 开始外围设备搜索</div><div class="line">    m_deviceDiscoveryAgent-&gt;start();</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">// mac和其他系统上address获取有少许差异，参见官方文档</div><div class="line">QString BlueDevice::getAddress(QBluetoothDeviceInfo device) const</div><div class="line">&#123;</div><div class="line">#ifdef Q_OS_MAC</div><div class="line">    // On OS X and iOS we do not have addresses,</div><div class="line">    // only unique UUIDs generated by Core Bluetooth.</div><div class="line">    return device.deviceUuid().toString();</div><div class="line">#else</div><div class="line">    return device.address().toString();</div><div class="line">#endif</div><div class="line">&#125;</div><div class="line"></div><div class="line">//void BlueDevice::getNewService(QBluetoothServiceInfo info) &#123;</div><div class="line">//    qDebug() &lt;&lt; &quot;ppppp uuuuuuuuuu&quot;;</div><div class="line">//&#125;</div></pre></td></tr></table></figure></p>
+<p>tips:<br>1.要使用qt蓝牙模块, 项目的 .pro要声明使用<br>2.有了lambda函数后，不用再一个个声明和创建具名槽函数的感觉挺好，就是代码成一坨了<br>3.虽然说是低功耗蓝牙，但还是要记得用完后断开和外设店连接，之前忘记断开，一晚上一个纽扣电池的点就被耗光了<br>4.<a href="https://www.race604.com/gatt-profile-intro" target="_blank" rel="external">GATT Profile 简介</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Qt/" rel="tag"># Qt</a>
+          
+            <a href="/tags/低功耗蓝牙/" rel="tag"># 低功耗蓝牙</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/13/2017《人类简史》一读杂记/" rel="next" title="《人类简史》一读杂记">
+                <i class="fa fa-chevron-left"></i> 《人类简史》一读杂记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/10/redis-cli-commands/" rel="prev" title="redis-cli常用命令记录">
+                redis-cli常用命令记录 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://img3.doubanio.com/icon/ul54452955-3.jpg"
+               alt="不知火" />
+          <p class="site-author-name" itemprop="name">不知火</p>
+           
+              <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/54452955" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知火</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,744 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="JavaScript,node.js," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="这两天看sf,偶然看到一些讨论js中原生实现apply和bind方法等帖子，觉得挺好玩儿，自己也照着思路试了一下，发现果然还是要自己写代码跑跑看，本来觉得思路已经有了，自己在实现的时候还是遇到了一些思路卡顿的状况，所以就记录一下啦。先上一个MDN上对Function.prototype.apply 和 Function.prototype.bind的解释：
+apply(thisArg[, args">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在node.js中手工实现apply 和 bind方法">
+<meta property="og:url" content="http://yoursite.com/2017/05/08/2017achieve-a-native-apply-and-bind-feature-in-node-js/index.html">
+<meta property="og:site_name" content="不知火">
+<meta property="og:description" content="这两天看sf,偶然看到一些讨论js中原生实现apply和bind方法等帖子，觉得挺好玩儿，自己也照着思路试了一下，发现果然还是要自己写代码跑跑看，本来觉得思路已经有了，自己在实现的时候还是遇到了一些思路卡顿的状况，所以就记录一下啦。先上一个MDN上对Function.prototype.apply 和 Function.prototype.bind的解释：
+apply(thisArg[, args">
+<meta property="og:updated_time" content="2018-12-18T05:36:46.088Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在node.js中手工实现apply 和 bind方法">
+<meta name="twitter:description" content="这两天看sf,偶然看到一些讨论js中原生实现apply和bind方法等帖子，觉得挺好玩儿，自己也照着思路试了一下，发现果然还是要自己写代码跑跑看，本来觉得思路已经有了，自己在实现的时候还是遇到了一些思路卡顿的状况，所以就记录一下啦。先上一个MDN上对Function.prototype.apply 和 Function.prototype.bind的解释：
+apply(thisArg[, args">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/08/2017achieve-a-native-apply-and-bind-feature-in-node-js/"/>
+
+
+
+
+
+  <title> 在node.js中手工实现apply 和 bind方法 | 不知火 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不知火</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/08/2017achieve-a-native-apply-and-bind-feature-in-node-js/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="不知火">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知火">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                在node.js中手工实现apply 和 bind方法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-08T11:22:36+08:00">
+                2017-05-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/node-js/" itemprop="url" rel="index">
+                    <span itemprop="name">node.js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这两天看sf,偶然看到一些讨论js中原生实现apply和bind方法等帖子，觉得挺好玩儿，自己也照着思路试了一下，发现果然还是要自己写代码跑跑看，本来觉得思路已经有了，自己在实现的时候还是遇到了一些思路卡顿的状况，所以就记录一下啦。先上一个MDN上对<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/apply" target="_blank" rel="external">Function.prototype.apply</a> 和 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/bind" target="_blank" rel="external">Function.prototype.bind</a>的解释：</p>
+<p>apply(thisArg[, argsArray]) 方法在指定 this 值和参数（参数以数组或类数组对象的形式存在）的情况下调用某个函数.<br>bind(thisArg[, arg1[, arg2[, …]]])方法创建一个新的函数, 当被调用时，它的this关键字被设置为提供的值 ，在调用新函数时，提供任何一个给定的参数序列<br><a id="more"></a></p>
+<h3 id="原生apply用法例子"><a href="#原生apply用法例子" class="headerlink" title="原生apply用法例子"></a>原生apply用法例子</h3><p>apply_test.js源代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> obj_a = &#123;</div><div class="line">    <span class="attr">name</span>:<span class="string">'obj_a'</span>,</div><div class="line">    <span class="attr">show</span>:<span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>) </span>&#123;</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'name:'</span>,<span class="keyword">this</span>.name);</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'param a:'</span>,a,<span class="string">'param b:'</span>,b);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">obj_a.show(<span class="number">22</span>,<span class="number">33</span>);</div><div class="line"><span class="built_in">console</span>.log(<span class="string">'apply start:'</span>);</div><div class="line"><span class="keyword">var</span> obj_b = &#123;</div><div class="line">    <span class="attr">name</span>:<span class="string">'obj_b'</span></div><div class="line">&#125;;</div><div class="line">obj_a.show.apply(obj_b,[<span class="string">'aaa'</span>,<span class="string">'dddd'</span>]);</div></pre></td></tr></table></figure>
+<p>输出结果：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">name: obj_a</div><div class="line">param a: 22 param b: 33</div><div class="line">apply start:</div><div class="line">name: obj_b</div><div class="line">param a: aaa param b: dddd</div></pre></td></tr></table></figure>
+<p>分析：<br>    被apply的show方法会立即执行，但是执行的时候，show函数中的this对应的上下文不再是obj_a,而是obj_b;</p>
+<h3 id="原生bind用法例子"><a href="#原生bind用法例子" class="headerlink" title="原生bind用法例子"></a>原生bind用法例子</h3><p>bind_test.js源代码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> obj_a = &#123;</div><div class="line">    <span class="attr">name</span>:<span class="string">'obj_a'</span>,</div><div class="line">    <span class="attr">show</span>:<span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>) </span>&#123;</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'name:'</span>,<span class="keyword">this</span>.name);</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'param a:'</span>,a,<span class="string">'param b:'</span>,b);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">obj_a.show(<span class="number">22</span>,<span class="number">33</span>);</div><div class="line"><span class="keyword">var</span> obj_b = &#123;</div><div class="line">    <span class="attr">name</span>:<span class="string">'obj_b'</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="comment">//此处返回函数dd是一个 obj_a.show同样功能的函数，但是函数的this被指定为obj_b</span></div><div class="line"><span class="built_in">console</span>.log(<span class="string">'start bind test here:'</span>);</div><div class="line"><span class="keyword">let</span> dd = obj_a.show.bind(obj_b);</div><div class="line">dd(<span class="string">'22bind'</span>,<span class="string">'33bind'</span>);</div></pre></td></tr></table></figure></p>
+<p>输出结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">name: obj_a</div><div class="line">param a: 22 param b: 33</div><div class="line">start <span class="built_in">bind</span> <span class="built_in">test</span> here:</div><div class="line">name: obj_b</div><div class="line">param a: 22<span class="built_in">bind</span> param b: 33<span class="built_in">bind</span></div></pre></td></tr></table></figure></p>
+<p>分析：此处bind返回值是一个函数，该函数具有和obj_a.show()具有同样的功能，<br>但是新函数中的this对应的上下文被指定为obj_a,即返回函数在创建时便被指定了this。<br>这里我们也可以看出bind和apply函数的区别，一个是函数立即执行，一个是返回一个新函数。</p>
+<h3 id="手工实现apply"><a href="#手工实现apply" class="headerlink" title="手工实现apply"></a>手工实现apply</h3><h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><p>func_a.apply(obj_new,params_arr)函数是要在this指向obj_new的上下文中中执行目标函数func_a，同时传入参数数组params_arr,<br>所以我们只要在obj_new下建立一个新方法temp_func，并赋值为func_a,然后使用传入的参数params_arr执行tem_func即可。</p>
+<h4 id="own-apply-js源代码："><a href="#own-apply-js源代码：" class="headerlink" title="own_apply.js源代码："></a>own_apply.js源代码：</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//apply函数的模拟实现</span></div><div class="line">    <span class="built_in">Function</span>.prototype.own_apply = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">            <span class="built_in">console</span>.log(<span class="built_in">arguments</span>);</div><div class="line">            <span class="comment">//let fn = this;</span></div><div class="line">            <span class="keyword">let</span> context = <span class="built_in">arguments</span>[<span class="number">0</span>];</div><div class="line">            <span class="keyword">let</span> params = <span class="built_in">arguments</span>[<span class="number">1</span>];</div><div class="line">            <span class="keyword">var</span> temp_func = <span class="built_in">Symbol</span>();</div><div class="line">            context[temp_func]= <span class="keyword">this</span>;</div><div class="line">            <span class="built_in">eval</span>(<span class="string">'context[temp_func]('</span> + params.join(<span class="string">','</span>) + <span class="string">')'</span>);</div><div class="line">            <span class="keyword">delete</span> context.dddd</div><div class="line"></div><div class="line">    &#125;;</div><div class="line">    <span class="keyword">var</span> obj_a = &#123;</div><div class="line">            <span class="attr">name</span>:<span class="string">'obj_a'</span>,</div><div class="line">            <span class="attr">show</span>:<span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>) </span>&#123;</div><div class="line">                    <span class="built_in">console</span>.log(<span class="string">'name:'</span>,<span class="keyword">this</span>.name);</div><div class="line">                    <span class="built_in">console</span>.log(<span class="string">'param a:'</span>,a,<span class="string">'param b:'</span>,b);</div><div class="line">            &#125;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    <span class="keyword">var</span> obj_b = &#123;</div><div class="line">            <span class="attr">name</span>: <span class="string">"obj_b"</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    obj_a.show.own_apply(obj_b,[<span class="string">'2'</span>,<span class="string">'3'</span>])</div></pre></td></tr></table></figure>
+<h4 id="输出结果"><a href="#输出结果" class="headerlink" title="输出结果:"></a>输出结果:</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&#123; <span class="string">'0'</span>: &#123; name: <span class="string">'obj_b'</span> &#125;, <span class="string">'1'</span>: [ <span class="string">'2'</span>, <span class="string">'3'</span> ] &#125;</div><div class="line">name: obj_b</div><div class="line">param a: 2 param b: 3</div></pre></td></tr></table></figure>
+<h3 id="手工实现bind"><a href="#手工实现bind" class="headerlink" title="手工实现bind"></a>手工实现bind</h3><h4 id="own-bind实现思路"><a href="#own-bind实现思路" class="headerlink" title="own_bind实现思路"></a>own_bind实现思路</h4><p>与own_apply不同的是，own_bind不是立即执行目标函数，而是生成一个指定了this上下文的新函数，所以与手工实现apply类似，只是不在own_bind中立即执行，<br>而是返回一个匿名函数，把执行放在该匿名函数中</p>
+<h4 id="own-bind-js源代码："><a href="#own-bind-js源代码：" class="headerlink" title="own_bind.js源代码："></a>own_bind.js源代码：</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//bind函数的模拟实现</span></div><div class="line"><span class="built_in">Function</span>.prototype.own_bind = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">let</span> context = <span class="built_in">arguments</span>[<span class="number">0</span>];</div><div class="line">    <span class="keyword">let</span> params = <span class="built_in">arguments</span>[<span class="number">1</span>];</div><div class="line">    <span class="keyword">var</span> temp_func = <span class="built_in">Symbol</span>();</div><div class="line">    context[temp_func]= <span class="keyword">this</span>;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">let</span> args = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>);</div><div class="line">        <span class="keyword">return</span> <span class="built_in">eval</span>(<span class="string">'context[temp_func]('</span> + args.join(<span class="string">','</span>) + <span class="string">')'</span>);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"><span class="keyword">var</span> obj_a = &#123;</div><div class="line">    <span class="attr">name</span>:<span class="string">'obj_a'</span>,</div><div class="line">        <span class="attr">show</span>:<span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>) </span>&#123;</div><div class="line">                <span class="built_in">console</span>.log(<span class="string">'name:'</span>,<span class="keyword">this</span>.name);</div><div class="line">                <span class="built_in">console</span>.log(<span class="string">'param a:'</span>,a,<span class="string">'param b:'</span>,b);</div><div class="line">        &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">var</span> obj_b = &#123;</div><div class="line">    <span class="attr">name</span>: <span class="string">"obj_b"</span></div><div class="line">&#125;</div><div class="line"><span class="comment">// own_bind 测试</span></div><div class="line">obj_a.show.own_bind(obj_b)(<span class="string">'2'</span>,<span class="string">'3'</span>)</div></pre></td></tr></table></figure>
+<h4 id="结果输出"><a href="#结果输出" class="headerlink" title="结果输出"></a>结果输出</h4> <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">name: obj_b</div><div class="line">param a: 2 param b: 3</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+            <a href="/tags/node-js/" rel="tag"># node.js</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/25/2017sed文本流行处理/" rel="next" title="sed文本流行处理">
+                <i class="fa fa-chevron-left"></i> sed文本流行处理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/13/2017a-wrapper-function-set-async-callback-like-sync/" rel="prev" title="使用async/await方式将node.js中的异步方法包装成形式上的同步函数">
+                使用async/await方式将node.js中的异步方法包装成形式上的同步函数 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://img3.doubanio.com/icon/ul54452955-3.jpg"
+               alt="不知火" />
+          <p class="site-author-name" itemprop="name">不知火</p>
+           
+              <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/54452955" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#原生apply用法例子"><span class="nav-number">1.</span> <span class="nav-text">原生apply用法例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原生bind用法例子"><span class="nav-number">2.</span> <span class="nav-text">原生bind用法例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手工实现apply"><span class="nav-number">3.</span> <span class="nav-text">手工实现apply</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#思路"><span class="nav-number">3.1.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#own-apply-js源代码："><span class="nav-number">3.2.</span> <span class="nav-text">own_apply.js源代码：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#输出结果"><span class="nav-number">3.3.</span> <span class="nav-text">输出结果:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手工实现bind"><span class="nav-number">4.</span> <span class="nav-text">手工实现bind</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#own-bind实现思路"><span class="nav-number">4.1.</span> <span class="nav-text">own_bind实现思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#own-bind-js源代码："><span class="nav-number">4.2.</span> <span class="nav-text">own_bind.js源代码：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结果输出"><span class="nav-number">4.3.</span> <span class="nav-text">结果输出</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知火</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

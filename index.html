@@ -260,12 +260,12 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/11/js中获取数组的全部子集数组和特定长度子集数组/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/11/2018golang中http server设置的几种方式记录/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://img1.doubanio.com/view/photo/lphoto/public/p2371782369.webp">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -282,7 +282,154 @@
             
               
                 
-                <a class="post-title-link" href="/2017/08/11/js中获取数组的全部子集数组和特定长度子集数组/" itemprop="url">
+                <a class="post-title-link" href="/2017/09/11/2018golang中http server设置的几种方式记录/" itemprop="url">
+                  golang中http server设置的几种方式记录
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-11T11:34:41+08:00">
+                2017-09-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/golang/" itemprop="url" rel="index">
+                    <span itemprop="name">golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="1-1-最简单的方式"><a href="#1-1-最简单的方式" class="headerlink" title="1.1 最简单的方式"></a>1.1 最简单的方式</h3><p>通过查看http.ListenAndServe的源码可以知道，其第一个参数是监听地址，第二个参数是一个Handler接口类型, 只要是实现了这个接口的ServeHTTP函数即可。这里的http.ListenAndServe函数会创建一个server结构体实例， 并将server的Handler属性赋值为我们手动实现的Handler接口。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/09/11/2018golang中http server设置的几种方式记录/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/11/2017js中获取数组的全部子集数组和特定长度子集数组/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="不知火">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知火">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/08/11/2017js中获取数组的全部子集数组和特定长度子集数组/" itemprop="url">
                   js中获取数组的全部子集数组和特定长度子集数组
                 </a>
               
@@ -339,7 +486,7 @@
           <p>小伙伴最近在做一个数据处理分析的东东，中间有一个需要获取数组全部子集数组列表的需求，虽然ES6中增加了一种新的数据类型语法糖Set，不过还是没有提供获取集合子集的方法，所以，就自己写了一个，这里特别做一次记录，以方便下次自己使用。<br>如给定数组arr = [1,2,3],返回全部子集数组为[[1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]],如果返回长度为2的子集数组则返回值[[1,2], [1,3], [2,3]].<br>整体思路上，可以先获取特定长度子集的数组，然后对个长度子集列表做一个归并即可，示例代码如下。<br>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/08/11/js中获取数组的全部子集数组和特定长度子集数组/#more" rel="contents">
+            <a class="btn" href="/2017/08/11/2017js中获取数组的全部子集数组和特定长度子集数组/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -390,7 +537,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://img1.doubanio.com/view/photo/lphoto/public/p2371782369.webp">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -535,7 +682,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://img1.doubanio.com/view/photo/lphoto/public/p2371782369.webp">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -711,12 +858,12 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/29/Qt中低功耗蓝牙模块使用/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/29/2017Qt中低功耗蓝牙模块使用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://img1.doubanio.com/view/photo/lphoto/public/p2371782369.webp">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -733,7 +880,7 @@
             
               
                 
-                <a class="post-title-link" href="/2017/07/29/Qt中低功耗蓝牙模块使用/" itemprop="url">
+                <a class="post-title-link" href="/2017/07/29/2017Qt中低功耗蓝牙模块使用/" itemprop="url">
                   Qt中低功耗蓝牙模块使用
                 </a>
               
@@ -812,7 +959,7 @@
           <p>最近在Qt下使用opencv库，进行一些图像识别和处理相关的工作，主要是通过摄像头采集运动采样视频，然后进行一些跑姿分析和稳定性测试。但仅仅从视频帧来分析，还是有很多缺陷，后来就想着，如果结合公司的智能鞋垫产品，获取跑步实时的脚上各个部位的压力数据可以对视频分析提供很大的数据补充。跟硬件组的小伙伴聊了聊，得知可以通过蓝牙通讯，配对后实时获取鞋垫压力数据。从小伙伴那里搞来一套鞋垫样品，并拿了一份通讯协议列表，就抓紧搞起了。<br>得益于Qt详尽的文档说明，对照Qt官方<a href="http://doc.qt.io/qt-5/qtbluetooth-le-overview.html">Bluetooth Low Enegy文档</a>,再结合一下官网的例子，断断续续搞了一天，算是在我的客户端程序里看到鞋垫传过来的压力数据了。官网的文档流程讲得很清楚，这里自己还是给整个通讯的流程梳理一下。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/07/29/Qt中低功耗蓝牙模块使用/#more" rel="contents">
+            <a class="btn" href="/2017/07/29/2017Qt中低功耗蓝牙模块使用/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -858,12 +1005,12 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/13/《人类简史》一读杂记/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/13/2017《人类简史》一读杂记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://img1.doubanio.com/view/photo/lphoto/public/p2371782369.webp">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -880,7 +1027,7 @@
             
               
                 
-                <a class="post-title-link" href="/2017/07/13/《人类简史》一读杂记/" itemprop="url">
+                <a class="post-title-link" href="/2017/07/13/2017《人类简史》一读杂记/" itemprop="url">
                   《人类简史》一读杂记
                 </a>
               
@@ -959,7 +1106,7 @@
           <p>每日闲暇，断断续续看完了这本书。可谓受教。首先是认知上的，多了一些对几万年既成事实人类活动的认知，以及新的观看角度；其次，第一次系统地串联了一次所谓的人类历史。之前在读的时候，很少会觉察到‘史’这个字眼。但是，读完之后，对着目录回顾一遍，依然有着编年体的思路。<br>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/07/13/《人类简史》一读杂记/#more" rel="contents">
+            <a class="btn" href="/2017/07/13/2017《人类简史》一读杂记/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1005,12 +1152,12 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/03/在node-js项目中使用c-addon/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/03/2017在node-js项目中使用c-addon/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://img1.doubanio.com/view/photo/lphoto/public/p2371782369.webp">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1027,7 +1174,7 @@
             
               
                 
-                <a class="post-title-link" href="/2017/07/03/在node-js项目中使用c-addon/" itemprop="url">
+                <a class="post-title-link" href="/2017/07/03/2017在node-js项目中使用c-addon/" itemprop="url">
                   在node.js项目中使用c++ addons
                 </a>
               
@@ -1107,7 +1254,7 @@
 <h4 id="addons使用基本流程"><a href="#addons使用基本流程" class="headerlink" title="addons使用基本流程"></a>addons使用基本流程</h4>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/07/03/在node-js项目中使用c-addon/#more" rel="contents">
+            <a class="btn" href="/2017/07/03/2017在node-js项目中使用c-addon/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1153,12 +1300,12 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/13/a-wrapper-function-set-async-callback-like-sync/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/13/2017a-wrapper-function-set-async-callback-like-sync/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://img1.doubanio.com/view/photo/lphoto/public/p2371782369.webp">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1175,7 +1322,7 @@
             
               
                 
-                <a class="post-title-link" href="/2017/06/13/a-wrapper-function-set-async-callback-like-sync/" itemprop="url">
+                <a class="post-title-link" href="/2017/06/13/2017a-wrapper-function-set-async-callback-like-sync/" itemprop="url">
                   使用async/await方式将node.js中的异步方法包装成形式上的同步函数
                 </a>
               
@@ -1255,7 +1402,7 @@
 <p>假设我们要调用readdir去获取文件列表时，例子如下：<br>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/06/13/a-wrapper-function-set-async-callback-like-sync/#more" rel="contents">
+            <a class="btn" href="/2017/06/13/2017a-wrapper-function-set-async-callback-like-sync/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1301,12 +1448,12 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/08/achieve-a-native-apply-and-bind-feature-in-node-js/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/08/2017achieve-a-native-apply-and-bind-feature-in-node-js/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://img1.doubanio.com/view/photo/lphoto/public/p2371782369.webp">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1323,7 +1470,7 @@
             
               
                 
-                <a class="post-title-link" href="/2017/05/08/achieve-a-native-apply-and-bind-feature-in-node-js/" itemprop="url">
+                <a class="post-title-link" href="/2017/05/08/2017achieve-a-native-apply-and-bind-feature-in-node-js/" itemprop="url">
                   在node.js中手工实现apply 和 bind方法
                 </a>
               
@@ -1403,7 +1550,7 @@
 <p>apply(thisArg[, argsArray]) 方法在指定 this 值和参数（参数以数组或类数组对象的形式存在）的情况下调用某个函数.<br>bind(thisArg[, arg1[, arg2[, …]]])方法创建一个新的函数, 当被调用时，它的this关键字被设置为提供的值 ，在调用新函数时，提供任何一个给定的参数序列<br>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/05/08/achieve-a-native-apply-and-bind-feature-in-node-js/#more" rel="contents">
+            <a class="btn" href="/2017/05/08/2017achieve-a-native-apply-and-bind-feature-in-node-js/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1449,12 +1596,12 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/25/sed文本流行处理/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/25/2017sed文本流行处理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://img1.doubanio.com/view/photo/lphoto/public/p2371782369.webp">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -1471,7 +1618,7 @@
             
               
                 
-                <a class="post-title-link" href="/2017/04/25/sed文本流行处理/" itemprop="url">
+                <a class="post-title-link" href="/2017/04/25/2017sed文本流行处理/" itemprop="url">
                   sed文本流行处理
                 </a>
               
@@ -1550,155 +1697,7 @@
           <p>sed是一种流编辑器，它是文本处理中非常中的工具，可以逐行处理文本，能够完美的配合正则表达式使用。在日常需要做文本格式化处理时，会经常用到它，比如匹配行输出／匹配行删除／匹配行内字符串替换等。最近拿到一个静态html页面，需要对其中关键信息做格式化输出，便想起了这个东西，当然了，主要还是看对正则的熟悉程度。<br>读了一些sed等文档，发现其实主要也是如何在sed中使用正则表达式的各种技巧,不过Mac上坑不少，大伙还是尽量在Linux上跑。
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/04/25/sed文本流行处理/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/13/recursive-stack-overflow-handle/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="不知火">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://img1.doubanio.com/view/photo/lphoto/public/p2371782369.webp">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="不知火">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/13/recursive-stack-overflow-handle/" itemprop="url">
-                  javascript中函数递归堆栈溢出问题思考
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-13T18:49:46+08:00">
-                2017-04-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/node-js/" itemprop="url" rel="index">
-                    <span itemprop="name">node.js</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>这几天在用node.js写一个递归遍历文件树的功能，一直都有一个概念，就是递归次数过多，程序可能崩溃。但是一直没有仔细想过这个问题的原因,这里又多思考了一下，参考一下维基百科，每次函数递归调用的时候，在<a href="https://zh.wikipedia.org/wiki/%E5%91%BC%E5%8F%AB%E5%A0%86%E7%96%8A">调用栈</a>的顶部都要增加一条记录，记录子函数的返回地址，这样，随着递归深度的加深,用栈中一次讲调用函数返回地址入栈，当入栈次数过多，超过栈顶时，便会报栈溢出错误。  </p>
-<p>后面自己写了两个测试小程序，去测试了一下。
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/04/13/recursive-stack-overflow-handle/#more" rel="contents">
+            <a class="btn" href="/2017/04/25/2017sed文本流行处理/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1772,7 +1771,7 @@
       <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="https://img1.doubanio.com/view/photo/lphoto/public/p2371782369.webp"
+               src="https://img3.doubanio.com/icon/ul54452955-3.jpg"
                alt="不知火" />
           <p class="site-author-name" itemprop="name">不知火</p>
            
@@ -1784,7 +1783,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-count">15</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1795,7 +1794,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1806,7 +1805,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

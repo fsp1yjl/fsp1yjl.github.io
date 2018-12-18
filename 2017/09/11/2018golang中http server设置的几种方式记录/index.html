@@ -1,0 +1,747 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="golang-http-server," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="1.1 最简单的方式通过查看http.ListenAndServe的源码可以知道，其第一个参数是监听地址，第二个参数是一个Handler接口类型, 只要是实现了这个接口的ServeHTTP函数即可。这里的http.ListenAndServe函数会创建一个server结构体实例， 并将server的Handler属性赋值为我们手动实现的Handler接口。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="golang中http server设置的几种方式记录">
+<meta property="og:url" content="http://yoursite.com/2017/09/11/2018golang中http server设置的几种方式记录/index.html">
+<meta property="og:site_name" content="不知火">
+<meta property="og:description" content="1.1 最简单的方式通过查看http.ListenAndServe的源码可以知道，其第一个参数是监听地址，第二个参数是一个Handler接口类型, 只要是实现了这个接口的ServeHTTP函数即可。这里的http.ListenAndServe函数会创建一个server结构体实例， 并将server的Handler属性赋值为我们手动实现的Handler接口。">
+<meta property="og:image" content="https://img1.doubanio.com/view/note/l/L_xgyNIuY_sLXNKngL_2Qw/54452955/x56589797.jpg">
+<meta property="og:updated_time" content="2018-12-18T06:47:24.203Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="golang中http server设置的几种方式记录">
+<meta name="twitter:description" content="1.1 最简单的方式通过查看http.ListenAndServe的源码可以知道，其第一个参数是监听地址，第二个参数是一个Handler接口类型, 只要是实现了这个接口的ServeHTTP函数即可。这里的http.ListenAndServe函数会创建一个server结构体实例， 并将server的Handler属性赋值为我们手动实现的Handler接口。">
+<meta name="twitter:image" content="https://img1.doubanio.com/view/note/l/L_xgyNIuY_sLXNKngL_2Qw/54452955/x56589797.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/09/11/2018golang中http server设置的几种方式记录/"/>
+
+
+
+
+
+  <title> golang中http server设置的几种方式记录 | 不知火 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不知火</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/11/2018golang中http server设置的几种方式记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="不知火">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知火">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                golang中http server设置的几种方式记录
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-11T11:34:41+08:00">
+                2017-09-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/golang/" itemprop="url" rel="index">
+                    <span itemprop="name">golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-1-最简单的方式"><a href="#1-1-最简单的方式" class="headerlink" title="1.1 最简单的方式"></a>1.1 最简单的方式</h3><p>通过查看http.ListenAndServe的源码可以知道，其第一个参数是监听地址，第二个参数是一个Handler接口类型, 只要是实现了这个接口的ServeHTTP函数即可。这里的http.ListenAndServe函数会创建一个server结构体实例， 并将server的Handler属性赋值为我们手动实现的Handler接口。</p>
+<a id="more"></a>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 这里aa实现了http.Handler接口，便可以直接通过该接口返回</span></div><div class="line"><span class="comment">// 但是这里如果在ServeHTTP中直接处理， 这个函数会变得异常庞大</span></div><div class="line"><span class="keyword">type</span> aa <span class="keyword">struct</span> &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(a aa)</span> <span class="title">ServeHTTP</span><span class="params">(res http.ResponseWriter, req *http.Request)</span></span> &#123;</div><div class="line">    res.Write([]<span class="keyword">byte</span>(<span class="string">"hhhhhh"</span>))</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">test1</span><span class="params">()</span></span> &#123;</div><div class="line">    http.ListenAndServe(<span class="string">":8080"</span>, aa&#123;&#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//http.ListenAndServe函数说明</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">ListenAndServe</span><span class="params">(addr <span class="keyword">string</span>, handler Handler)</span> <span class="title">error</span></span> &#123;</div><div class="line">	server := &amp;Server&#123;Addr: addr, Handler: handler&#125;</div><div class="line">	<span class="keyword">return</span> server.ListenAndServe()</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// http.Handler接口说明</span></div><div class="line"><span class="keyword">type</span> Handler <span class="keyword">interface</span> &#123;</div><div class="line">	ServeHTTP(ResponseWriter, *Request)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="1-2-自定义server"><a href="#1-2-自定义server" class="headerlink" title="1.2 自定义server"></a>1.2 自定义server</h3><p>1.1的方式调用http.ListenAndServe会默认创建一个server， 但是这样的server， 我们不能更好的控制server的其他参数，如超时等<br>server 启动过函数：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> aa <span class="keyword">struct</span> &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(a aa)</span> <span class="title">ServeHTTP</span><span class="params">(res http.ResponseWriter, req *http.Request)</span></span> &#123;</div><div class="line">	res.Write([]<span class="keyword">byte</span>(<span class="string">"hhhhhh"</span>))</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//最基本的方式是自己初始化一个http.Server结构体， 初始化一个Handler接口</span></div><div class="line"><span class="comment">// 这里可以自己设置超时参数</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">test2</span><span class="params">()</span></span> &#123;</div><div class="line">	<span class="comment">// 这里创建了一个新的server， 可以设置超时</span></div><div class="line"></div><div class="line">	s := http.Server&#123;</div><div class="line">		Addr:         <span class="string">":8081"</span>,</div><div class="line">		Handler:      aa&#123;&#125;, <span class="comment">//处理函数赋值</span></div><div class="line">		ReadTimeout:  <span class="number">5</span> * time.Second,</div><div class="line">		WriteTimeout: <span class="number">10</span> * time.Second,</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	s.ListenAndServe()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里可以再看看http.Server的定义：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div></pre></td><td class="code"><pre><div class="line">type Server struct &#123;</div><div class="line">	Addr    string  // TCP address to listen on, ":http" if empty</div><div class="line">	Handler Handler // handler to invoke, http.DefaultServeMux if nil</div><div class="line"></div><div class="line">	// TLSConfig optionally provides a TLS configuration for use</div><div class="line">	// by ServeTLS and ListenAndServeTLS. Note that this value is</div><div class="line">	// cloned by ServeTLS and ListenAndServeTLS, so it's not</div><div class="line">	// possible to modify the configuration with methods like</div><div class="line">	// tls.Config.SetSessionTicketKeys. To use</div><div class="line">	// SetSessionTicketKeys, use Server.Serve with a TLS Listener</div><div class="line">	// instead.</div><div class="line">	TLSConfig *tls.Config</div><div class="line"></div><div class="line">	// ReadTimeout is the maximum duration for reading the entire</div><div class="line">	// request, including the body.</div><div class="line">	//</div><div class="line">	// Because ReadTimeout does not let Handlers make per-request</div><div class="line">	// decisions on each request body's acceptable deadline or</div><div class="line">	// upload rate, most users will prefer to use</div><div class="line">	// ReadHeaderTimeout. It is valid to use them both.</div><div class="line">	ReadTimeout time.Duration</div><div class="line"></div><div class="line">	// ReadHeaderTimeout is the amount of time allowed to read</div><div class="line">	// request headers. The connection's read deadline is reset</div><div class="line">	// after reading the headers and the Handler can decide what</div><div class="line">	// is considered too slow for the body.</div><div class="line">	ReadHeaderTimeout time.Duration</div><div class="line"></div><div class="line">	// WriteTimeout is the maximum duration before timing out</div><div class="line">	// writes of the response. It is reset whenever a new</div><div class="line">	// request's header is read. Like ReadTimeout, it does not</div><div class="line">	// let Handlers make decisions on a per-request basis.</div><div class="line">	WriteTimeout time.Duration</div><div class="line"></div><div class="line">	// IdleTimeout is the maximum amount of time to wait for the</div><div class="line">	// next request when keep-alives are enabled. If IdleTimeout</div><div class="line">	// is zero, the value of ReadTimeout is used. If both are</div><div class="line">	// zero, ReadHeaderTimeout is used.</div><div class="line">	IdleTimeout time.Duration</div><div class="line"></div><div class="line">	// MaxHeaderBytes controls the maximum number of bytes the</div><div class="line">	// server will read parsing the request header's keys and</div><div class="line">	// values, including the request line. It does not limit the</div><div class="line">	// size of the request body.</div><div class="line">	// If zero, DefaultMaxHeaderBytes is used.</div><div class="line">	MaxHeaderBytes int</div><div class="line"></div><div class="line">	// TLSNextProto optionally specifies a function to take over</div><div class="line">	// ownership of the provided TLS connection when an NPN/ALPN</div><div class="line">	// protocol upgrade has occurred. The map key is the protocol</div><div class="line">	// name negotiated. The Handler argument should be used to</div><div class="line">	// handle HTTP requests and will initialize the Request's TLS</div><div class="line">	// and RemoteAddr if not already set. The connection is</div><div class="line">	// automatically closed when the function returns.</div><div class="line">	// If TLSNextProto is not nil, HTTP/2 support is not enabled</div><div class="line">	// automatically.</div><div class="line">	TLSNextProto map[string]func(*Server, *tls.Conn, Handler)</div><div class="line"></div><div class="line">	// ConnState specifies an optional callback function that is</div><div class="line">	// called when a client connection changes state. See the</div><div class="line">	// ConnState type and associated constants for details.</div><div class="line">	ConnState func(net.Conn, ConnState)</div><div class="line"></div><div class="line">	// ErrorLog specifies an optional logger for errors accepting</div><div class="line">	// connections, unexpected behavior from handlers, and</div><div class="line">	// underlying FileSystem errors.</div><div class="line">	// If nil, logging is done via the log package's standard logger.</div><div class="line">	ErrorLog *log.Logger</div><div class="line"></div><div class="line">	disableKeepAlives int32     // accessed atomically.</div><div class="line">	inShutdown        int32     // accessed atomically (non-zero means we're in Shutdown)</div><div class="line">	nextProtoOnce     sync.Once // guards setupHTTP2_* init</div><div class="line">	nextProtoErr      error     // result of http2.ConfigureServer if used</div><div class="line"></div><div class="line">	mu         sync.Mutex</div><div class="line">	listeners  map[*net.Listener]struct&#123;&#125;</div><div class="line">	activeConn map[*conn]struct&#123;&#125;</div><div class="line">	doneChan   chan struct&#123;&#125;</div><div class="line">	onShutdown []func()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>server 超时参数的跨度图：<br><img src="https://img1.doubanio.com/view/note/l/L_xgyNIuY_sLXNKngL_2Qw/54452955/x56589797.jpg" alt="server 超时参数的定义"></p>
+<h3 id="1-3-更具花样的Handler"><a href="#1-3-更具花样的Handler" class="headerlink" title="1.3 更具花样的Handler"></a>1.3 更具花样的Handler</h3><p>下面是一个我们常用等一种启动http server等方式，这里主要在实现Handler接口时，做了更多工作，主要是使用了一个多路选择器ServerMux去对不同等url pattern做不同的匹配处理，先看一个最常见的例子,这里未创建新的serveMux,会使用默认的DefaultServeMux：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">h</span><span class="params">(res http.ResponseWriter, req *http.Request)</span></span> &#123;</div><div class="line">	res.Write([]<span class="keyword">byte</span>(<span class="string">"new pattern"</span>))</div><div class="line">&#125;</div><div class="line"><span class="comment">// 这里会对以/test开始的URL请求使用h函数进行处理</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">test4</span><span class="params">()</span></span> &#123;</div><div class="line">    http.HandleFunc(<span class="string">"/test"</span>, h)</div><div class="line">    <span class="comment">// 这里的第二参数是nil, 在处理的时候就会使用 DefaultServeMux</span></div><div class="line">	http.ListenAndServe(<span class="string">":8083"</span>, <span class="literal">nil</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>说明：<br>这里的http.HandleFunc的功能是向http包的DefaultServeMux加入新的处理路由。<br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">HandleFunc</span><span class="params">(pattern <span class="keyword">string</span>, handler <span class="keyword">func</span>(ResponseWriter, *Request)</span>)</span> &#123;</div><div class="line">    DefaultServeMux.HandleFunc(pattern, handler)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>DefaultServeMux是一个ServeMux结构体的实例，其中有个m属性是一个map类型，存放了不同URL pattern的处理Handler。同时ServeMux也实现了ServeHTTP函数，是http.Handler接口的实现。 其类型定义如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> ServeMux <span class="keyword">struct</span> &#123;</div><div class="line">	mu    sync.RWMutex</div><div class="line">	m     <span class="keyword">map</span>[<span class="keyword">string</span>]muxEntry</div><div class="line">	hosts <span class="keyword">bool</span> <span class="comment">// whether any patterns contain hostnames</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">type</span> muxEntry <span class="keyword">struct</span> &#123;</div><div class="line">	h       Handler</div><div class="line">	pattern <span class="keyword">string</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// ServeMux实现了Handler接口</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">ServeHTTP</span><span class="params">(w ResponseWriter, r *Request)</span></span> &#123;</div><div class="line">	<span class="keyword">if</span> r.RequestURI == <span class="string">"*"</span> &#123;</div><div class="line">		<span class="keyword">if</span> r.ProtoAtLeast(<span class="number">1</span>, <span class="number">1</span>) &#123;</div><div class="line">			w.Header().Set(<span class="string">"Connection"</span>, <span class="string">"close"</span>)</div><div class="line">		&#125;</div><div class="line">		w.WriteHeader(StatusBadRequest)</div><div class="line">		<span class="keyword">return</span></div><div class="line">	&#125;</div><div class="line">	h, _ := mux.Handler(r)</div><div class="line">	h.ServeHTTP(w, r)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="1-4-使用自定义的serveMux"><a href="#1-4-使用自定义的serveMux" class="headerlink" title="1.4 使用自定义的serveMux"></a>1.4 使用自定义的serveMux</h3><p>我们也可以不使用默认的serveMux，去自己初始化一个serveMux, 可以调用http.NewServeMux()，或者直接NewServeMux{}的方式去创建。下面的例子在构建server时，还是使用默认的server， 可以参考1.2节，创建自定义的server.<br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// test3 我们可以增加一个ServeMux来做一个请求路由处理工作</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">h</span><span class="params">(res http.ResponseWriter, req *http.Request)</span></span> &#123;</div><div class="line">	res.Write([]<span class="keyword">byte</span>(<span class="string">"new pattern"</span>))</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">test3</span><span class="params">()</span></span> &#123;</div><div class="line">	mux := http.NewServeMux()</div><div class="line"></div><div class="line">	<span class="comment">//通过HandleFunc函数去向mux中handler中注册处理函数</span></div><div class="line">	mux.HandleFunc(<span class="string">"/test"</span>, <span class="function"><span class="keyword">func</span><span class="params">(res http.ResponseWriter, req *http.Request)</span></span> &#123;</div><div class="line">		res.Write([]<span class="keyword">byte</span>(<span class="string">"test3333"</span>))</div><div class="line">	&#125;)</div><div class="line"></div><div class="line">	<span class="comment">// 直接调用Handle函数去注册处理函数，</span></div><div class="line">	<span class="comment">// 这里的http.HandleFunc 是一个type类型，这里调用将h转换为一个Handler接口的实现</span></div><div class="line">	mux.Handle(<span class="string">"/st"</span>, http.HandlerFunc(h))</div><div class="line"></div><div class="line">	<span class="comment">// 这里会使用默认创建的server</span></div><div class="line">	<span class="comment">//也可以参考1.2创建自定义的server</span></div><div class="line">	http.ListenAndServe(<span class="string">":8082"</span>, mux)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="1-6-go-restful中创建http-server的方式"><a href="#1-6-go-restful中创建http-server的方式" class="headerlink" title="1.6 go-restful中创建http server的方式"></a>1.6 go-restful中创建http server的方式</h3><p>网上基于net/http包封装的http 框架有很多， 介绍一个我常用的库，<a href="https://github.com/emicklei/go-restful" target="_blank" rel="external">go-restful</a>，k8s的apiserver部分使用了这个库，算是一个比较优秀的rest库了。<br>在这个框架下，有如下几个基本概念</p>
+<ul>
+<li>container</li>
+<li>webservice</li>
+<li>route</li>
+</ul>
+<p>一个container是用来包括一组webservice, 一个webservice包含多个route， 每个route代表了对一个URL pattern的处理， 这里看一个使用默认container的例子<br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">	<span class="comment">// 这里使用默认的container</span></div><div class="line">	ws := <span class="built_in">new</span>(restful.WebService)</div><div class="line">	ws.Route(ws.GET(<span class="string">"/default"</span>).To(h))</div><div class="line">	restful.Add(ws)</div><div class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">		http.ListenAndServe(<span class="string">":8080"</span>, <span class="literal">nil</span>)</div><div class="line">	&#125;()</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">func</span> <span class="title">h</span><span class="params">(req *restful.Request, resp *restful.Response)</span></span> &#123;</div><div class="line">	io.WriteString(resp, <span class="string">"default container"</span>)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>下面再看一个使用自定义container的例子：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// container 同样实现了http.Hadler接口</span></div><div class="line">c := restful.NewContainer()</div><div class="line">ws2 := <span class="built_in">new</span>(restful.WebService)</div><div class="line">ws2.Route(ws2.GET(<span class="string">"/hello"</span>).To(hello2))</div><div class="line">c.Add(ws2)</div><div class="line">server := &amp;http.Server&#123;Addr: <span class="string">":8081"</span>, Handler: c&#125;</div><div class="line">log.Fatal(server.ListenAndServe())</div></pre></td></tr></table></figure></p>
+<p>这里可以展开看一下container的Add函数,主要就是执行的c.addHandler(service, c.ServeMux)函数,将container的dispatch函数加入到serverMux,作为URL pattern的handler。有兴趣的可以详细去看下</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Container)</span> <span class="title">Add</span><span class="params">(service *WebService)</span> *<span class="title">Container</span></span> &#123;</div><div class="line">	c.webServicesLock.Lock()</div><div class="line">	<span class="keyword">defer</span> c.webServicesLock.Unlock()</div><div class="line"></div><div class="line">	<span class="comment">// if rootPath was not set then lazy initialize it</span></div><div class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(service.rootPath) == <span class="number">0</span> &#123;</div><div class="line">		service.Path(<span class="string">"/"</span>)</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// cannot have duplicate root paths</span></div><div class="line">	<span class="keyword">for</span> _, each := <span class="keyword">range</span> c.webServices &#123;</div><div class="line">		<span class="keyword">if</span> each.RootPath() == service.RootPath() &#123;</div><div class="line">			log.Printf(<span class="string">"WebService with duplicate root path detected:['%v']"</span>, each)</div><div class="line">			os.Exit(<span class="number">1</span>)</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// If not registered on root then add specific mapping</span></div><div class="line">	<span class="keyword">if</span> !c.isRegisteredOnRoot &#123;</div><div class="line">		c.isRegisteredOnRoot = c.addHandler(service, c.ServeMux)</div><div class="line">	&#125;</div><div class="line">	c.webServices = <span class="built_in">append</span>(c.webServices, service)</div><div class="line">	<span class="keyword">return</span> c</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong><em>todo：</em></strong><br>net/http处理连接请求的过程分析</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/golang-http-server/" rel="tag"># golang-http-server</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/11/2017js中获取数组的全部子集数组和特定长度子集数组/" rel="next" title="js中获取数组的全部子集数组和特定长度子集数组">
+                <i class="fa fa-chevron-left"></i> js中获取数组的全部子集数组和特定长度子集数组
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://img3.doubanio.com/icon/ul54452955-3.jpg"
+               alt="不知火" />
+          <p class="site-author-name" itemprop="name">不知火</p>
+           
+              <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/54452955" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-最简单的方式"><span class="nav-number">1.</span> <span class="nav-text">1.1 最简单的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-自定义server"><span class="nav-number">2.</span> <span class="nav-text">1.2 自定义server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-更具花样的Handler"><span class="nav-number">3.</span> <span class="nav-text">1.3 更具花样的Handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-使用自定义的serveMux"><span class="nav-number">4.</span> <span class="nav-text">1.4 使用自定义的serveMux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-go-restful中创建http-server的方式"><span class="nav-number">5.</span> <span class="nav-text">1.6 go-restful中创建http server的方式</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知火</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

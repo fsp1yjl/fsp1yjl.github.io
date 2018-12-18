@@ -1,0 +1,758 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="c++addons," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="藉由v8的强力支持，我们可以在node.js中可以很方便的使用一些c++库，或者自己编写一个动态链接库，并借v8库的连接，使之成为一个和其他node module一样可以直接通过require调用的方法.编写原生c++模块，可以地处理CPU密集型的操作，我们在日常使用中，也可以看到很多c++编写的npm包，如进行串口通讯用的包serialport、进行蓝牙通讯的包noble等等。
+addons使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在node.js项目中使用c++ addons">
+<meta property="og:url" content="http://yoursite.com/2017/07/03/2017在node-js项目中使用c-addon/index.html">
+<meta property="og:site_name" content="不知火">
+<meta property="og:description" content="藉由v8的强力支持，我们可以在node.js中可以很方便的使用一些c++库，或者自己编写一个动态链接库，并借v8库的连接，使之成为一个和其他node module一样可以直接通过require调用的方法.编写原生c++模块，可以地处理CPU密集型的操作，我们在日常使用中，也可以看到很多c++编写的npm包，如进行串口通讯用的包serialport、进行蓝牙通讯的包noble等等。
+addons使用">
+<meta property="og:updated_time" content="2018-12-18T05:38:40.954Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在node.js项目中使用c++ addons">
+<meta name="twitter:description" content="藉由v8的强力支持，我们可以在node.js中可以很方便的使用一些c++库，或者自己编写一个动态链接库，并借v8库的连接，使之成为一个和其他node module一样可以直接通过require调用的方法.编写原生c++模块，可以地处理CPU密集型的操作，我们在日常使用中，也可以看到很多c++编写的npm包，如进行串口通讯用的包serialport、进行蓝牙通讯的包noble等等。
+addons使用">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/03/2017在node-js项目中使用c-addon/"/>
+
+
+
+
+
+  <title> 在node.js项目中使用c++ addons | 不知火 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不知火</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/03/2017在node-js项目中使用c-addon/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="不知火">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知火">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                在node.js项目中使用c++ addons
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-03T17:44:09+08:00">
+                2017-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/node-js/" itemprop="url" rel="index">
+                    <span itemprop="name">node.js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>藉由v8的强力支持，我们可以在node.js中可以很方便的使用一些c++库，或者自己编写一个动态链接库，并借v8库的连接，使之成为一个和其他node module一样可以直接通过require调用的方法.编写原生c++模块，可以地处理CPU密集型的操作，我们在日常使用中，也可以看到很多c++编写的npm包，如进行串口通讯用的包serialport、进行蓝牙通讯的包noble等等。</p>
+<h4 id="addons使用基本流程"><a href="#addons使用基本流程" class="headerlink" title="addons使用基本流程"></a>addons使用基本流程</h4><a id="more"></a>
+<blockquote>
+<ol>
+<li>编写c++源文件</li>
+<li>创建binding.gyp文件</li>
+<li>开始构建编译<blockquote>
+<ol>
+<li>node-gyp configure（执行后目录下会多处build文件夹）</li>
+<li>node-gyp build (执行后build目录下回产生Release文件夹)</li>
+</ol>
+</blockquote>
+</li>
+<li>require编译后的原声模块，在js中调用原生方法</li>
+</ol>
+</blockquote>
+<h5 id="1-1-基本用法"><a href="#1-1-基本用法" class="headerlink" title="1.1 基本用法"></a>1.1 基本用法</h5><p>hello.cc源代码：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;node.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;v8.h&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> v8;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">Method</span><span class="params">(<span class="keyword">const</span> FunctionCallbackInfo&lt;Value&gt;&amp; args)</span> </span>&#123;</div><div class="line">    Isolate* isolate = args.GetIsolate();</div><div class="line">    args.GetReturnValue().Set(String::NewFromUtf8(isolate, <span class="string">"world"</span>));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 模块初始化函数，这里模块中创建一个名叫的hello的方法</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(Local&lt;Object&gt; exports)</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/*</span></div><div class="line">        // 这样hello将成为导出模块的一个属性</div><div class="line">        //如果想设置Method作为到处模块本身，可以这样写：</div><div class="line">        void Init(Local&lt;Object&gt; exports, Local&lt;Object&gt; module) &#123;</div><div class="line">            NODE_SET_METHOD(module, "exports", CreateObject);</div><div class="line">        &#125;</div><div class="line">    */</div><div class="line">    NODE_SET_METHOD(exports, <span class="string">"hello"</span>, Method);</div><div class="line">&#125;</div><div class="line">   </div><div class="line"><span class="comment">//NODE_MODULE 是一个宏，export一个名叫addon的模块，init为初始化函数名</span></div><div class="line">NODE_MODULE(addon, init)</div></pre></td></tr></table></figure></p>
+<p>binding.gyp:<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line"><span class="attr">"targets"</span>: [</div><div class="line">    &#123;</div><div class="line">    <span class="attr">"target_name"</span>: <span class="string">"addon"</span>,</div><div class="line">    <span class="attr">"sources"</span>: [ <span class="string">"hello.cc"</span> ]</div><div class="line">    &#125;</div><div class="line">]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>调用测试脚本，test.js<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// hello.js</span></div><div class="line"></div><div class="line"><span class="keyword">const</span> addon = <span class="built_in">require</span>(<span class="string">'./build/Release/addon'</span>);</div><div class="line"><span class="built_in">console</span>.log(addon.hello());</div><div class="line"><span class="comment">// Prints: 'world'</span></div></pre></td></tr></table></figure></p>
+<h4 id="addons同步方法用法"><a href="#addons同步方法用法" class="headerlink" title="addons同步方法用法"></a>addons同步方法用法</h4><p>js是一种弱类型语言，对数组／对象的使用都十分灵活，但是c++在这方面的灵活性就弱很多，变量的类型和<br>复合类型的使用都必须严格规定。同时，根据我们使用的场景，这里我列出了如下几种常见的调用方法类型。</p>
+<blockquote>
+<ol>
+<li>单个简单类型如参，根据参数类型返回对应类型的返回值。</li>
+<li>传入js函数,并同步执行</li>
+<li>传入js对象，处理后返回新对象</li>
+</ol>
+</blockquote>
+<h5 id="简单类型参数处理和返回"><a href="#简单类型参数处理和返回" class="headerlink" title="简单类型参数处理和返回"></a>简单类型参数处理和返回</h5><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 单个入参，根据不同入参类型，返回不同类型值</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">test_one_param</span><span class="params">(<span class="keyword">const</span> v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args)</span> </span>&#123;</div><div class="line">    v8::Isolate* isolate = args.GetIsolate();</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (args[<span class="number">0</span>]-&gt;IsNumber())&#123;   <span class="comment">// 处理数字类型入参并返回数字类型</span></div><div class="line">            <span class="keyword">double</span> a = args[<span class="number">0</span>]-&gt;NumberValue();  <span class="comment">//获取数字入参的方法</span></div><div class="line">            Local&lt;Number&gt; return_val =  v8::Number::New(isolate,a+<span class="number">1</span>);</div><div class="line">            <span class="comment">//Set the return value (using the passed in FunctionCallbackInfo&lt;Value&gt;&amp;)</span></div><div class="line">            args.GetReturnValue().Set(return_val);</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125; </div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (args[<span class="number">0</span>]-&gt;IsBoolean())&#123; <span class="comment">//处理布尔类型入参数，并返回布尔类型</span></div><div class="line">        <span class="keyword">bool</span> a = args[<span class="number">0</span>]-&gt;BooleanValue();  <span class="comment">// 获取布尔类型入参的方法</span></div><div class="line">        Local&lt;Boolean&gt; return_val = v8::Boolean::New(isolate,!a);</div><div class="line">        args.GetReturnValue().Set(return_val);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (args[<span class="number">0</span>]-&gt;IsString())&#123;  <span class="comment">//处理字符串类型对象并返回字符串对象</span></div><div class="line">        Local&lt;String&gt; add_str = v8::String::NewFromUtf8(isolate,<span class="string">"eric"</span>);</div><div class="line">        add_str = v8::String::Concat(args[<span class="number">0</span>]-&gt;ToString(),add_str);  <span class="comment">// 获取字符入参的方法</span></div><div class="line">        args.GetReturnValue().Set(add_str);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">            isolate-&gt;ThrowException(Exception::TypeError(</div><div class="line">            String::NewFromUtf8(isolate, <span class="string">"Wrong  argument type"</span>)));</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="处理函数类型入参"><a href="#处理函数类型入参" class="headerlink" title="处理函数类型入参"></a>处理函数类型入参</h5><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//创建用户返回的原生函数</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">cb</span><span class="params">(<span class="keyword">const</span> FunctionCallbackInfo&lt;v8::Value&gt;&amp; args)</span> </span>&#123;</div><div class="line">    Isolate * isolate = args.GetIsolate();</div><div class="line">    Local&lt;String&gt; a = args[<span class="number">0</span>]-&gt;ToString();</div><div class="line"></div><div class="line">    args.GetReturnValue().Set(v8::String::Concat(String::NewFromUtf8(isolate, <span class="string">",hello"</span>),a));</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//传入函数，并执行</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">method</span><span class="params">(<span class="keyword">const</span> FunctionCallbackInfo&lt;Value&gt; &amp;args)</span></span>&#123;</div><div class="line">    Isolate * isolate = args.GetIsolate();</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(args[<span class="number">0</span>]-&gt;IsFunction())&#123;</div><div class="line">        Local&lt;Function&gt; js_fn = Local&lt;Function&gt;::Cast(args[<span class="number">0</span>]);  <span class="comment">//处理函数类型入参</span></div><div class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">11</span>;i++)&#123;</div><div class="line">            <span class="built_in">printf</span>(<span class="string">"%d\n"</span>, i);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//第2，3个参数表示函数参数个数，和参数数组指针</span></div><div class="line">        js_fn-&gt;Call(v8::Null(isolate),<span class="number">0</span>,<span class="literal">NULL</span>);   <span class="comment">// 执行js脚本传入的函数</span></div><div class="line"></div><div class="line">        <span class="comment">//处理带参数函数执行用法如下，表示函数有一个入参</span></div><div class="line">        <span class="comment">// const unsigned argc = 1;</span></div><div class="line">        <span class="comment">// Local&lt;Value&gt; argv[argc] = &#123; String::NewFromUtf8(isolate, "parameter1") &#125;;</span></div><div class="line">        <span class="comment">// cb-&gt;Call(Null(isolate), argc, argv);</span></div><div class="line"></div><div class="line">        <span class="comment">//返回一个原生函数</span></div><div class="line">        Local&lt;FunctionTemplate&gt; tpl = FunctionTemplate::New(isolate, cb);</div><div class="line">        Local&lt;Function&gt; fn = tpl-&gt;GetFunction();</div><div class="line">        <span class="comment">// omit this to make it anonymous</span></div><div class="line">        fn-&gt;SetName(String::NewFromUtf8(isolate, <span class="string">"theFunction"</span>));</div><div class="line"></div><div class="line">        args.GetReturnValue().Set(fn);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h5 id="处理对象类型入参"><a href="#处理对象类型入参" class="headerlink" title="处理对象类型入参"></a>处理对象类型入参</h5><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//传入对象类型，并返回一个js对象</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">process_obj</span><span class="params">(<span class="keyword">const</span> FunctionCallbackInfo&lt;Value&gt;&amp; args )</span> </span>&#123;</div><div class="line">  v8::Isolate * isolate = args.GetIsolate();</div><div class="line">  </div><div class="line">  Local&lt;Object&gt; ret_obj = Object::New(isolate); <span class="comment">//定义一个对象用于返回</span></div><div class="line">  <span class="comment">// 返回对象增加一个name属性，属性值为"process_obj"</span></div><div class="line">  ret_obj-&gt;Set(v8::String::NewFromUtf8(isolate,<span class="string">"name"</span>),v8::String::NewFromUtf8(isolate,<span class="string">"process_obj"</span>));</div><div class="line">  </div><div class="line">  <span class="comment">//处理传入的对象，获取对象属性列表存入数组，并作为返回对象的input_pros对象返回</span></div><div class="line">  <span class="keyword">if</span>(args[<span class="number">0</span>]-&gt;IsObject()) &#123;</div><div class="line">    Local&lt;Object&gt; input_obj = args[<span class="number">0</span>]-&gt;ToObject();</div><div class="line">    Local&lt;Array&gt; keys = input_obj-&gt;GetOwnPropertyNames();</div><div class="line">    ret_obj-&gt;Set(v8::String::NewFromUtf8(isolate,<span class="string">"input_pros"</span>),keys);</div><div class="line">  &#125;</div><div class="line">  </div><div class="line">  <span class="comment">// 返回一个新的对象</span></div><div class="line">  args.GetReturnValue().Set(ret_obj);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="addons异步模块创建"><a href="#addons异步模块创建" class="headerlink" title="addons异步模块创建"></a>addons异步模块创建</h4><p>之前的原生模块都是同步模块，调用后立即执行，调用者会一直等待被调用函数执行完成。如果我们想实现异步回调，就要借助libuv的强大魔力了。<br>libuv强制使用异步、事件驱动的编程风格。它的核心工作是提供一个event-loop，还有基于I/O和其它事件通知的回调函数。libuv还提供了一些核心工具，例如定时器，非阻塞的网络支持，异步文件系统访问，子进程等。<br>这里我们使用libuv的uv_default_loop来创建一个默认的事件循环.uv_queue_work()是一个便利的函数，它使得一个应用程序能够在不同的线程运行任务，当任务完成后，回调函数将会被触发.<br>后续会补上详细的libuv库和异步模块的使用笔记。<br> — 未完待续😢</p>
+<p>这里，参考一下google到的资料，记录了一下c++addons的常规用法，便于后面自己使用的时候来查看。<br><a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">参考1(英文)</a><br><a href="https://nodeaddons.com/c-processing-from-node-js/" target="_blank" rel="external">参考2(英文)</a><br><a href="http://www.lizhiqianduan.com/myblog/#/article/10062" target="_blank" rel="external">参考3(中文)</a><br><a href="http://www.lizhiqianduan.com/myblog/#/article/10065" target="_blank" rel="external">参考4(中文)</a><br><a href="http://docs.libuv.org/en/v1.x/design.html" target="_blank" rel="external">libuv官方文档</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/c-addons/" rel="tag"># c++addons</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/13/2017a-wrapper-function-set-async-callback-like-sync/" rel="next" title="使用async/await方式将node.js中的异步方法包装成形式上的同步函数">
+                <i class="fa fa-chevron-left"></i> 使用async/await方式将node.js中的异步方法包装成形式上的同步函数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/13/2017《人类简史》一读杂记/" rel="prev" title="《人类简史》一读杂记">
+                《人类简史》一读杂记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://img3.doubanio.com/icon/ul54452955-3.jpg"
+               alt="不知火" />
+          <p class="site-author-name" itemprop="name">不知火</p>
+           
+              <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/54452955" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#addons使用基本流程"><span class="nav-number">1.</span> <span class="nav-text">addons使用基本流程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-基本用法"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 基本用法</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#addons同步方法用法"><span class="nav-number">2.</span> <span class="nav-text">addons同步方法用法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#简单类型参数处理和返回"><span class="nav-number">2.1.</span> <span class="nav-text">简单类型参数处理和返回</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#处理函数类型入参"><span class="nav-number">2.2.</span> <span class="nav-text">处理函数类型入参</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#处理对象类型入参"><span class="nav-number">2.3.</span> <span class="nav-text">处理对象类型入参</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#addons异步模块创建"><span class="nav-number">3.</span> <span class="nav-text">addons异步模块创建</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知火</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
