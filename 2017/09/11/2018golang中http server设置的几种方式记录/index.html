@@ -94,7 +94,7 @@
 <meta property="og:site_name" content="不知火">
 <meta property="og:description" content="1.1 最简单的方式通过查看http.ListenAndServe的源码可以知道，其第一个参数是监听地址，第二个参数是一个Handler接口类型, 只要是实现了这个接口的ServeHTTP函数即可。这里的http.ListenAndServe函数会创建一个server结构体实例， 并将server的Handler属性赋值为我们手动实现的Handler接口。">
 <meta property="og:image" content="https://img1.doubanio.com/view/note/l/L_xgyNIuY_sLXNKngL_2Qw/54452955/x56589797.jpg">
-<meta property="og:updated_time" content="2018-12-18T06:47:24.203Z">
+<meta property="og:updated_time" content="2018-12-19T04:08:12.514Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="golang中http server设置的几种方式记录">
 <meta name="twitter:description" content="1.1 最简单的方式通过查看http.ListenAndServe的源码可以知道，其第一个参数是监听地址，第二个参数是一个Handler接口类型, 只要是实现了这个接口的ServeHTTP函数即可。这里的http.ListenAndServe函数会创建一个server结构体实例， 并将server的Handler属性赋值为我们手动实现的Handler接口。">
@@ -142,6 +142,16 @@
 
 
 
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2519991216496e1fcf56707e51436dd2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -391,7 +401,7 @@
 <p>下面再看一个使用自定义container的例子：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// container 同样实现了http.Hadler接口</span></div><div class="line">c := restful.NewContainer()</div><div class="line">ws2 := <span class="built_in">new</span>(restful.WebService)</div><div class="line">ws2.Route(ws2.GET(<span class="string">"/hello"</span>).To(hello2))</div><div class="line">c.Add(ws2)</div><div class="line">server := &amp;http.Server&#123;Addr: <span class="string">":8081"</span>, Handler: c&#125;</div><div class="line">log.Fatal(server.ListenAndServe())</div></pre></td></tr></table></figure></p>
 <p>这里可以展开看一下container的Add函数,主要就是执行的c.addHandler(service, c.ServeMux)函数,将container的dispatch函数加入到serverMux,作为URL pattern的handler。有兴趣的可以详细去看下</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Container)</span> <span class="title">Add</span><span class="params">(service *WebService)</span> *<span class="title">Container</span></span> &#123;</div><div class="line">	c.webServicesLock.Lock()</div><div class="line">	<span class="keyword">defer</span> c.webServicesLock.Unlock()</div><div class="line"></div><div class="line">	<span class="comment">// if rootPath was not set then lazy initialize it</span></div><div class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(service.rootPath) == <span class="number">0</span> &#123;</div><div class="line">		service.Path(<span class="string">"/"</span>)</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// cannot have duplicate root paths</span></div><div class="line">	<span class="keyword">for</span> _, each := <span class="keyword">range</span> c.webServices &#123;</div><div class="line">		<span class="keyword">if</span> each.RootPath() == service.RootPath() &#123;</div><div class="line">			log.Printf(<span class="string">"WebService with duplicate root path detected:['%v']"</span>, each)</div><div class="line">			os.Exit(<span class="number">1</span>)</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">// If not registered on root then add specific mapping</span></div><div class="line">	<span class="keyword">if</span> !c.isRegisteredOnRoot &#123;</div><div class="line">		c.isRegisteredOnRoot = c.addHandler(service, c.ServeMux)</div><div class="line">	&#125;</div><div class="line">	c.webServices = <span class="built_in">append</span>(c.webServices, service)</div><div class="line">	<span class="keyword">return</span> c</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong><em>todo：</em></strong><br>net/http处理连接请求的过程分析</p>
+<p>相关：<br><a href="/2017/09/15/2018golang一个http请求的处理过程/">net/http处理连接请求的过程分析</a>:</p>
 
       
     </div>
@@ -443,6 +453,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/15/2018golang一个http请求的处理过程/" rel="prev" title="golang中http server处理请求的过程梳理">
+                golang中http server处理请求的过程梳理 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -521,7 +535,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -543,7 +557,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
