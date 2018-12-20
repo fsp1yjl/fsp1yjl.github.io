@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="stackoverflow," />
+  <meta name="keywords" content="golang-blog," />
 
 
 
@@ -87,19 +87,26 @@
 
 
 
-<meta name="description" content="这几天在用node.js写一个递归遍历文件树的功能，一直都有一个概念，就是递归次数过多，程序可能崩溃。但是一直没有仔细想过这个问题的原因,这里又多思考了一下，参考一下维基百科，每次函数递归调用的时候，在调用栈的顶部都要增加一条记录，记录子函数的返回地址，这样，随着递归深度的加深,用栈中一次讲调用函数返回地址入栈，当入栈次数过多，超过栈顶时，便会报栈溢出错误。  
-后面自己写了两个测试小程序，去测试">
+<meta name="description" content="golang切片的使用和内部细节 – By Andrew Gerrand
+网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。
+先来看两个例子：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="javascript中函数递归堆栈溢出问题思考">
-<meta property="og:url" content="http://yoursite.com/2017/04/13/2017recursive-stack-overflow-handle/index.html">
+<meta property="og:title" content="golang官方blog摘要-slice">
+<meta property="og:url" content="http://yoursite.com/2018/01/19/2018golang官方blog摘要-slice/index.html">
 <meta property="og:site_name" content="不知火">
-<meta property="og:description" content="这几天在用node.js写一个递归遍历文件树的功能，一直都有一个概念，就是递归次数过多，程序可能崩溃。但是一直没有仔细想过这个问题的原因,这里又多思考了一下，参考一下维基百科，每次函数递归调用的时候，在调用栈的顶部都要增加一条记录，记录子函数的返回地址，这样，随着递归深度的加深,用栈中一次讲调用函数返回地址入栈，当入栈次数过多，超过栈顶时，便会报栈溢出错误。  
-后面自己写了两个测试小程序，去测试">
-<meta property="og:updated_time" content="2018-12-18T07:14:49.122Z">
+<meta property="og:description" content="golang切片的使用和内部细节 – By Andrew Gerrand
+网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。
+先来看两个例子：">
+<meta property="og:image" content="https://blog.golang.org/go-slices-usage-and-internals_slice-struct.png">
+<meta property="og:image" content="https://blog.golang.org/go-slices-usage-and-internals_slice-1.png">
+<meta property="og:image" content="https://blog.golang.org/go-slices-usage-and-internals_slice-2.png">
+<meta property="og:updated_time" content="2018-12-20T10:34:28.291Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="javascript中函数递归堆栈溢出问题思考">
-<meta name="twitter:description" content="这几天在用node.js写一个递归遍历文件树的功能，一直都有一个概念，就是递归次数过多，程序可能崩溃。但是一直没有仔细想过这个问题的原因,这里又多思考了一下，参考一下维基百科，每次函数递归调用的时候，在调用栈的顶部都要增加一条记录，记录子函数的返回地址，这样，随着递归深度的加深,用栈中一次讲调用函数返回地址入栈，当入栈次数过多，超过栈顶时，便会报栈溢出错误。  
-后面自己写了两个测试小程序，去测试">
+<meta name="twitter:title" content="golang官方blog摘要-slice">
+<meta name="twitter:description" content="golang切片的使用和内部细节 – By Andrew Gerrand
+网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。
+先来看两个例子：">
+<meta name="twitter:image" content="https://blog.golang.org/go-slices-usage-and-internals_slice-struct.png">
 
 
 
@@ -127,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/04/13/2017recursive-stack-overflow-handle/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/01/19/2018golang官方blog摘要-slice/"/>
 
 
 
 
 
-  <title> javascript中函数递归堆栈溢出问题思考 | 不知火 </title>
+  <title> golang官方blog摘要-slice | 不知火 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -272,7 +279,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/13/2017recursive-stack-overflow-handle/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/19/2018golang官方blog摘要-slice/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
@@ -293,7 +300,7 @@
             
             
               
-                javascript中函数递归堆栈溢出问题思考
+                golang官方blog摘要-slice
               
             
           </h1>
@@ -308,8 +315,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-13T18:49:46+08:00">
-                2017-04-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-19T20:23:20+08:00">
+                2018-01-19
               </time>
             
 
@@ -331,8 +338,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/node-js/" itemprop="url" rel="index">
-                    <span itemprop="name">node.js</span>
+                  <a href="/categories/golang/" itemprop="url" rel="index">
+                    <span itemprop="name">golang</span>
                   </a>
                 </span>
 
@@ -349,9 +356,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/04/13/2017recursive-stack-overflow-handle/#comments" itemprop="discussionUrl">
+                <a href="/2018/01/19/2018golang官方blog摘要-slice/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/04/13/2017recursive-stack-overflow-handle/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2018/01/19/2018golang官方blog摘要-slice/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -377,12 +384,19 @@
       
 
       
-        <p>这几天在用node.js写一个递归遍历文件树的功能，一直都有一个概念，就是递归次数过多，程序可能崩溃。但是一直没有仔细想过这个问题的原因,这里又多思考了一下，参考一下维基百科，每次函数递归调用的时候，在<a href="https://zh.wikipedia.org/wiki/%E5%91%BC%E5%8F%AB%E5%A0%86%E7%96%8A" target="_blank" rel="external">调用栈</a>的顶部都要增加一条记录，记录子函数的返回地址，这样，随着递归深度的加深,用栈中一次讲调用函数返回地址入栈，当入栈次数过多，超过栈顶时，便会报栈溢出错误。  </p>
-<p>后面自己写了两个测试小程序，去测试了一下。 <a id="more"></a></p>
-<p>代码1: 递归判断数字是否是偶数，是返回1，否返回0<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">is_even_number</span>(<span class="params">number</span>)</span>&#123;</div><div class="line">    <span class="comment">// 这里默认传入的是大于1正整数，未做数字有效性判断</span></div><div class="line">    <span class="keyword">if</span>(<span class="number">0</span> === number)&#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span>( <span class="number">1</span> === number) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'number::'</span>,number);</div><div class="line">        <span class="keyword">return</span> is_even_number(number - <span class="number">2</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">is_even_number(<span class="number">30000</span>);</div></pre></td></tr></table></figure></p>
-<p>测试发现，当number足够大的时候，程序运行一段时候就会报堆栈溢出的错误。 由于node.js屏蔽了堆栈分配等细节，大概可以猜测，因为随着递归深度加深，return前不断执行子函数，不断有局部变量和子函数返回地址等入栈，所记录的上下文环境越来越大，超过栈顶后便报错了。参考网上的例子，要解决这样的问题，关键就是函数返回的时候，直接返回一个结果，而不是执行一个子函数后返回，这样就避免了在调用栈栈顶对子函数的返回地址进行记录，通过这个方法，避免堆栈溢出。</p>
-<p>代码2: 递归判断数字是否是偶数，是返回1，否返回0 ， 使用闭包，递归调用放在匿名函数中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">function is_even_number(number)&#123;</div><div class="line">    // 这里默认传入的是大于1正整数，未做数字有效性判断</div><div class="line">    if(0 === number)&#123;</div><div class="line">        return 1;</div><div class="line">    &#125; else if( 1 === number) &#123;</div><div class="line">        return 0;</div><div class="line">    &#125; else &#123;</div><div class="line">        console.log(&apos;number::&apos;,number);</div><div class="line">        return function() &#123;</div><div class="line">            return is_even_number(number - 2)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// 将递归执行的函数包裹在包装函数中</div><div class="line">functon wrapper_func(func, number) &#123;</div><div class="line">    let  ret = func(number);</div><div class="line">    while(&apos;function&apos; === typeof ret) &#123;</div><div class="line">        ret = ret()</div><div class="line">    &#125;</div><div class="line">    return ret;</div><div class="line">&#125;</div><div class="line"></div><div class="line">wrapper_func(is_even_number,1000000);</div></pre></td></tr></table></figure></p>
-<p>测试发现,此时运行不在出现堆栈溢出的错我，但是由于闭包记录了一些上下文，不断执行ret()的时候，闭包链也越来越长，无限次运行时，可能会出现内存泄漏。</p>
+        <p><a href="https://blog.golang.org/go-slices-usage-and-internals" target="_blank" rel="external">golang切片的使用和内部细节</a> – By Andrew Gerrand</p>
+<p>网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。</p>
+<p>先来看两个例子：<br><a id="more"></a><br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">)</div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">    array := [<span class="number">4</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</div><div class="line">    slice := array[<span class="number">0</span>:<span class="number">2</span>]</div><div class="line">    newSlice := <span class="built_in">append</span>(slice, <span class="number">5</span>)</div><div class="line">    newSlice[<span class="number">1</span>] += <span class="number">10</span></div><div class="line">    fmt.Println(slice) </div><div class="line">    <span class="comment">// 这里会输出[1, 12],很神奇吧</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>再看另外一个例子</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">)</div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">    array := [<span class="number">4</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</div><div class="line">    slice := array[<span class="number">0</span>:<span class="number">2</span>]</div><div class="line">    newSlice := <span class="built_in">append</span>(slice, <span class="number">5</span>)</div><div class="line">     fmt.Println(<span class="built_in">cap</span>(slice))</div><div class="line">     <span class="comment">// 这里输出4</span></div><div class="line">    newSlice = <span class="built_in">append</span>(newSlice, <span class="number">6</span>)</div><div class="line">    newSlice = <span class="built_in">append</span>(newSlice, <span class="number">7</span>)</div><div class="line">    newSlice[<span class="number">1</span>] += <span class="number">10</span></div><div class="line">    fmt.Println(slice) </div><div class="line">    <span class="comment">// 这里会输出[1, 2],更神奇吧</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我觉得参考博文中的图片，能很好的理解其原因，就是每个slice 有个len和cap属性，分别代表slice当前实际存储的元素个数和总容量， 向slice添加元素的时候，如果底层原本的存储未越界，多个slice可能会指向同一片空间，但是当越界后，就会开辟一块新空间，造成原本共用一片地址空间的多个slice分离。</p>
+<p>在上面的例子1中， 从打印可以看出slice的cap空间大小是4， 所以 newSlice = append(slice,10)并未造成越界，会和slice公用一块空间，只是slice的len为2，所以打印的时候，只输出了2个元素，如果打印newslice就会看到3个元素。</p>
+<p>例子2中，因为扩容了三次，引发了越界，所以newslice被指向了一片新的空间，原内容也复制了过去，之后，slice 和 newslice指向两片不同的地址，互相便不再有关联，对值的改变也就无法再互相影响了</p>
+<p>摘一段博文中的原话：</p>
+<blockquote>
+<p>A slice is a descriptor of an array segment. It consists of a pointer to the array, the length of the segment, and its capacity (the maximum length of the segment).<br><img src="https://blog.golang.org/go-slices-usage-and-internals_slice-struct.png" alt=""><br>Our variable s, created earlier by make([]byte, 5), is structured like this:<br><img src="https://blog.golang.org/go-slices-usage-and-internals_slice-1.png" alt=""><br>The length is the number of elements referred to by the slice. The capacity is the number of elements in the <strong><em>underlying array</em></strong> (beginning at the element referred to by the slice pointer). The distinction between length and capacity will be made clear as we walk through the next few examples<br>As we slice s, observe the changes in the slice data structure and their relation to the underlying array: s= s[2:4]<br><img src="https://blog.golang.org/go-slices-usage-and-internals_slice-2.png" alt=""><br>Slicing does not copy the slice’s data. It creates a new slice value that points to the original array. This makes slice operations as efficient as manipulating array indices</p>
+</blockquote>
+<p>ps:<br>Rob Pike大爷写的一个讲slice的博文：<br><a href="https://blog.golang.org/slices" target="_blank" rel="external">Arrays, slices (and strings): The mechanics of ‘append’</a></p>
 
       
     </div>
@@ -412,7 +426,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/stackoverflow/" rel="tag"># stackoverflow</a>
+            <a href="/tags/golang-blog/" rel="tag"># golang-blog</a>
           
         </div>
       
@@ -425,8 +439,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/04/11/2017https-free-dv-CA-by-qcloud/" rel="next" title="使用腾讯云免费dv证书配置nginx https访问">
-                <i class="fa fa-chevron-left"></i> 使用腾讯云免费dv证书配置nginx https访问
+              <a href="/2017/12/19/2018golang官方blog摘要-reflect/" rel="next" title="golang官方blog摘要-reflect">
+                <i class="fa fa-chevron-left"></i> golang官方blog摘要-reflect
               </a>
             
           </div>
@@ -434,10 +448,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/04/25/2017sed文本流行处理/" rel="prev" title="sed文本流行处理">
-                sed文本流行处理 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -696,9 +706,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2017/04/13/2017recursive-stack-overflow-handle/';
-          this.page.identifier = '2017/04/13/2017recursive-stack-overflow-handle/';
-          this.page.title = 'javascript中函数递归堆栈溢出问题思考';
+          this.page.url = 'http://yoursite.com/2018/01/19/2018golang官方blog摘要-slice/';
+          this.page.identifier = '2018/01/19/2018golang官方blog摘要-slice/';
+          this.page.title = 'golang官方blog摘要-slice';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://buqisuitu.disqus.com/embed.js';
