@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="golang-blog," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -87,26 +87,27 @@
 
 
 
-<meta name="description" content="golang切片的使用和内部细节 – By Andrew Gerrand
-网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。
-先来看两个例子：">
+<meta name="description" content="title: 《自私的基因》读书笔记date: 2017-12-17T00:43:05.000Zcategories:
+- 读书笔记
+
+坦白地讲，是断断续续用半年的时间，才囫囵吞枣地看了一遍这本书，暂且记录一下自己的理解吧。在看这本书之前，已经看过了尤瓦尔的《人类简史》（Sapiens:A Brief History of Mankind),其中就有大段提到道金斯的基因观点，比如从农作物基因扩张">
 <meta property="og:type" content="article">
-<meta property="og:title" content="golang官方blog摘要-slice">
-<meta property="og:url" content="http://yoursite.com/2018/01/19/2018golang官方blog摘要-slice/index.html">
+<meta property="og:title" content="不知火">
+<meta property="og:url" content="http://yoursite.com/2018/12/24/2017《自私的基因》读书笔记_/index.html">
 <meta property="og:site_name" content="不知火">
-<meta property="og:description" content="golang切片的使用和内部细节 – By Andrew Gerrand
-网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。
-先来看两个例子：">
-<meta property="og:image" content="https://blog.golang.org/go-slices-usage-and-internals_slice-struct.png">
-<meta property="og:image" content="https://blog.golang.org/go-slices-usage-and-internals_slice-1.png">
-<meta property="og:image" content="https://blog.golang.org/go-slices-usage-and-internals_slice-2.png">
-<meta property="og:updated_time" content="2018-12-21T03:33:00.715Z">
+<meta property="og:description" content="title: 《自私的基因》读书笔记date: 2017-12-17T00:43:05.000Zcategories:
+- 读书笔记
+
+坦白地讲，是断断续续用半年的时间，才囫囵吞枣地看了一遍这本书，暂且记录一下自己的理解吧。在看这本书之前，已经看过了尤瓦尔的《人类简史》（Sapiens:A Brief History of Mankind),其中就有大段提到道金斯的基因观点，比如从农作物基因扩张">
+<meta property="og:image" content="https://img3.doubanio.com/view/note/l/public/p47300731.webp">
+<meta property="og:updated_time" content="2018-12-24T03:03:25.194Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="golang官方blog摘要-slice">
-<meta name="twitter:description" content="golang切片的使用和内部细节 – By Andrew Gerrand
-网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。
-先来看两个例子：">
-<meta name="twitter:image" content="https://blog.golang.org/go-slices-usage-and-internals_slice-struct.png">
+<meta name="twitter:title" content="不知火">
+<meta name="twitter:description" content="title: 《自私的基因》读书笔记date: 2017-12-17T00:43:05.000Zcategories:
+- 读书笔记
+
+坦白地讲，是断断续续用半年的时间，才囫囵吞枣地看了一遍这本书，暂且记录一下自己的理解吧。在看这本书之前，已经看过了尤瓦尔的《人类简史》（Sapiens:A Brief History of Mankind),其中就有大段提到道金斯的基因观点，比如从农作物基因扩张">
+<meta name="twitter:image" content="https://img3.doubanio.com/view/note/l/public/p47300731.webp">
 
 
 
@@ -134,13 +135,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/19/2018golang官方blog摘要-slice/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/12/24/2017《自私的基因》读书笔记_/"/>
 
 
 
 
 
-  <title> golang官方blog摘要-slice | 不知火 </title>
+  <title>  | 不知火 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -279,7 +280,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/19/2018golang官方blog摘要-slice/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/24/2017《自私的基因》读书笔记_/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
@@ -300,7 +301,7 @@
             
             
               
-                golang官方blog摘要-slice
+                
               
             
           </h1>
@@ -315,8 +316,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-19T20:23:20+08:00">
-                2018-01-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-24T11:02:38+08:00">
+                2018-12-24
               </time>
             
 
@@ -326,28 +327,6 @@
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/" itemprop="url" rel="index">
-                    <span itemprop="name">golang</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -356,9 +335,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/01/19/2018golang官方blog摘要-slice/#comments" itemprop="discussionUrl">
+                <a href="/2018/12/24/2017《自私的基因》读书笔记_/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/01/19/2018golang官方blog摘要-slice/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2018/12/24/2017《自私的基因》读书笔记_/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -384,20 +363,14 @@
       
 
       
-        <p><a href="https://blog.golang.org/go-slices-usage-and-internals" target="_blank" rel="external">golang切片的使用和内部细节</a> – By Andrew Gerrand</p>
-<p>网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。</p>
-<p>先来看两个例子：<br><a id="more"></a><br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">)</div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">    array := [<span class="number">4</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</div><div class="line">    slice := array[<span class="number">0</span>:<span class="number">2</span>]</div><div class="line">    newSlice := <span class="built_in">append</span>(slice, <span class="number">5</span>)</div><div class="line">    newSlice[<span class="number">1</span>] += <span class="number">10</span></div><div class="line">    fmt.Println(slice) </div><div class="line">    <span class="comment">// 这里会输出[1, 12],很神奇吧</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>再看另外一个例子</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">)</div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">    array := [<span class="number">4</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</div><div class="line">    slice := array[<span class="number">0</span>:<span class="number">2</span>]</div><div class="line">    newSlice := <span class="built_in">append</span>(slice, <span class="number">5</span>)</div><div class="line">     fmt.Println(<span class="built_in">cap</span>(slice))</div><div class="line">     <span class="comment">// 这里输出4</span></div><div class="line">    newSlice = <span class="built_in">append</span>(newSlice, <span class="number">6</span>)</div><div class="line">    newSlice = <span class="built_in">append</span>(newSlice, <span class="number">7</span>)</div><div class="line">    newSlice[<span class="number">1</span>] += <span class="number">10</span></div><div class="line">    fmt.Println(slice) </div><div class="line">    <span class="comment">// 这里会输出[1, 2],更神奇吧</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>我觉得参考博文中的图片，能很好的理解其原因，就是每个slice 有个len和cap属性，分别代表slice当前实际存储的元素个数和总容量， 向slice添加元素的时候，如果底层原本的存储未越界，多个slice可能会指向同一片空间，但是当越界后，就会开辟一块新空间，造成原本共用一片地址空间的多个slice分离。</p>
-<p>在上面的例子1中， 从打印可以看出slice的cap空间大小是4， 所以 newSlice = append(slice,10)并未造成越界，会和slice公用一块空间，只是slice的len为2，所以打印的时候，只输出了2个元素，如果打印newslice就会看到3个元素。</p>
-<p>例子2中，因为扩容了三次，引发了越界，所以newslice被指向了一片新的空间，原内容也复制了过去，之后，slice 和 newslice指向两片不同的地址，互相便不再有关联，对值的改变也就无法再互相影响了</p>
-<p>摘一段博文中的原话：</p>
-<blockquote>
-<p>A slice is a descriptor of an array segment. It consists of a pointer to the array, the length of the segment, and its capacity (the maximum length of the segment).<br><img src="https://blog.golang.org/go-slices-usage-and-internals_slice-struct.png" alt=""><br>Our variable s, created earlier by make([]byte, 5), is structured like this:<br><img src="https://blog.golang.org/go-slices-usage-and-internals_slice-1.png" alt=""><br>The length is the number of elements referred to by the slice. The capacity is the number of elements in the <strong><em>underlying array</em></strong> (beginning at the element referred to by the slice pointer). The distinction between length and capacity will be made clear as we walk through the next few examples<br>As we slice s, observe the changes in the slice data structure and their relation to the underlying array: s= s[2:4]<br><img src="https://blog.golang.org/go-slices-usage-and-internals_slice-2.png" alt=""><br>Slicing does not copy the slice’s data. It creates a new slice value that points to the original array. This makes slice operations as efficient as manipulating array indices</p>
-</blockquote>
-<p>ps:<br>Rob Pike大爷写的一个讲slice的博文：<br><a href="https://blog.golang.org/slices" target="_blank" rel="external">Arrays, slices (and strings): The mechanics of ‘append’</a></p>
-
+        <hr>
+<p>title: 《自私的基因》读书笔记<br>date: 2017-12-17T00:43:05.000Z<br>categories:</p>
+<pre><code>- 读书笔记
+</code></pre><hr>
+<p>坦白地讲，是断断续续用半年的时间，才囫囵吞枣地看了一遍这本书，暂且记录一下自己的理解吧。<br>在看这本书之前，已经看过了尤瓦尔的《人类简史》（Sapiens:A Brief History of Mankind),其中就有大段提到道金斯的基因观点，比如从农作物基因扩张这个角度来审视农业革命，把人类反过来看成是农作物扩张的工具，觉得这是农作物基因的胜利，书中，类似的文字，无不隐隐透露出道金斯对尤瓦尔的影响。<a id="more"></a>但是，就我个人的感觉来说，道金斯的这本《自私的基因》要比《人类简史》繁琐很多，我看的是中文版，我想翻译是一部分原因，但更重要的是，道金斯更多地把这本书当学术著作来写了，要严谨很多，要做很多旁白和解释，小心翼翼地把不能说绝对的地方也解释清楚。<br>开篇作者已经说得很清楚，这里只讲进化，而不是要讨论怎么做才符合道德标准。同时，他要论证进化的基本单位，也就是自我利益的基本单位，不是物种，不是群体，甚至不是个人，而是我们体内的遗传基因，如果说到最精细的地方，我感觉道金斯已经把这个进化元单位细致到了一段段等位基因。那道金斯是怎么一步步来让阐释自己的观点的呢。等我看完整本书，在回头看的时候，觉得作者这个开头真是出奇地好。作为人，其实我们最关心的还是和自己有关的事情，而不是草木山川。第一章的题目叫：为什么会有人呢。就目前来说，我对作者的观点是赞同的。他说，我们只不过是我们体内的基因创造的机器，我们接受基因的支配，保证他们的生存和不受伤害，同时，保证他们的繁衍，保证他们以几百万年为时间单位的持续存在。那么我们再进一步问，为什么会有基因呢，我感觉作者会这样回答我：基因来自于进化，是一种偶然但持续发生的动作，他们不断在变化中从一个稳定状态到下一个稳定状态，然后有了今天的样子，也就是所谓的适者生存。我们这个宇宙，被稳定的物质占据，适者生存是稳定这生存的一个子集。<br>道金斯说，事实上没有没有什么东西“想要”进化，进化是一种偶然但持续进行的行为。理解了道金斯的这句话，我觉得自己可以在一段时间内放下去问一些飘渺的‘某某某是为什么‘的问题，放在绵延的时间维度上，一切只是偶然而已，我们也没那么重要，我们只是偶尔存在了，因为我们符合某种层面上的稳定。<br>到这里，似乎应该多想想书名中的“自私”二字了，这个放在基因头顶上，看起来不甚光彩的限定词。在作者眼中，这种自私无非就是努力在基因库中扩大自己的队伍。所以，作者所谓的自私，也更多是一个结果导向上的，不是一个基因从出现就开始是自私的或者利他的，是因为他们在基因库中越来愈多了，我们大概就可以所他是自私的，因为，你看，他们成功的占据了基因库的大头，而同时，其他一些基因消失了。<br>从我的感觉上，作者似乎很少提及竞争这个词，虽然作者也花了大量的笔墨去讲博弈论以及各种环境模型和生存策略，但是我觉得作者可以说得更直接一些，当我们人类对某种行为做出自私这一评价时，是因为背后有竞争的存在，从第一段基因出现在这个蓝色星球开始，有一个东西就从来没变过：这里的空间和物质是有限的。到如今，这些基因片段，稳坐在被称为动物和植物的生存机器内部，通过各种各样的行为，争取更多的生存机会，而生存机会是他们的终极利益。在这其间，交织着大大小小的游戏，零和的抑或是非零和的。有时候他们直接张口血盆大口，瞬间获利；另外一些时候，他们握手言和，期待着更大的获利；想起某个老人家写的那句分久必合，合久必分，这些都是小意思，稳定-&gt;突变-&gt;稳定，在一个更大的时间维度上看，这是你作为一个生存机器而不是一块石头而必须承受的代价。<br>我想，我应该多花些时间去思考所谓的“稳定”，毕竟在现在的中国，这已经是一个如“基石”一般的词了，对社会而言，他们可以为了整体的稳定而忽略局部的不和谐。那么在道金斯这里，他所提到的稳定策略是一个什么层面上的稳定呢，我想了想，整个基因库层面吗。这里我做这样一个假设，从适应环境的层面来说，有百分之十的是弱势基因，他们面临消失的危险；有百分之八十是稳定基因，他们适应环境，稳定维持自身在基因库中的大比重，从某种层面来说，他们靠着自身的自私占据了基因库的大比重；有百分之十的突变基因，他们的存在，抑制着稳定基因占领整个世界，也有可能，在某一天，他们成了下一个稳定基因，占领基因库绝大部分份额，这个时候，他们也被贴上了自私的标签。大概，如果我把这个稳定的层次降低，降低到生物，降低到物种，降低到种群，降低到具体的地域社群，这种稳定同样适用。或许有一天，我们把这个模糊的东西看得更清楚，看清楚从基因到原子弹爆炸的整个路劲。</p>
+<p>写到这里，觉得自己整个人都更加冰冷了，由内到外。兔子比狐狸跑得快，因为狐狸奔跑是为了晚餐，而兔子奔跑是为了活命。这是一曲悲歌吗，好像不是，我们控制一颗炮弹炸毁另一个炮台的时候，大概也不觉得是悲歌，它们都只是机器。他们的存在是偶然也是必然，他们的消失如是。一个稳定的形态，即使全力，也无法浇灭突变的发生或者壮大，他们如果要发生，就必然发生，不过那都是更遥远的事情了，可能又是一个以百万年为单位的故事。</p>
+<p>在这个夜里，我还是可以温情一些，并默默选择好自己的道路：这个世界上，只有我们，我们人类，能够反抗自私的复制基因的暴政。耳机中在放肖斯塔科维奇钢琴协奏曲的第二乐章，想起之前看到的他回忆录里的那句话：当我们脏时，爱我们。<br>最后，以示崇敬，放一张Dawkins先生的照片，敬这位无神论的伟大斗士。</p>
+<center><br><br><img src="https://img3.doubanio.com/view/note/l/public/p47300731.webp" alt=""><br><br></center>
       
     </div>
 
@@ -424,12 +397,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/golang-blog/" rel="tag"># golang-blog</a>
-          
-        </div>
-      
 
       
         
@@ -439,8 +406,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/12/19/2018golang官方blog摘要-reflect/" rel="next" title="golang官方blog摘要-reflect">
-                <i class="fa fa-chevron-left"></i> golang官方blog摘要-reflect
+              <a href="/2018/01/19/2018golang官方blog摘要-slice/" rel="next" title="golang官方blog摘要-slice">
+                <i class="fa fa-chevron-left"></i> golang官方blog摘要-slice
               </a>
             
           </div>
@@ -448,10 +415,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/12/24/2017《自私的基因》读书笔记_/" rel="prev" title="">
-                 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -710,9 +673,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2018/01/19/2018golang官方blog摘要-slice/';
-          this.page.identifier = '2018/01/19/2018golang官方blog摘要-slice/';
-          this.page.title = 'golang官方blog摘要-slice';
+          this.page.url = 'http://yoursite.com/2018/12/24/2017《自私的基因》读书笔记_/';
+          this.page.identifier = '2018/12/24/2017《自私的基因》读书笔记_/';
+          this.page.title = '';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://buqisuitu.disqus.com/embed.js';
