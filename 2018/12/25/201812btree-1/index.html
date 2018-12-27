@@ -1,0 +1,838 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="数据结构," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="偶然看到一个google的一个golang实现的内存中b-tree包(传送门)，就细看了其实现. 对其他平衡术感谢趣的可以看这里：Left-Leaning Red-Black Tree, B+tree
+reddit上有个github.com/google/btree和 github.com/cznic/b比较的讨论，可以看到这个包的作者与用户的一些讨论。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="由一个golang的B-Tree包展开-1(属性介绍)">
+<meta property="og:url" content="http://yoursite.com/2018/12/25/201812btree-1/index.html">
+<meta property="og:site_name" content="不知火">
+<meta property="og:description" content="偶然看到一个google的一个golang实现的内存中b-tree包(传送门)，就细看了其实现. 对其他平衡术感谢趣的可以看这里：Left-Leaning Red-Black Tree, B+tree
+reddit上有个github.com/google/btree和 github.com/cznic/b比较的讨论，可以看到这个包的作者与用户的一些讨论。">
+<meta property="og:updated_time" content="2018-12-27T13:27:29.142Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="由一个golang的B-Tree包展开-1(属性介绍)">
+<meta name="twitter:description" content="偶然看到一个google的一个golang实现的内存中b-tree包(传送门)，就细看了其实现. 对其他平衡术感谢趣的可以看这里：Left-Leaning Red-Black Tree, B+tree
+reddit上有个github.com/google/btree和 github.com/cznic/b比较的讨论，可以看到这个包的作者与用户的一些讨论。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/25/201812btree-1/"/>
+
+
+
+
+
+  <title> 由一个golang的B-Tree包展开-1(属性介绍) | 不知火 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2519991216496e1fcf56707e51436dd2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不知火</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/25/201812btree-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="不知火">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知火">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                由一个golang的B-Tree包展开-1(属性介绍)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-25T20:23:20+08:00">
+                2018-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/golang/" itemprop="url" rel="index">
+                    <span itemprop="name">golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/25/201812btree-1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/12/25/201812btree-1/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>偶然看到一个google的一个golang实现的内存中b-tree包<a href="https://github.com/google/btree" target="_blank" rel="external">(传送门)</a>，就细看了其实现. 对其他平衡术感谢趣的可以看这里：<a href="https://github.com/petar/GoLLRB" target="_blank" rel="external">Left-Leaning Red-Black Tree</a>, <a href="https://github.com/cznic/b" target="_blank" rel="external">B+tree</a></p>
+<p>reddit上有个github.com/google/btree和 github.com/cznic/b比较的讨论，可以看到这个包的作者与用户的一些讨论。</p>
+<a id="more"></a>
+<h3 id="b-tree的定义"><a href="#b-tree的定义" class="headerlink" title="b-tree的定义"></a>b-tree的定义</h3><p>关于btree的结构定义，《计算机程序设计艺术》和《算法导论》中的描述有点儿出入，知乎上有个细微区别的讨论(<a href="https://www.zhihu.com/question/19836260" target="_blank" rel="external">传送门</a>)， 记得我上学时数据结构教材是清华严蔚敏那版， 里面对btree的定义是参考了Knuth在《计算机程序设计艺术》的， 里面有个“阶“的概念，就是指一个节点可以有的最大子树的个数，一棵m阶b-tree的定义就如下了：</p>
+<ol>
+<li>树中每一个结点至多有m棵子树</li>
+<li>若根结点不是叶子结点，则至少有两棵子树</li>
+<li>除根结点之外的所有非终端结点至少有「m/2」棵子树（向上取整）</li>
+<li>所有的非终端结点中包含下列信息数据(n,A<em>{0} ,K</em>{1},A<em>{1},K</em>{2} ,A<em>{2},…,K</em>{n},A<em>{n})，其中：K</em>{i}（i=1,…,n）为关键字，且K<em>{i}&lt;K</em>{i+1}（i=1,…,n-1）；A<em>{i}（i=0,…,n）为指向子树根结点的指针，且指针A</em>{i-1}所指子树中所有结点的关键字均小于K<em>{i}（i=1,…,n), A</em>{n} 所指子树中所有结点的关键字均大于K_{n} ，n（m/2-1 &lt;= n &lt;= m-1）为关键字的个数（或n+1为子树个数）</li>
+<li>所有叶子节点在同一个层次。</li>
+</ol>
+<p>之前看这个定义的时候，我总会有一些困扰， 后来看了《算法导论》中的定义，发现他的定义我是更能接受的， 最大的特点是不再用阶去定义树，而用节点的最小度（minimum degree），度就是一个节点子树的个数，书中主要给予节点的最小度做了如下限定，假设一棵btree的最小度为t (t&gt;=2),则会有如下属性限制：</p>
+<ul>
+<li>除了根节点外， 其他节点的 t-1&lt;=len(key)&lt;= 2t-1</li>
+<li>接着上面，如果为非叶子节点，节点的子树个数 t&lt; len(children) &lt;2t,因为非叶子，节点的键个数+1 = 节点的子节点个数</li>
+</ul>
+<p>从《计算机程序设计艺术》的属性来看，<strong>最小的树为3阶btree, 即2-3树</strong>（树的非叶子节点子节点个数为2，3），<br>从《算法导论》的btree属性定义来看，<strong>最小的树为2度树（4阶），即2-3-4树</strong>（树的非叶子节点个数可以为2，3，4）</p>
+<p>这里顺便引用一下完整的定义：<br>&gt;<br>    1) All leaves are at same level.<br>    2) A B-Tree is defined by the term minimum degree ‘t’. The value of t depends upon disk block size.<br>    3) Every node except root must contain at least t-1 keys. Root may contain minimum 1 key.<br>    4) All nodes (including root) may contain at most 2t – 1 keys.<br>    5) Number of children of a node is equal to the number of keys in it plus 1.<br>    6) All keys of a node are sorted in increasing order. The child between two keys k1 and k2 contains all keys in the range from k1 and k2.<br>    7) B-Tree grows and shrinks from the root which is unlike Binary Search Tree. Binary Search Trees grow downward and also shrink from downward.<br>    8) Like other balanced Binary Search Trees, time complexity to search, insert and delete is O(Logn).</p>
+<p>Google的这个btree包从定义来看，是<strong>按照《算法导论》来定义的</strong>，即2-3-4树。</p>
+<p>从定义可以看出， b-tree是一种平衡的多路查找树， 与avl树，红黑树等平衡二叉树比起来， b-tree通过多叉，降低了树的高度， 从而减少了查询的次数，一个主要的应用是在数据库系统的索引维护， 由于数据库的索引信息是放在磁盘中，以树形结构存放，假设树高为h, 在查询一个索引时，最多需要进行h次查找，对于磁盘文件来说， 就是h次磁盘读取，所以，b-tree相对于二叉树查询，降低了高度，减少了磁盘读取次数。</p>
+<blockquote>
+<p>一次磁盘读取耗时 = 寻道时间 + 旋转延时 + 数据读取传输耗时， 寻道即为磁头移动到对应磁道所需时间， 普通机械磁盘寻道时间3-15ms，  旋转时间为磁头移动到对应磁道后，旋转到对应扇区所需要的时间， 通过磁盘的转速我们可以计算出平均旋转耗时. 从这里看出，磁盘io是个很低效的事情</p>
+</blockquote>
+<h3 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h3><p><br>在设计一个库的时候， 第一步是确定库要实现的功能，进行功能接口抽象，对于一个btree库， 其应该有基本功能如下：</p>
+<ol>
+<li><p>初始化btree</p>
+ <figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 传入degree， 初始化一棵空树，确定btreed的节点最小度</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(degree <span class="keyword">int</span>)</span> *<span class="title">BTree</span></span> &#123;   &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>插入节点</p>
+ <figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 向btree插入item</span></div><div class="line"><span class="comment">//如果item已经在tree中，则返回item</span></div><div class="line"><span class="comment">// 如果是新增节点，则返回nil</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *BTree)</span> <span class="title">ReplaceOrInsert</span><span class="params">(item Item)</span> <span class="title">Item</span></span> &#123;&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>删除节点</p>
+ <figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 如果item 存在，则从树中删除，并返回item</span></div><div class="line"><span class="comment">// 如果要删除的item 不存在，则返回nil</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *BTree)</span> <span class="title">Delete</span><span class="params">(item Item)</span> <span class="title">Item</span></span> &#123;&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>确定了这些基本功能抽象之后，我们要做什么呢，去实现接口吗？《重构》告诉我们， 我们也可以先思考接口的单元测试怎么设计。同时，对于包的用户来说，单元测试也是一个让用户了解包功能和如何使用的地图。 来说说btree包单元测试的设计思路：</p>
+<ol>
+<li><p>先初始化一个btree</p>
+</li>
+<li><p>对0-10000的所有整数做随机全排列得到set,依次插入到btree中，每次插入判断返回值是否为nil（因为set中值不重复，每次插入都是增加新节点，所以每次预期返回值都是nil）</p>
+</li>
+<li><p>将步骤2中对set再依次插入到btree中(经过步骤2后， 本轮插入的节点预期应该都已存在，所以，每次插入对返回都不为nil)</p>
+</li>
+<li><p>将步骤2，步骤3循环执行10次， 以保证代码对测试覆盖度，每次循环完毕判断当前btree是否变为空树。</p>
+</li>
+</ol>
+<p>摘一段btree包对单元测试代码：<br>代码里可以看到，btree提供了Min(), Max()方法来获取树中最大最小值<br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestBTree</span><span class="params">(t *testing.T)</span></span> &#123;</div><div class="line">    tr := New(*btreeDegree)</div><div class="line">    <span class="keyword">const</span> treeSize = <span class="number">10000</span></div><div class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;</div><div class="line">        <span class="keyword">if</span> min := tr.Min(); min != <span class="literal">nil</span> &#123;</div><div class="line">            t.Fatalf(<span class="string">"empty min, got %+v"</span>, min)</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> max := tr.Max(); max != <span class="literal">nil</span> &#123;</div><div class="line">            t.Fatalf(<span class="string">"empty max, got %+v"</span>, max)</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">for</span> _, item := <span class="keyword">range</span> perm(treeSize) &#123;</div><div class="line">            <span class="keyword">if</span> x := tr.ReplaceOrInsert(item); x != <span class="literal">nil</span> &#123;</div><div class="line">                t.Fatal(<span class="string">"insert found item"</span>, item)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">for</span> _, item := <span class="keyword">range</span> perm(treeSize) &#123;</div><div class="line">            <span class="keyword">if</span> x := tr.ReplaceOrInsert(item); x == <span class="literal">nil</span> &#123;</div><div class="line">                t.Fatal(<span class="string">"insert didn't find item"</span>, item)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> min, want := tr.Min(), Item(Int(<span class="number">0</span>)); min != want &#123;</div><div class="line">            t.Fatalf(<span class="string">"min: want %+v, got %+v"</span>, want, min)</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> max, want := tr.Max(), Item(Int(treeSize<span class="number">-1</span>)); max != want &#123;</div><div class="line">            t.Fatalf(<span class="string">"max: want %+v, got %+v"</span>, want, max)</div><div class="line">        &#125;</div><div class="line">        got := all(tr)</div><div class="line">        want := rang(treeSize)</div><div class="line">        <span class="keyword">if</span> !reflect.DeepEqual(got, want) &#123;</div><div class="line">            t.Fatalf(<span class="string">"mismatch:\n got: %v\nwant: %v"</span>, got, want)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        gotrev := allrev(tr)</div><div class="line">        wantrev := rangrev(treeSize)</div><div class="line">        <span class="keyword">if</span> !reflect.DeepEqual(gotrev, wantrev) &#123;</div><div class="line">            t.Fatalf(<span class="string">"mismatch:\n got: %v\nwant: %v"</span>, got, want)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">for</span> _, item := <span class="keyword">range</span> perm(treeSize) &#123;</div><div class="line">            <span class="keyword">if</span> x := tr.Delete(item); x == <span class="literal">nil</span> &#123;</div><div class="line">                t.Fatalf(<span class="string">"didn't find %v"</span>, item)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> got = all(tr); <span class="built_in">len</span>(got) &gt; <span class="number">0</span> &#123;</div><div class="line">            t.Fatalf(<span class="string">"some left!: %v"</span>, got)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="随机全排列集合的生成方法"><a href="#随机全排列集合的生成方法" class="headerlink" title="随机全排列集合的生成方法"></a>随机全排列集合的生成方法</h4><p>单元测试中，实现了一个随机全排列集合的获取函数perm, 其实是依赖了golang基础包rand的一个方法，rand.Perm(n), rand.Perm(n)会返回一个[0,n)所有整数等随机全排列。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</div><div class="line">    seed := time.Now().Unix()</div><div class="line">    fmt.Println(seed)</div><div class="line">    rand.Seed(seed)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// perm returns a random permutation of n Int items in the range [0, n).</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">perm</span><span class="params">(n <span class="keyword">int</span>)</span> <span class="params">(out []Item)</span></span> &#123;</div><div class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> rand.Perm(n) &#123;</div><div class="line">        out = <span class="built_in">append</span>(out, Int(v))</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>再跳到rand.Perm()看是如何实现的：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Perm returns, as a slice of n ints, a pseudo-random permutation of the integers [0,n).</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Rand)</span> <span class="title">Perm</span><span class="params">(n <span class="keyword">int</span>)</span> []<span class="title">int</span></span> &#123;</div><div class="line">    m := <span class="built_in">make</span>([]<span class="keyword">int</span>, n)</div><div class="line">    <span class="comment">// In the following loop, the iteration when i=0 always swaps m[0] with m[0].</span></div><div class="line">    <span class="comment">// A change to remove this useless iteration is to assign 1 to i in the init</span></div><div class="line">    <span class="comment">// statement. But Perm also effects r. Making this change will affect</span></div><div class="line">    <span class="comment">// the final state of r. So this change can't be made for compatibility</span></div><div class="line">    <span class="comment">// reasons for Go 1.</span></div><div class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; n; i++ &#123;</div><div class="line">        j := r.Intn(i + <span class="number">1</span>) </div><div class="line">        <span class="comment">//每次循环，选择一个0到i之间的伪随机数j, </span></div><div class="line">        <span class="comment">// 然后执行i，j内容swap. 其实就是一个完整的shuffle函数。</span></div><div class="line">        m[i] = m[j]</div><div class="line">        m[j] = i</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> m</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<!-- <img src='https://g.gravizo.com/svg?
+    digraph G {
+   main -> parse -> execute;
+   main -> init;
+   main -> cleanup;
+   execute -> make_string;
+   execute -> printf
+   init -> make_string;
+   main -> printf;
+   execute -> compare;
+ }
+'/> -->
+<p>～ 待续（节点的插入， 节点的删除）</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据结构/" rel="tag"># 数据结构</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/19/2018golang官方blog摘要-slice/" rel="next" title="golang官方blog摘要-slice">
+                <i class="fa fa-chevron-left"></i> golang官方blog摘要-slice
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/25/201812btree-2/" rel="prev" title="由一个golang的B-Tree包展开-2(插入)">
+                由一个golang的B-Tree包展开-2(插入) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://img3.doubanio.com/icon/ul54452955-3.jpg"
+               alt="不知火" />
+          <p class="site-author-name" itemprop="name">不知火</p>
+           
+              <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/54452955" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#b-tree的定义"><span class="nav-number">1.</span> <span class="nav-text">b-tree的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单元测试"><span class="nav-number">2.</span> <span class="nav-text">单元测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#随机全排列集合的生成方法"><span class="nav-number">2.1.</span> <span class="nav-text">随机全排列集合的生成方法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知火</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://buqisuitu.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/12/25/201812btree-1/';
+          this.page.identifier = '2018/12/25/201812btree-1/';
+          this.page.title = '由一个golang的B-Tree包展开-1(属性介绍)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://buqisuitu.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
