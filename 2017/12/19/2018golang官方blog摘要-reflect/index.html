@@ -95,7 +95,7 @@ golang作为一个静态语言，reflect给其提供了更灵活的runtime操作
 <meta property="og:site_name" content="不知火">
 <meta property="og:description" content="Rob对golang reflect对一篇讲解贴：The Laws of Reflection– By Rob Pike
 golang作为一个静态语言，reflect给其提供了更灵活的runtime操作方式(元编程)， 虽然在golang中，这也会带来性能问题，比如官方json包在序列化/反序列化的性能，让很多人改用了其他避开reflect的方式去处理问题，但是，也还是要承认，reflect给">
-<meta property="og:updated_time" content="2018-12-20T06:49:09.830Z">
+<meta property="og:updated_time" content="2018-12-29T05:26:46.836Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="golang官方blog摘要-reflect">
 <meta name="twitter:description" content="Rob对golang reflect对一篇讲解贴：The Laws of Reflection– By Rob Pike
@@ -384,7 +384,7 @@ golang作为一个静态语言，reflect给其提供了更灵活的runtime操作
 <blockquote>
 <p>Some people say that Go’s interfaces are dynamically typed, but that is misleading. They are statically typed: a variable of interface type always has the same static type, and even though at run time the value stored in the interface variable may change type, that value will always satisfy the interface.</p>
 </blockquote>
-<p>然后他又饮用Russ Cox的blog对这句话做了详细的解释</p>
+<p>然后他又引用Russ Cox的blog对这句话做了详细的解释</p>
 <blockquote>
 <p><strong><em>A variable of interface type stores a pair</em></strong>: the concrete value assigned to the variable, and that value’s type descriptor. To be more precise, the value is the underlying concrete data item that implements the interface and the type describes the full type of that item.</p>
 </blockquote>
@@ -544,7 +544,7 @@ golang作为一个静态语言，reflect给其提供了更灵活的runtime操作
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -619,7 +619,7 @@ golang作为一个静态语言，reflect给其提供了更灵活的runtime操作
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
