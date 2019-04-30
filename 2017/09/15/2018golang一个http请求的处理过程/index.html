@@ -6,15 +6,15 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,43 +66,42 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="http-server," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="http-server,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
 
 
 
-<meta name="description" content="之前说了几种golang中设置http server的方式,这里接着记录一下阅读源码时看到的一个server是如何处理用户请求的，还是从server的启动开始看起。
-step 1:">
+<meta name="description" content="之前说了几种golang中设置http server的方式,这里接着记录一下阅读源码时看到的一个server是如何处理用户请求的，还是从server的启动开始看起。 step 1:">
+<meta name="keywords" content="http-server">
 <meta property="og:type" content="article">
 <meta property="og:title" content="golang中http server处理请求的过程梳理">
 <meta property="og:url" content="http://yoursite.com/2017/09/15/2018golang一个http请求的处理过程/index.html">
 <meta property="og:site_name" content="不知火">
-<meta property="og:description" content="之前说了几种golang中设置http server的方式,这里接着记录一下阅读源码时看到的一个server是如何处理用户请求的，还是从server的启动开始看起。
-step 1:">
+<meta property="og:description" content="之前说了几种golang中设置http server的方式,这里接着记录一下阅读源码时看到的一个server是如何处理用户请求的，还是从server的启动开始看起。 step 1:">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://img3.doubanio.com/view/note/l/public/p56525273.webp">
 <meta property="og:image" content="https://img1.doubanio.com/view/note/l/public/p56525557.webp">
 <meta property="og:image" content="https://img1.doubanio.com/view/note/l/public/p56525928.webp">
 <meta property="og:updated_time" content="2018-12-19T05:16:20.957Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="golang中http server处理请求的过程梳理">
-<meta name="twitter:description" content="之前说了几种golang中设置http server的方式,这里接着记录一下阅读源码时看到的一个server是如何处理用户请求的，还是从server的启动开始看起。
-step 1:">
+<meta name="twitter:description" content="之前说了几种golang中设置http server的方式,这里接着记录一下阅读源码时看到的一个server是如何处理用户请求的，还是从server的启动开始看起。 step 1:">
 <meta name="twitter:image" content="https://img3.doubanio.com/view/note/l/public/p56525273.webp">
 
 
@@ -131,7 +130,7 @@ step 1:">
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/09/15/2018golang一个http请求的处理过程/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/09/15/2018golang一个http请求的处理过程/">
 
 
 
@@ -181,7 +180,7 @@ step 1:">
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">不知火</span>
         <span class="logo-line-after"><i></i></span>
@@ -211,7 +210,7 @@ step 1:">
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -221,7 +220,7 @@ step 1:">
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -231,7 +230,7 @@ step 1:">
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -241,7 +240,7 @@ step 1:">
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -280,7 +279,7 @@ step 1:">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
@@ -323,7 +322,7 @@ step 1:">
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -354,8 +353,7 @@ step 1:">
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2017/09/15/2018golang一个http请求的处理过程/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/09/15/2018golang一个http请求的处理过程/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/09/15/2018golang一个http请求的处理过程/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -381,21 +379,21 @@ step 1:">
       
 
       
-        <p>之前说了几种golang中<a href="https://fsp1yjl.github.io/2017/09/11/2018golang%E4%B8%ADhttp%20server%E8%AE%BE%E7%BD%AE%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F%E8%AE%B0%E5%BD%95/" target="_blank" rel="external">设置http server的方式</a>,这里接着记录一下阅读源码时看到的一个server是如何处理用户请求的，还是从server的启动开始看起。</p>
+        <p>之前说了几种golang中<a href="https://fsp1yjl.github.io/2017/09/11/2018golang%E4%B8%ADhttp%20server%E8%AE%BE%E7%BD%AE%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F%E8%AE%B0%E5%BD%95/" target="_blank" rel="noopener">设置http server的方式</a>,这里接着记录一下阅读源码时看到的一个server是如何处理用户请求的，还是从server的启动开始看起。</p>
 <h4 id="step-1"><a href="#step-1" class="headerlink" title="step 1:"></a>step 1:</h4><a id="more"></a>
-<p>初始化一个Server结构体实例后， 执行Server.ListenAndServer函数（其中主要调用net.Listen 和 Server.Serve函数）<br><img src="https://img3.doubanio.com/view/note/l/public/p56525273.webp" alt=""></p>
+<p>初始化一个Server结构体实例后， 执行Server.ListenAndServer函数（其中主要调用net.Listen 和 Server.Serve函数）<br><img src="https://img3.doubanio.com/view/note/l/public/p56525273.webp" alt></p>
 <h4 id="step-2"><a href="#step-2" class="headerlink" title="step 2:"></a>step 2:</h4><p>接着进入Server.Serve部分的代码，看看详细的处理过程，可以看到主要是在主goroutine中用for循环阻塞，不断通过Accept函数接收读取连接请求，然后调用Server.newConn()函数，创建一个连接实例c,然后每个连接实例启动一个新的goroutine去执行处理，从这里也能看出， 如果并发请求很高的时候，会创建出海量的goroutine来并发处理请求。</p>
-<p><img src="https://img1.doubanio.com/view/note/l/public/p56525557.webp" alt=""></p>
-<p>这一步，调用newConn函数，会创建一个conn结构体的示例客户端，其中的server成员变量是Server实例，即每个connection示例都保留了指向server的信息。<br><img src="https://img1.doubanio.com/view/note/l/public/p56525928.webp" alt=""></p>
-<h4 id="step-3"><a href="#step-3" class="headerlink" title="step 3:"></a>step 3:</h4><p>接着我们进入每个connection处理的goroutine,看具体做了什么工作,这个函数有一百多行这里就不完整摘了，看看其主要的代码部分：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *conn)</span> <span class="title">serve</span><span class="params">(ctx context.Context)</span></span> &#123;</div><div class="line">    <span class="keyword">for</span>&#123;</div><div class="line">        ...</div><div class="line">        w, err := c.readRequest(ctx)</div><div class="line">        ...</div><div class="line">        req := w.req</div><div class="line">        ...</div><div class="line">        <span class="comment">// HTTP cannot have multiple simultaneous active requests.[*]</span></div><div class="line">	<span class="comment">// Until the server replies to this request, it can't read another,</span></div><div class="line">	<span class="comment">// so we might as well run the handler in this goroutine.</span></div><div class="line">	<span class="comment">// [*] Not strictly true: HTTP pipelining. We could let them all process</span></div><div class="line">	<span class="comment">// in parallel even if their responses need to be serialized.</span></div><div class="line">	<span class="comment">// But we're not going to implement HTTP pipelining because it</span></div><div class="line">	<span class="comment">// was never deployed in the wild and the answer is HTTP/2.</span></div><div class="line">        serverHandler&#123;c.server&#125;.ServeHTTP(w, w.req)</div><div class="line">        w.cancelCtx()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><img src="https://img1.doubanio.com/view/note/l/public/p56525557.webp" alt></p>
+<p>这一步，调用newConn函数，会创建一个conn结构体的示例客户端，其中的server成员变量是Server实例，即每个connection示例都保留了指向server的信息。<br><img src="https://img1.doubanio.com/view/note/l/public/p56525928.webp" alt></p>
+<h4 id="step-3"><a href="#step-3" class="headerlink" title="step 3:"></a>step 3:</h4><p>接着我们进入每个connection处理的goroutine,看具体做了什么工作,这个函数有一百多行这里就不完整摘了，看看其主要的代码部分：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *conn)</span> <span class="title">serve</span><span class="params">(ctx context.Context)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span>&#123;</span><br><span class="line">        ...</span><br><span class="line">        w, err := c.readRequest(ctx)</span><br><span class="line">        ...</span><br><span class="line">        req := w.req</span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">// HTTP cannot have multiple simultaneous active requests.[*]</span></span><br><span class="line">	<span class="comment">// Until the server replies to this request, it can't read another,</span></span><br><span class="line">	<span class="comment">// so we might as well run the handler in this goroutine.</span></span><br><span class="line">	<span class="comment">// [*] Not strictly true: HTTP pipelining. We could let them all process</span></span><br><span class="line">	<span class="comment">// in parallel even if their responses need to be serialized.</span></span><br><span class="line">	<span class="comment">// But we're not going to implement HTTP pipelining because it</span></span><br><span class="line">	<span class="comment">// was never deployed in the wild and the answer is HTTP/2.</span></span><br><span class="line">        serverHandler&#123;c.server&#125;.ServeHTTP(w, w.req)</span><br><span class="line">        w.cancelCtx()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>从上面的代码片段可以看出， 先调用connection的readRequest函数构造一个response对象， 然后执行serverHandler{c.server}.ServeHTTP(w, w.req)进行实际的请求处理，后面我们来看看这个请求的过程。</p>
 <h4 id="step4"><a href="#step4" class="headerlink" title="step4:"></a>step4:</h4><p>先看看serverHandler的定义,可以看到其是一个结构体，有一个成员属性srv，结合step 3可以看出，serverHandler{c.server}.ServeHTTP(w, w.req)就是实例化了一个serverHandler结构体，然后执行其成员函数ServeHTTP,在ServeHTTP成员函数的定义中，可以看到，主要是调用了初始化server时的Handler成员属性，然后执行handler.ServeHTTP(rw, req)进行调用。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// serverHandler delegates to either the server's Handler or</span></div><div class="line"><span class="comment">// DefaultServeMux and also handles "OPTIONS *" requests.</span></div><div class="line"><span class="keyword">type</span> serverHandler <span class="keyword">struct</span> &#123;</div><div class="line">	srv *Server</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(sh serverHandler)</span> <span class="title">ServeHTTP</span><span class="params">(rw ResponseWriter, req *Request)</span></span> &#123;</div><div class="line">	handler := sh.srv.Handler</div><div class="line">	<span class="keyword">if</span> handler == <span class="literal">nil</span> &#123;</div><div class="line">		handler = DefaultServeMux</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">if</span> req.RequestURI == <span class="string">"*"</span> &amp;&amp; req.Method == <span class="string">"OPTIONS"</span> &#123;</div><div class="line">		handler = globalOptionsHandler&#123;&#125;</div><div class="line">	&#125;</div><div class="line">	handler.ServeHTTP(rw, req)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>对于如下的例子，其实就是在调用aa.ServeHTTP(),因为此时的server.Handler就是aa这个结构体的实例。<br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> aa <span class="keyword">struct</span> &#123;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(a aa)</span> <span class="title">ServeHTTP</span><span class="params">(res http.ResponseWriter, req *http.Request)</span></span> &#123;</div><div class="line">	res.Write([]<span class="keyword">byte</span>(<span class="string">"hhhhhh"</span>))</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	http.ListenAndServe(<span class="string">":8080"</span>, aa&#123;&#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// serverHandler delegates to either the server's Handler or</span></span><br><span class="line"><span class="comment">// DefaultServeMux and also handles "OPTIONS *" requests.</span></span><br><span class="line"><span class="keyword">type</span> serverHandler <span class="keyword">struct</span> &#123;</span><br><span class="line">	srv *Server</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(sh serverHandler)</span> <span class="title">ServeHTTP</span><span class="params">(rw ResponseWriter, req *Request)</span></span> &#123;</span><br><span class="line">	handler := sh.srv.Handler</span><br><span class="line">	<span class="keyword">if</span> handler == <span class="literal">nil</span> &#123;</span><br><span class="line">		handler = DefaultServeMux</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> req.RequestURI == <span class="string">"*"</span> &amp;&amp; req.Method == <span class="string">"OPTIONS"</span> &#123;</span><br><span class="line">		handler = globalOptionsHandler&#123;&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	handler.ServeHTTP(rw, req)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于如下的例子，其实就是在调用aa.ServeHTTP(),因为此时的server.Handler就是aa这个结构体的实例。<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> aa <span class="keyword">struct</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(a aa)</span> <span class="title">ServeHTTP</span><span class="params">(res http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">	res.Write([]<span class="keyword">byte</span>(<span class="string">"hhhhhh"</span>))</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	http.ListenAndServe(<span class="string">":8080"</span>, aa&#123;&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>对于使用serveMux的例子，这里的server.Handler就是如下serveMux的实例，这中方式下，用户自定义的处理函数都被类型转化为一个HandlerFunc类型，HandlerFunc同样实现了Handler接口</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// test3 我们可以增加一个ServeMux来做一个请求路由处理工作</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">h</span><span class="params">(res http.ResponseWriter, req *http.Request)</span></span> &#123;</div><div class="line">	res.Write([]<span class="keyword">byte</span>(<span class="string">"new pattern"</span>))</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">test3</span><span class="params">()</span></span> &#123;</div><div class="line">	mux := http.NewServeMux()</div><div class="line"></div><div class="line">	<span class="comment">//通过HandleFunc函数去向mux中handler中注册处理函数</span></div><div class="line">	mux.HandleFunc(<span class="string">"/test"</span>, <span class="function"><span class="keyword">func</span><span class="params">(res http.ResponseWriter, req *http.Request)</span></span> &#123;</div><div class="line">		res.Write([]<span class="keyword">byte</span>(<span class="string">"test3333"</span>))</div><div class="line">	&#125;)</div><div class="line"></div><div class="line">	<span class="comment">// 直接调用Handle函数去注册处理函数，</span></div><div class="line">	<span class="comment">// 这里的http.HandleFunc 是一个type类型，这里调用将h转换为一个Handler接口的实现</span></div><div class="line">	mux.Handle(<span class="string">"/st"</span>, http.HandlerFunc(h))</div><div class="line"></div><div class="line">	<span class="comment">// 这里会使用默认创建的server</span></div><div class="line">	http.ListenAndServe(<span class="string">":8082"</span>, mux)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>serveMux结构体定义如下,从中可以看出它的ServeHTTP成员函数主要是根据URL pattern取出合适的Handler,这里的每个Handler都是一个HandlerFunc类型， 然后执行h.ServeHTTP(w, r)。<br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> ServeMux <span class="keyword">struct</span> &#123;</div><div class="line">	mu    sync.RWMutex</div><div class="line">	m     <span class="keyword">map</span>[<span class="keyword">string</span>]muxEntry</div><div class="line">	hosts <span class="keyword">bool</span> <span class="comment">// whether any patterns contain hostnames</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">type</span> muxEntry <span class="keyword">struct</span> &#123;</div><div class="line">	h       Handler</div><div class="line">	pattern <span class="keyword">string</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">ServeHTTP</span><span class="params">(w ResponseWriter, r *Request)</span></span> &#123;</div><div class="line">	<span class="keyword">if</span> r.RequestURI == <span class="string">"*"</span> &#123;</div><div class="line">		<span class="keyword">if</span> r.ProtoAtLeast(<span class="number">1</span>, <span class="number">1</span>) &#123;</div><div class="line">			w.Header().Set(<span class="string">"Connection"</span>, <span class="string">"close"</span>)</div><div class="line">		&#125;</div><div class="line">		w.WriteHeader(StatusBadRequest)</div><div class="line">		<span class="keyword">return</span></div><div class="line">	&#125;</div><div class="line">	h, _ := mux.Handler(r)</div><div class="line">	h.ServeHTTP(w, r)</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">type</span> HandlerFunc <span class="function"><span class="keyword">func</span><span class="params">(ResponseWriter, *Request)</span></span></div><div class="line"></div><div class="line">// <span class="title">ServeHTTP</span> <span class="title">calls</span> <span class="title">f</span><span class="params">(w, r)</span>.</div><div class="line"><span class="title">func</span> <span class="params">(f HandlerFunc)</span> <span class="title">ServeHTTP</span><span class="params">(w ResponseWriter, r *Request)</span> &#123;</div><div class="line">	f(w, r)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p><a href="https://fsp1yjl.github.io/2017/09/11/2018golang%E4%B8%ADhttp%20server%E8%AE%BE%E7%BD%AE%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F%E8%AE%B0%E5%BD%95/" target="_blank" rel="external">golang中http server设置的几种方式记录</a>:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// test3 我们可以增加一个ServeMux来做一个请求路由处理工作</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">h</span><span class="params">(res http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">	res.Write([]<span class="keyword">byte</span>(<span class="string">"new pattern"</span>))</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test3</span><span class="params">()</span></span> &#123;</span><br><span class="line">	mux := http.NewServeMux()</span><br><span class="line"></span><br><span class="line">	<span class="comment">//通过HandleFunc函数去向mux中handler中注册处理函数</span></span><br><span class="line">	mux.HandleFunc(<span class="string">"/test"</span>, <span class="function"><span class="keyword">func</span><span class="params">(res http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">		res.Write([]<span class="keyword">byte</span>(<span class="string">"test3333"</span>))</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 直接调用Handle函数去注册处理函数，</span></span><br><span class="line">	<span class="comment">// 这里的http.HandleFunc 是一个type类型，这里调用将h转换为一个Handler接口的实现</span></span><br><span class="line">	mux.Handle(<span class="string">"/st"</span>, http.HandlerFunc(h))</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 这里会使用默认创建的server</span></span><br><span class="line">	http.ListenAndServe(<span class="string">":8082"</span>, mux)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>serveMux结构体定义如下,从中可以看出它的ServeHTTP成员函数主要是根据URL pattern取出合适的Handler,这里的每个Handler都是一个HandlerFunc类型， 然后执行h.ServeHTTP(w, r)。<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ServeMux <span class="keyword">struct</span> &#123;</span><br><span class="line">	mu    sync.RWMutex</span><br><span class="line">	m     <span class="keyword">map</span>[<span class="keyword">string</span>]muxEntry</span><br><span class="line">	hosts <span class="keyword">bool</span> <span class="comment">// whether any patterns contain hostnames</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> muxEntry <span class="keyword">struct</span> &#123;</span><br><span class="line">	h       Handler</span><br><span class="line">	pattern <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(mux *ServeMux)</span> <span class="title">ServeHTTP</span><span class="params">(w ResponseWriter, r *Request)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> r.RequestURI == <span class="string">"*"</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> r.ProtoAtLeast(<span class="number">1</span>, <span class="number">1</span>) &#123;</span><br><span class="line">			w.Header().Set(<span class="string">"Connection"</span>, <span class="string">"close"</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		w.WriteHeader(StatusBadRequest)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	h, _ := mux.Handler(r)</span><br><span class="line">	h.ServeHTTP(w, r)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> HandlerFunc <span class="function"><span class="keyword">func</span><span class="params">(ResponseWriter, *Request)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">// <span class="title">ServeHTTP</span> <span class="title">calls</span> <span class="title">f</span><span class="params">(w, r)</span>.</span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="params">(f HandlerFunc)</span> <span class="title">ServeHTTP</span><span class="params">(w ResponseWriter, r *Request)</span></span> &#123;</span><br><span class="line">	f(w, r)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><a href="https://fsp1yjl.github.io/2017/09/11/2018golang%E4%B8%ADhttp%20server%E8%AE%BE%E7%BD%AE%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F%E8%AE%B0%E5%BD%95/" target="_blank" rel="noopener">golang中http server设置的几种方式记录</a>:</p>
 <p>.. 待续</p>
 
       
@@ -506,7 +504,7 @@ step 1:">
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -517,9 +515,7 @@ step 1:">
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="https://img3.doubanio.com/icon/ul54452955-3.jpg"
-               alt="不知火" />
+          <img class="site-author-image" itemprop="image" src="https://img3.doubanio.com/icon/ul54452955-3.jpg" alt="不知火">
           <p class="site-author-name" itemprop="name">不知火</p>
            
               <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
@@ -530,7 +526,7 @@ step 1:">
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -552,7 +548,7 @@ step 1:">
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -618,7 +614,7 @@ step 1:">
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
   <span itemprop="copyrightYear">2019</span>

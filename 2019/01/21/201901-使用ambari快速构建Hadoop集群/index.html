@@ -6,15 +6,15 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,21 +66,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="ambari," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="ambari,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
@@ -88,11 +88,13 @@
 
 
 <meta name="description" content="引言Cloudera和Hortonworks算是最著名的两个做Hadoop产品发行版的公司了，之前在坐一个监控系统的时候，需要一个时序数据库去存放监控的时许数据，最后选择了opentsdb,因为opentsdb是一个基于HBase构建的数据库，所以，为了部署一个opentsdb集群，就不得不先部署一个HBase集群，当时为了和部门统一，使用了cdh发行版去安装，当时，是根据Cloudera官网都文">
+<meta name="keywords" content="ambari">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用ambari快速构建Hadoop集群">
 <meta property="og:url" content="http://yoursite.com/2019/01/21/201901-使用ambari快速构建Hadoop集群/index.html">
 <meta property="og:site_name" content="不知火">
 <meta property="og:description" content="引言Cloudera和Hortonworks算是最著名的两个做Hadoop产品发行版的公司了，之前在坐一个监控系统的时候，需要一个时序数据库去存放监控的时许数据，最后选择了opentsdb,因为opentsdb是一个基于HBase构建的数据库，所以，为了部署一个opentsdb集群，就不得不先部署一个HBase集群，当时为了和部门统一，使用了cdh发行版去安装，当时，是根据Cloudera官网都文">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/2019/01/ambari-https-verify.png">
 <meta property="og:image" content="http://yoursite.com/images/2019/01/ambari-agent-host.png">
 <meta property="og:image" content="http://yoursite.com/images/2019/01/ambari-login.png">
@@ -132,7 +134,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/01/21/201901-使用ambari快速构建Hadoop集群/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/01/21/201901-使用ambari快速构建Hadoop集群/">
 
 
 
@@ -182,7 +184,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">不知火</span>
         <span class="logo-line-after"><i></i></span>
@@ -212,7 +214,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -222,7 +224,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -232,7 +234,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -242,7 +244,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -281,7 +283,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
@@ -324,7 +326,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -355,8 +357,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2019/01/21/201901-使用ambari快速构建Hadoop集群/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2019/01/21/201901-使用ambari快速构建Hadoop集群/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/21/201901-使用ambari快速构建Hadoop集群/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -390,20 +391,20 @@
 </blockquote>
 <h3 id="部署踩坑"><a href="#部署踩坑" class="headerlink" title="部署踩坑"></a>部署踩坑</h3><p>分布式系统实践的一大障碍就是，往往需要3+台机器去完成部署测试，而目前我手头上我没有那么多机器，所以首先想到的是docker, 我想在我的mac上启动3个centos7的容器来进行我的测试，实践证明，这是一个苦涩的体验，建议有条件的小伙伴，还是乖乖地搞几个虚拟机或者云主机去实验吧。(写这个总结都时候，距离我实验已经过去一个月了，里面很多坑由于疏于记录，已经忘记了😭)</p>
 <ol>
-<li>“docker Failed to get D-Bus connection”报错<br>在容器中安装启动httpd，postgresql，sshd的时候，可能会启动报错，这个在stackoverflow查到不少解决方案，<a href="https://serverfault.com/questions/824975/failed-to-get-d-bus-connection-operation-not-permitted" target="_blank" rel="external">参考</a>，我是使用如下方式解决的这个问题：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 容器启动时，带上--privileged参数， 并指明启动脚本/usr/lib/systemd/systemd --system &amp;</div><div class="line">docker run --name httpd -p 8080:80 -itd  --privileged centos /usr/lib/systemd/systemd --system &amp;</div></pre></td></tr></table></figure>
+<li>“docker Failed to get D-Bus connection”报错<br>在容器中安装启动httpd，postgresql，sshd的时候，可能会启动报错，这个在stackoverflow查到不少解决方案，<a href="https://serverfault.com/questions/824975/failed-to-get-d-bus-connection-operation-not-permitted" target="_blank" rel="noopener">参考</a>，我是使用如下方式解决的这个问题：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 容器启动时，带上--privileged参数， 并指明启动脚本/usr/lib/systemd/systemd --system &amp;</span><br><span class="line">docker run --name httpd -p 8080:80 -itd  --privileged centos /usr/lib/systemd/systemd --system &amp;</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<p>2.解决https报错问题(certificate verify failed)：<br>    yum install openssl<br>    vim /etc/python/cert-verification.cfg    (set verify to disable)<br><img src="/images/2019/01/ambari-https-verify.png" alt=""></p>
+<p>2.解决https报错问题(certificate verify failed)：<br>    yum install openssl<br>    vim /etc/python/cert-verification.cfg    (set verify to disable)<br><img src="/images/2019/01/ambari-https-verify.png" alt></p>
 <p>3.解决远程访问问题：<br>yum -y install openssh-server<br>systemctl start sshd.service</p>
 <p>4.解决host验证失败问题：<br>vim /etc/ambari-agent/conf/ambari-agent.ini<br>security下增加：force_https_protocol=PROTOCOL_TLSv1_2</p>
-<p><img src="/images/2019/01/ambari-agent-host.png" alt=""></p>
-<p>5.ambari默认的postgresql数据库无法初始化问题<br>容器下的数据库需要我们自己去做初始化，可以用常见的mysql或者postgresql来做，基本流程是数据库服务启动，创建用户和数据库，然后做用户授权，最后使用初始化sql脚步进行数据初始化,手动初始化Postgres 参考ambari<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.2.0/bk_ambari-administration/content/using_ambari_with_postgresql.html" target="_blank" rel="external">官方文档</a>(注意，必须要先修改pg_hba的配置，保证psql -U ambari -d ambari能够正常登录，后续脚本导入需要导入到ambari 这个schema下）</p>
-<p>经过一些列的折腾，终于在docker下把ambari安装完成，可以从web ui开始Hadoop组件安装了，但奈何我的机器只有8g内存，已经扛不住这样折腾的，最后，还是使用公司的测试账号，在我们的控制台上申请了祭台云主机进行测试。经过之前的踩坑，这次的测试已经顺畅了很多，其实也是依靠别人的参考文档，这里主要参考了官方文档和一个知乎的文。<br>1.<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.5.2.0/bk_ambari-installation/content/ch_Getting_Ready.html" target="_blank" rel="external">官方文档</a>,可以根据自己的需要选择合理的版本，这里用较老的ambari-2.5进行测试<br>2.<a href="https://zhuanlan.zhihu.com/p/29673506" target="_blank" rel="external">知乎文档</a></p>
-<h3 id="页面功能展示"><a href="#页面功能展示" class="headerlink" title="页面功能展示"></a>页面功能展示</h3><p>登录页：<br><img src="/images/2019/01/ambari-login.png" alt=""></p>
-<p>dashboard:<br><img src="/images/2019/01/ambari-dashboard.png" alt=""></p>
-<p>服务列表:<br><img src="/images/2019/01/ambari-services.png" alt=""></p>
-<p>主机节点信息:<br><img src="/images/2019/01/ambari-hosts.png" alt=""></p>
-<p>组件版本信息:<br><img src="/images/2019/01/ambari-stacks.png" alt=""></p>
+<p><img src="/images/2019/01/ambari-agent-host.png" alt></p>
+<p>5.ambari默认的postgresql数据库无法初始化问题<br>容器下的数据库需要我们自己去做初始化，可以用常见的mysql或者postgresql来做，基本流程是数据库服务启动，创建用户和数据库，然后做用户授权，最后使用初始化sql脚步进行数据初始化,手动初始化Postgres 参考ambari<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.2.0/bk_ambari-administration/content/using_ambari_with_postgresql.html" target="_blank" rel="noopener">官方文档</a>(注意，必须要先修改pg_hba的配置，保证psql -U ambari -d ambari能够正常登录，后续脚本导入需要导入到ambari 这个schema下）</p>
+<p>经过一些列的折腾，终于在docker下把ambari安装完成，可以从web ui开始Hadoop组件安装了，但奈何我的机器只有8g内存，已经扛不住这样折腾的，最后，还是使用公司的测试账号，在我们的控制台上申请了祭台云主机进行测试。经过之前的踩坑，这次的测试已经顺畅了很多，其实也是依靠别人的参考文档，这里主要参考了官方文档和一个知乎的文。<br>1.<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.5.2.0/bk_ambari-installation/content/ch_Getting_Ready.html" target="_blank" rel="noopener">官方文档</a>,可以根据自己的需要选择合理的版本，这里用较老的ambari-2.5进行测试<br>2.<a href="https://zhuanlan.zhihu.com/p/29673506" target="_blank" rel="noopener">知乎文档</a></p>
+<h3 id="页面功能展示"><a href="#页面功能展示" class="headerlink" title="页面功能展示"></a>页面功能展示</h3><p>登录页：<br><img src="/images/2019/01/ambari-login.png" alt></p>
+<p>dashboard:<br><img src="/images/2019/01/ambari-dashboard.png" alt></p>
+<p>服务列表:<br><img src="/images/2019/01/ambari-services.png" alt></p>
+<p>主机节点信息:<br><img src="/images/2019/01/ambari-hosts.png" alt></p>
+<p>组件版本信息:<br><img src="/images/2019/01/ambari-stacks.png" alt></p>
 
       
     </div>
@@ -513,7 +514,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -524,9 +525,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="https://img3.doubanio.com/icon/ul54452955-3.jpg"
-               alt="不知火" />
+          <img class="site-author-image" itemprop="image" src="https://img3.doubanio.com/icon/ul54452955-3.jpg" alt="不知火">
           <p class="site-author-name" itemprop="name">不知火</p>
            
               <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
@@ -537,7 +536,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -559,7 +558,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -625,7 +624,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
   <span itemprop="copyrightYear">2019</span>

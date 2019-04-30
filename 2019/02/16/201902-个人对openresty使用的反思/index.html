@@ -6,15 +6,15 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,21 +66,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="openresty," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="openresty,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
@@ -88,11 +88,13 @@
 
 
 <meta name="description" content="总结反思如题，这是一个个人对openresty使用的反思贴，也是一个记录贴。说起来，在项目中使用openresty已经有不短的时间了，主要是做API网关和一些动态负载均衡的功能，转眼已经是2019年了，过完年回来，又要开始紧锣密鼓地推进工作进度了，其中一块功能又选择了使用openresty来做。">
+<meta name="keywords" content="openresty">
 <meta property="og:type" content="article">
 <meta property="og:title" content="对openresty使用的反思">
 <meta property="og:url" content="http://yoursite.com/2019/02/16/201902-个人对openresty使用的反思/index.html">
 <meta property="og:site_name" content="不知火">
 <meta property="og:description" content="总结反思如题，这是一个个人对openresty使用的反思贴，也是一个记录贴。说起来，在项目中使用openresty已经有不短的时间了，主要是做API网关和一些动态负载均衡的功能，转眼已经是2019年了，过完年回来，又要开始紧锣密鼓地推进工作进度了，其中一块功能又选择了使用openresty来做。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://moonbingbing.gitbooks.io/openresty-best-practices/content/images/openresty_phases.png">
 <meta property="og:updated_time" content="2019-02-18T02:18:14.930Z">
 <meta name="twitter:card" content="summary">
@@ -126,7 +128,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/02/16/201902-个人对openresty使用的反思/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/02/16/201902-个人对openresty使用的反思/">
 
 
 
@@ -176,7 +178,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">不知火</span>
         <span class="logo-line-after"><i></i></span>
@@ -206,7 +208,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -216,7 +218,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -226,7 +228,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -236,7 +238,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -275,7 +277,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
@@ -318,7 +320,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -349,8 +351,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2019/02/16/201902-个人对openresty使用的反思/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2019/02/16/201902-个人对openresty使用的反思/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/02/16/201902-个人对openresty使用的反思/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -387,17 +388,17 @@
 <p><strong>自己的问题</strong>：<br>    所谓熟能生巧，首先是自己实践的不足，然后是自己没有很好的总结，导致每次使用都差不多需要从它的官方文档开始,即使是opm出了很久了，但是每次下载lua包，我还是会去luarocks，这一点，就是学习精神的懈怠的一窥吧。还有一个小问题，似乎我一直没有找到一个趁手的ide去开发openresty项目（vim/emacs党勿喷）<br><strong>项目本身的复杂性</strong>：<br>    就个人的感觉，openresty本身是一个nginx + lua packages组成的解决方案式的项目，并不能像学习一个新语言那样，快速无依赖地实现hello world。</p>
 <p>总结来说，只有更好的总结，更多的实践， 更多的理解nginx/lua本身，才能又快又好地完成一个优秀的openresty项目.</p>
 <h3 id="学习笔记"><a href="#学习笔记" class="headerlink" title="学习笔记"></a>学习笔记</h3><p>希望这篇文，能成为一个合格的个人学习笔记记录吧</p>
-<h4 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h4><p><a href="https://openresty.org/cn/installation.html" target="_blank" rel="external">官方安装文档</a></p>
+<h4 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h4><p><a href="https://openresty.org/cn/installation.html" target="_blank" rel="noopener">官方安装文档</a></p>
 <p>centos下安装openresty:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">mkdir -p /data/openresty/opt</div><div class="line">cd /data/openresty/opt</div><div class="line"></div><div class="line"># openresty 部署</div><div class="line">yum install pcre-devel openssl-devel gcc curl</div><div class="line">wget https://openresty.org/download/openresty-1.13.6.2.tar.gz</div><div class="line">tar -zxvf openresty-1.13.6.2.tar.gz </div><div class="line"></div><div class="line">cd /data/openresty/opt/openresty-1.13.6.2</div><div class="line"># ./config --help可查看全部选型</div><div class="line"></div><div class="line">./configure --prefix=/data/openresty \</div><div class="line">--with-luajit</div><div class="line"></div><div class="line">make </div><div class="line">make install </div><div class="line"># openresty可执行文件放在/data/openresty/bin下</div><div class="line"></div><div class="line"># 使用luarocks工具安装lua packages</div><div class="line">cd /data/openresty/opt</div><div class="line">wget http://luarocks.org/releases/luarocks-3.0.4.tar.gz</div><div class="line">tar -zxvf luarocks-3.0.4.tar.gz</div><div class="line"></div><div class="line">cd /data/openresty/opt/luarocks-3.0.4</div><div class="line"></div><div class="line">./configure --prefix=/data/openresty/luajit \</div><div class="line">--with-lua=/data/openresty/luajit/ \</div><div class="line">--lua-suffix=jit \</div><div class="line">--with-lua-include=/data/openresty/luajit/include/luajit-2.1</div><div class="line"></div><div class="line">make build</div><div class="line">make install</div><div class="line"></div><div class="line">#luarocks可执行文件被放在/data/openresty/luajit/bin下</div></pre></td></tr></table></figure>
-<h4 id="第一行代码"><a href="#第一行代码" class="headerlink" title="第一行代码"></a>第一行代码</h4><p>init_demo.sh<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">mkdir -p /data/openresty/demo</div><div class="line">cd /data/openresty/demo</div><div class="line">mkdir logs</div><div class="line">echo &apos;/data/openresty/bin/openresty -p /data/openresty/demo -c nginx.conf&apos; &gt; run.sh</div><div class="line"></div><div class="line">echo &apos;/data/openresty/bin/openresty -p /data/openresty/demo -c nginx.conf -t&apos; &gt;test.sh</div><div class="line"></div><div class="line">echo &apos;/data/openresty/bin/openresty -p /data/openresty/demo -c nginx.conf -s reload&apos; &gt;restart.sh</div><div class="line"></div><div class="line">echo &apos;ps -ef|grep /data/openresty/demo |grep -v grep |awk &apos;&#123;print$2&#125;&apos; | xargs kill&apos; &gt; stop.sh</div><div class="line"></div><div class="line">touch nginx.conf</div></pre></td></tr></table></figure></p>
-<p>nginx.conf内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">worker_processes 1;</div><div class="line">user root;</div><div class="line">error_log logs/error.log;</div><div class="line">events &#123;</div><div class="line">        worker_connections 1024;</div><div class="line">&#125;</div><div class="line"></div><div class="line">http &#123;</div><div class="line">  server &#123;</div><div class="line">    listen 127.0.0.1:9191;</div><div class="line">    location / &#123;</div><div class="line">      default_type text/html;</div><div class="line">      content_by_lua_block &#123;</div><div class="line">        ngx.say(&quot;hello world&quot;)</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/openresty/opt</span><br><span class="line">cd /data/openresty/opt</span><br><span class="line"></span><br><span class="line"># openresty 部署</span><br><span class="line">yum install pcre-devel openssl-devel gcc curl</span><br><span class="line">wget https://openresty.org/download/openresty-1.13.6.2.tar.gz</span><br><span class="line">tar -zxvf openresty-1.13.6.2.tar.gz </span><br><span class="line"></span><br><span class="line">cd /data/openresty/opt/openresty-1.13.6.2</span><br><span class="line"># ./config --help可查看全部选型</span><br><span class="line"></span><br><span class="line">./configure --prefix=/data/openresty \</span><br><span class="line">--with-luajit</span><br><span class="line"></span><br><span class="line">make </span><br><span class="line">make install </span><br><span class="line"># openresty可执行文件放在/data/openresty/bin下</span><br><span class="line"></span><br><span class="line"># 使用luarocks工具安装lua packages</span><br><span class="line">cd /data/openresty/opt</span><br><span class="line">wget http://luarocks.org/releases/luarocks-3.0.4.tar.gz</span><br><span class="line">tar -zxvf luarocks-3.0.4.tar.gz</span><br><span class="line"></span><br><span class="line">cd /data/openresty/opt/luarocks-3.0.4</span><br><span class="line"></span><br><span class="line">./configure --prefix=/data/openresty/luajit \</span><br><span class="line">--with-lua=/data/openresty/luajit/ \</span><br><span class="line">--lua-suffix=jit \</span><br><span class="line">--with-lua-include=/data/openresty/luajit/include/luajit-2.1</span><br><span class="line"></span><br><span class="line">make build</span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line">#luarocks可执行文件被放在/data/openresty/luajit/bin下</span><br></pre></td></tr></table></figure>
+<h4 id="第一行代码"><a href="#第一行代码" class="headerlink" title="第一行代码"></a>第一行代码</h4><p>init_demo.sh<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /data/openresty/demo</span><br><span class="line">cd /data/openresty/demo</span><br><span class="line">mkdir logs</span><br><span class="line">echo &apos;/data/openresty/bin/openresty -p /data/openresty/demo -c nginx.conf&apos; &gt; run.sh</span><br><span class="line"></span><br><span class="line">echo &apos;/data/openresty/bin/openresty -p /data/openresty/demo -c nginx.conf -t&apos; &gt;test.sh</span><br><span class="line"></span><br><span class="line">echo &apos;/data/openresty/bin/openresty -p /data/openresty/demo -c nginx.conf -s reload&apos; &gt;restart.sh</span><br><span class="line"></span><br><span class="line">echo &apos;ps -ef|grep /data/openresty/demo |grep -v grep |awk &apos;&#123;print$2&#125;&apos; | xargs kill&apos; &gt; stop.sh</span><br><span class="line"></span><br><span class="line">touch nginx.conf</span><br></pre></td></tr></table></figure></p>
+<p>nginx.conf内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">worker_processes 1;</span><br><span class="line">user root;</span><br><span class="line">error_log logs/error.log;</span><br><span class="line">events &#123;</span><br><span class="line">        worker_connections 1024;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">  server &#123;</span><br><span class="line">    listen 127.0.0.1:9191;</span><br><span class="line">    location / &#123;</span><br><span class="line">      default_type text/html;</span><br><span class="line">      content_by_lua_block &#123;</span><br><span class="line">        ngx.say(&quot;hello world&quot;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>测试：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">cd /data/openresty/demo</div><div class="line">sh test.sh  // 测试服务配置是否有误</div><div class="line">sh start.sh  // 启动服务</div><div class="line"></div><div class="line">curl http://localhost:9191/  </div><div class="line">结果会打印“hello world”</div><div class="line">sh stop.sh  //停止服务</div></pre></td></tr></table></figure>
-<p>tips：<br>1.在 1.5.8.1 版本之前, OpenResty 默认使用标准 Lua 5.1 解释器。所以对于老版本， 你需要显式地加入–with-luajit 编译选项（1.5.8.1 以后的版本已默认开启）来启用 LuaJIT 组件<br>2.openresty官网首页有全文搜索功能<br>3.openresty执行阶段概念说明：<a href="https://moonbingbing.gitbooks.io/openresty-best-practices/content/ngx_lua/phase.html" target="_blank" rel="external">https://moonbingbing.gitbooks.io/openresty-best-practices/content/ngx_lua/phase.html</a><br><img src="https://moonbingbing.gitbooks.io/openresty-best-practices/content/images/openresty_phases.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd /data/openresty/demo</span><br><span class="line">sh test.sh  // 测试服务配置是否有误</span><br><span class="line">sh start.sh  // 启动服务</span><br><span class="line"></span><br><span class="line">curl http://localhost:9191/  </span><br><span class="line">结果会打印“hello world”</span><br><span class="line">sh stop.sh  //停止服务</span><br></pre></td></tr></table></figure>
+<p>tips：<br>1.在 1.5.8.1 版本之前, OpenResty 默认使用标准 Lua 5.1 解释器。所以对于老版本， 你需要显式地加入–with-luajit 编译选项（1.5.8.1 以后的版本已默认开启）来启用 LuaJIT 组件<br>2.openresty官网首页有全文搜索功能<br>3.openresty执行阶段概念说明：<a href="https://moonbingbing.gitbooks.io/openresty-best-practices/content/ngx_lua/phase.html" target="_blank" rel="noopener">https://moonbingbing.gitbooks.io/openresty-best-practices/content/ngx_lua/phase.html</a><br><img src="https://moonbingbing.gitbooks.io/openresty-best-practices/content/images/openresty_phases.png" alt></p>
 <p>～ 待续<br>$todo 代码风格<br>$todo lua_package_path相关</p>
-<p>参考文档：<br>openresty官方安装文档：<br><a href="https://openresty.org/cn/installation.html" target="_blank" rel="external">https://openresty.org/cn/installation.html</a><br>openresty 组件列表：<br><a href="https://openresty.org/cn/components.html" target="_blank" rel="external">https://openresty.org/cn/components.html</a><br>luarocks安装文档：<br><a href="https://openresty.org/cn/using-luarocks.html" target="_blank" rel="external">https://openresty.org/cn/using-luarocks.html</a></p>
-<p>openresty官网样例：<br><a href="https://openresty.org/cn/samples.html" target="_blank" rel="external">https://openresty.org/cn/samples.html</a><br>openresty最佳实践：<a href="https://moonbingbing.gitbooks.io/openresty-best-practices/content/" target="_blank" rel="external">https://moonbingbing.gitbooks.io/openresty-best-practices/content/</a></p>
+<p>参考文档：<br>openresty官方安装文档：<br><a href="https://openresty.org/cn/installation.html" target="_blank" rel="noopener">https://openresty.org/cn/installation.html</a><br>openresty 组件列表：<br><a href="https://openresty.org/cn/components.html" target="_blank" rel="noopener">https://openresty.org/cn/components.html</a><br>luarocks安装文档：<br><a href="https://openresty.org/cn/using-luarocks.html" target="_blank" rel="noopener">https://openresty.org/cn/using-luarocks.html</a></p>
+<p>openresty官网样例：<br><a href="https://openresty.org/cn/samples.html" target="_blank" rel="noopener">https://openresty.org/cn/samples.html</a><br>openresty最佳实践：<a href="https://moonbingbing.gitbooks.io/openresty-best-practices/content/" target="_blank" rel="noopener">https://moonbingbing.gitbooks.io/openresty-best-practices/content/</a></p>
 <p></p>
 
       
@@ -508,7 +509,7 @@
 
       
         <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
             文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
@@ -519,9 +520,7 @@
 
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="https://img3.doubanio.com/icon/ul54452955-3.jpg"
-               alt="不知火" />
+          <img class="site-author-image" itemprop="image" src="https://img3.doubanio.com/icon/ul54452955-3.jpg" alt="不知火">
           <p class="site-author-name" itemprop="name">不知火</p>
            
               <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
@@ -532,7 +531,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -554,7 +553,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -620,7 +619,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
   <span itemprop="copyrightYear">2019</span>

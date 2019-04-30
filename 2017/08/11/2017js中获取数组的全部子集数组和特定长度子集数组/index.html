@@ -6,15 +6,15 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,21 +66,21 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="JavaScript," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="JavaScript,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
@@ -88,11 +88,13 @@
 
 
 <meta name="description" content="小伙伴最近在做一个数据处理分析的东东，中间有一个需要获取数组全部子集数组列表的需求，虽然ES6中增加了一种新的数据类型语法糖Set，不过还是没有提供获取集合子集的方法，所以，就自己写了一个，这里特别做一次记录，以方便下次自己使用。如给定数组arr = [1,2,3],返回全部子集数组为[[1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]],如果返回长度为2的子集">
+<meta name="keywords" content="JavaScript">
 <meta property="og:type" content="article">
 <meta property="og:title" content="js中获取数组的全部子集数组和特定长度子集数组">
 <meta property="og:url" content="http://yoursite.com/2017/08/11/2017js中获取数组的全部子集数组和特定长度子集数组/index.html">
 <meta property="og:site_name" content="不知火">
 <meta property="og:description" content="小伙伴最近在做一个数据处理分析的东东，中间有一个需要获取数组全部子集数组列表的需求，虽然ES6中增加了一种新的数据类型语法糖Set，不过还是没有提供获取集合子集的方法，所以，就自己写了一个，这里特别做一次记录，以方便下次自己使用。如给定数组arr = [1,2,3],返回全部子集数组为[[1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]],如果返回长度为2的子集">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2018-12-18T05:37:58.596Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="js中获取数组的全部子集数组和特定长度子集数组">
@@ -124,7 +126,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/08/11/2017js中获取数组的全部子集数组和特定长度子集数组/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/08/11/2017js中获取数组的全部子集数组和特定长度子集数组/">
 
 
 
@@ -174,7 +176,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">不知火</span>
         <span class="logo-line-after"><i></i></span>
@@ -204,7 +206,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -214,7 +216,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -224,7 +226,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -234,7 +236,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -273,7 +275,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
@@ -325,8 +327,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2017/08/11/2017js中获取数组的全部子集数组和特定长度子集数组/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/08/11/2017js中获取数组的全部子集数组和特定长度子集数组/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/08/11/2017js中获取数组的全部子集数组和特定长度子集数组/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -353,9 +354,9 @@
 
       
         <p>小伙伴最近在做一个数据处理分析的东东，中间有一个需要获取数组全部子集数组列表的需求，虽然ES6中增加了一种新的数据类型语法糖Set，不过还是没有提供获取集合子集的方法，所以，就自己写了一个，这里特别做一次记录，以方便下次自己使用。<br>如给定数组arr = [1,2,3],返回全部子集数组为[[1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]],如果返回长度为2的子集数组则返回值[[1,2], [1,3], [2,3]].<br>整体思路上，可以先获取特定长度子集的数组，然后对个长度子集列表做一个归并即可，示例代码如下。<br><a id="more"></a></p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>];</div><div class="line"></div><div class="line"><span class="comment">//保存最后的子集列表</span></div><div class="line"><span class="keyword">var</span> arr_list = [];</div><div class="line"></div><div class="line"><span class="comment">//从start_index索引开始，取出长度为sub_len的子集，并与前置子集部分forehead_arr做归并，得到结果存入全局变量arr_list中</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">get_sub</span>(<span class="params">arr,forehead_arr = [],start_index,sub_len</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> i = start_index;</div><div class="line">    <span class="keyword">for</span>(; i &lt; arr.length; i++) &#123;</div><div class="line">        <span class="keyword">var</span> cur_sub_len = sub_len;  <span class="comment">//记录子集筛选开始索引</span></div><div class="line">        <span class="keyword">var</span> tmp_arr = arr_clone(forehead_arr);</div><div class="line">        tmp_arr.push(arr[i]);</div><div class="line">        <span class="comment">// 当自己长度大于1时需要递归处理</span></div><div class="line">        <span class="keyword">if</span>(--cur_sub_len &gt; <span class="number">0</span>) &#123;</div><div class="line">            get_sub(arr,arr_clone(tmp_arr),i+<span class="number">1</span>,cur_sub_len)</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            arr_list.push(tmp_arr);<span class="comment">//结束后放入二维数组</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//对原数组进行深拷贝</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">arr_clone</span>(<span class="params">arr</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> new_arr = [];</div><div class="line">    <span class="keyword">for</span>(item <span class="keyword">of</span> arr) &#123;</div><div class="line">        new_arr.push(item);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> new_arr;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 获取数组全部子集</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">get_all</span>(<span class="params">arr</span>) </span>&#123;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</div><div class="line">        get_sub(arr,[],<span class="number">0</span>,i+<span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// get_sub(arr,[],0, 3);  从arr[0]开始，获取数组长度为3的子集列表</span></div><div class="line">get_all(arr)</div><div class="line"><span class="built_in">console</span>.log(arr_list);</div></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//保存最后的子集列表</span></span><br><span class="line"><span class="keyword">var</span> arr_list = [];</span><br><span class="line"></span><br><span class="line"><span class="comment">//从start_index索引开始，取出长度为sub_len的子集，并与前置子集部分forehead_arr做归并，得到结果存入全局变量arr_list中</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get_sub</span>(<span class="params">arr,forehead_arr = [],start_index,sub_len</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> i = start_index;</span><br><span class="line">    <span class="keyword">for</span>(; i &lt; arr.length; i++) &#123;</span><br><span class="line">        <span class="keyword">var</span> cur_sub_len = sub_len;  <span class="comment">//记录子集筛选开始索引</span></span><br><span class="line">        <span class="keyword">var</span> tmp_arr = arr_clone(forehead_arr);</span><br><span class="line">        tmp_arr.push(arr[i]);</span><br><span class="line">        <span class="comment">// 当自己长度大于1时需要递归处理</span></span><br><span class="line">        <span class="keyword">if</span>(--cur_sub_len &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            get_sub(arr,arr_clone(tmp_arr),i+<span class="number">1</span>,cur_sub_len)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            arr_list.push(tmp_arr);<span class="comment">//结束后放入二维数组</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//对原数组进行深拷贝</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">arr_clone</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> new_arr = [];</span><br><span class="line">    <span class="keyword">for</span>(item <span class="keyword">of</span> arr) &#123;</span><br><span class="line">        new_arr.push(item);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> new_arr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取数组全部子集</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get_all</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">        get_sub(arr,[],<span class="number">0</span>,i+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// get_sub(arr,[],0, 3);  从arr[0]开始，获取数组长度为3的子集列表</span></span><br><span class="line">get_all(arr)</span><br><span class="line"><span class="built_in">console</span>.log(arr_list);</span><br></pre></td></tr></table></figure>
 <p>另一个只能获取全部子集列表，无法获取特定长度子集列表的版本：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">var arr = [1,2,3];</div><div class="line"></div><div class="line">function subSet(set)&#123;</div><div class="line">    if(set.length == 0)&#123;</div><div class="line">        return []</div><div class="line">    &#125;</div><div class="line">    var temp = set.shift()</div><div class="line">    return add(subSet(set),temp)   </div><div class="line">&#125;</div><div class="line"></div><div class="line">function add(list,temp)&#123;</div><div class="line">    for(var i=0,len=list.length;i&lt;len;i++)&#123;</div><div class="line">        var item = list[i]</div><div class="line">        var new_item = clone(item)</div><div class="line">        new_item.push(temp)</div><div class="line">        list.push(new_item)</div><div class="line">    &#125;</div><div class="line">    list.push([temp]) </div><div class="line">    return list</div><div class="line">&#125;</div><div class="line"></div><div class="line">function clone(data)&#123;</div><div class="line">    return data.map(item=&gt;item)</div><div class="line">&#125;</div><div class="line"></div><div class="line">console.log(subSet(arr))</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">var arr = [1,2,3];</span><br><span class="line"></span><br><span class="line">function subSet(set)&#123;</span><br><span class="line">    if(set.length == 0)&#123;</span><br><span class="line">        return []</span><br><span class="line">    &#125;</span><br><span class="line">    var temp = set.shift()</span><br><span class="line">    return add(subSet(set),temp)   </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function add(list,temp)&#123;</span><br><span class="line">    for(var i=0,len=list.length;i&lt;len;i++)&#123;</span><br><span class="line">        var item = list[i]</span><br><span class="line">        var new_item = clone(item)</span><br><span class="line">        new_item.push(temp)</span><br><span class="line">        list.push(new_item)</span><br><span class="line">    &#125;</span><br><span class="line">    list.push([temp]) </span><br><span class="line">    return list</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function clone(data)&#123;</span><br><span class="line">    return data.map(item=&gt;item)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log(subSet(arr))</span><br></pre></td></tr></table></figure>
 <p>ps:<br>对于数组所有子集遍历， 还可以有另外一个思路， 比如数组有3个元素， 就构造一个9未的二进制数，每位表示一个元素，那么所有的子集就是000，001， 010，011，100，101，110，111这几种组合了， 和bitmap的类似的思维，依次对应一下就可以了。</p>
 
       
@@ -468,9 +469,7 @@
 
       <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="https://img3.doubanio.com/icon/ul54452955-3.jpg"
-               alt="不知火" />
+          <img class="site-author-image" itemprop="image" src="https://img3.doubanio.com/icon/ul54452955-3.jpg" alt="不知火">
           <p class="site-author-name" itemprop="name">不知火</p>
            
               <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
@@ -481,7 +480,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -503,7 +502,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -553,7 +552,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
   <span itemprop="copyrightYear">2019</span>

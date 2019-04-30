@@ -6,15 +6,15 @@
 
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
-<head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
 
 
 
@@ -32,7 +32,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
 
 
 
@@ -66,46 +66,42 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
-
-
-  <meta name="keywords" content="golang-blog," />
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
+  <meta name="keywords" content="golang-blog,">
 
 
 
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
 
 
 
 
 
 
-<meta name="description" content="golang切片的使用和内部细节 – By Andrew Gerrand
-网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。
-先来看两个例子：">
+<meta name="description" content="golang切片的使用和内部细节 – By Andrew Gerrand 网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。 先来看两个例子：">
+<meta name="keywords" content="golang-blog">
 <meta property="og:type" content="article">
 <meta property="og:title" content="golang官方blog摘要-slice">
 <meta property="og:url" content="http://yoursite.com/2018/01/19/2018golang官方blog摘要-slice/index.html">
 <meta property="og:site_name" content="不知火">
-<meta property="og:description" content="golang切片的使用和内部细节 – By Andrew Gerrand
-网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。
-先来看两个例子：">
+<meta property="og:description" content="golang切片的使用和内部细节 – By Andrew Gerrand 网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。 先来看两个例子：">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog.golang.org/go-slices-usage-and-internals_slice-struct.png">
 <meta property="og:image" content="https://blog.golang.org/go-slices-usage-and-internals_slice-1.png">
 <meta property="og:image" content="https://blog.golang.org/go-slices-usage-and-internals_slice-2.png">
 <meta property="og:updated_time" content="2018-12-27T13:25:32.081Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="golang官方blog摘要-slice">
-<meta name="twitter:description" content="golang切片的使用和内部细节 – By Andrew Gerrand
-网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。
-先来看两个例子：">
+<meta name="twitter:description" content="golang切片的使用和内部细节 – By Andrew Gerrand 网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。 先来看两个例子：">
 <meta name="twitter:image" content="https://blog.golang.org/go-slices-usage-and-internals_slice-struct.png">
 
 
@@ -134,7 +130,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/19/2018golang官方blog摘要-slice/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/01/19/2018golang官方blog摘要-slice/">
 
 
 
@@ -184,7 +180,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">不知火</span>
         <span class="logo-line-after"><i></i></span>
@@ -214,7 +210,7 @@
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             首页
           </a>
@@ -224,7 +220,7 @@
         <li class="menu-item menu-item-categories">
           <a href="/categories" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
             
             分类
           </a>
@@ -234,7 +230,7 @@
         <li class="menu-item menu-item-archives">
           <a href="/archives" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
             
             归档
           </a>
@@ -244,7 +240,7 @@
         <li class="menu-item menu-item-tags">
           <a href="/tags" rel="section">
             
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
             
             标签
           </a>
@@ -283,7 +279,7 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
     </span>
 
@@ -326,7 +322,7 @@
           </span>
 
           
-            <span class="post-category" >
+            <span class="post-category">
             
               <span class="post-meta-divider">|</span>
             
@@ -357,8 +353,7 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
                 <a href="/2018/01/19/2018golang官方blog摘要-slice/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2018/01/19/2018golang官方blog摘要-slice/" itemprop="commentCount"></span>
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/01/19/2018golang官方blog摘要-slice/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -384,19 +379,19 @@
       
 
       
-        <p><a href="https://blog.golang.org/go-slices-usage-and-internals" target="_blank" rel="external">golang切片的使用和内部细节</a> – By Andrew Gerrand</p>
+        <p><a href="https://blog.golang.org/go-slices-usage-and-internals" target="_blank" rel="noopener">golang切片的使用和内部细节</a> – By Andrew Gerrand</p>
 <p>网上可以看到的golang slice博文很多，因为刚开始使用golang的时候， 偶尔需要确定一下slice容量扩展的细节，就会去Google一下，其实最生动，图文并茂的还是官网的这篇，这里记录一下， 以防哪天自己脑子秀逗了，又要回来确认什么的东西的时候从网上Google半天。</p>
-<p>先来看两个例子：<br><a id="more"></a><br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">)</div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">    array := [<span class="number">4</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</div><div class="line">    slice := array[<span class="number">0</span>:<span class="number">2</span>]</div><div class="line">    newSlice := <span class="built_in">append</span>(slice, <span class="number">5</span>)</div><div class="line">    newSlice[<span class="number">1</span>] += <span class="number">10</span></div><div class="line">    fmt.Println(slice) </div><div class="line">    <span class="comment">// 这里会输出[1, 12],很神奇吧</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>先来看两个例子：<br><a id="more"></a><br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    array := [<span class="number">4</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</span><br><span class="line">    slice := array[<span class="number">0</span>:<span class="number">2</span>]</span><br><span class="line">    newSlice := <span class="built_in">append</span>(slice, <span class="number">5</span>)</span><br><span class="line">    newSlice[<span class="number">1</span>] += <span class="number">10</span></span><br><span class="line">    fmt.Println(slice) </span><br><span class="line">    <span class="comment">// 这里会输出[1, 12],很神奇吧</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>再看另外一个例子</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> main</div><div class="line"><span class="keyword">import</span> (</div><div class="line">    <span class="string">"fmt"</span></div><div class="line">)</div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">    array := [<span class="number">4</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</div><div class="line">    slice := array[<span class="number">0</span>:<span class="number">2</span>]</div><div class="line">    newSlice := <span class="built_in">append</span>(slice, <span class="number">5</span>)</div><div class="line">     fmt.Println(<span class="built_in">cap</span>(slice))</div><div class="line">     <span class="comment">// 这里输出4</span></div><div class="line">    newSlice = <span class="built_in">append</span>(newSlice, <span class="number">6</span>)</div><div class="line">    newSlice = <span class="built_in">append</span>(newSlice, <span class="number">7</span>)</div><div class="line">    newSlice[<span class="number">1</span>] += <span class="number">10</span></div><div class="line">    fmt.Println(slice) </div><div class="line">    <span class="comment">// 这里会输出[1, 2],更神奇吧</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    array := [<span class="number">4</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</span><br><span class="line">    slice := array[<span class="number">0</span>:<span class="number">2</span>]</span><br><span class="line">    newSlice := <span class="built_in">append</span>(slice, <span class="number">5</span>)</span><br><span class="line">     fmt.Println(<span class="built_in">cap</span>(slice))</span><br><span class="line">     <span class="comment">// 这里输出4</span></span><br><span class="line">    newSlice = <span class="built_in">append</span>(newSlice, <span class="number">6</span>)</span><br><span class="line">    newSlice = <span class="built_in">append</span>(newSlice, <span class="number">7</span>)</span><br><span class="line">    newSlice[<span class="number">1</span>] += <span class="number">10</span></span><br><span class="line">    fmt.Println(slice) </span><br><span class="line">    <span class="comment">// 这里会输出[1, 2],更神奇吧</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>我觉得参考博文中的图片，能很好的理解其原因，就是每个slice 有个len和cap属性，分别代表slice当前实际存储的元素个数和总容量， 向slice添加元素的时候，如果底层原本的存储未越界，多个slice可能会指向同一片空间，但是当越界后，就会开辟一块新空间，造成原本共用一片地址空间的多个slice分离。</p>
 <p>在上面的例子1中， 从打印可以看出slice的cap空间大小是4， 所以 newSlice = append(slice,10)并未造成越界，会和slice公用一块空间，只是slice的len为2，所以打印的时候，只输出了2个元素，如果打印newslice就会看到3个元素。</p>
 <p>例子2中，因为扩容了三次，引发了越界，所以newslice被指向了一片新的空间，原内容也复制了过去，之后，slice 和 newslice指向两片不同的地址，互相便不再有关联，对值的改变也就无法再互相影响了</p>
 <p>摘一段博文中的原话：</p>
 <blockquote>
-<p>A slice is a descriptor of an array segment. It consists of a pointer to the array, the length of the segment, and its capacity (the maximum length of the segment).<br><img src="https://blog.golang.org/go-slices-usage-and-internals_slice-struct.png" alt=""><br>Our variable s, created earlier by make([]byte, 5), is structured like this:<br><img src="https://blog.golang.org/go-slices-usage-and-internals_slice-1.png" alt=""><br>The length is the number of elements referred to by the slice. The capacity is the number of elements in the <strong><em>underlying array</em></strong> (beginning at the element referred to by the slice pointer). The distinction between length and capacity will be made clear as we walk through the next few examples<br>As we slice s, observe the changes in the slice data structure and their relation to the underlying array: s= s[2:4]<br><img src="https://blog.golang.org/go-slices-usage-and-internals_slice-2.png" alt=""><br>Slicing does not copy the slice’s data. It creates a new slice value that points to the original array. This makes slice operations as efficient as manipulating array indices</p>
+<p>A slice is a descriptor of an array segment. It consists of a pointer to the array, the length of the segment, and its capacity (the maximum length of the segment).<br><img src="https://blog.golang.org/go-slices-usage-and-internals_slice-struct.png" alt><br>Our variable s, created earlier by make([]byte, 5), is structured like this:<br><img src="https://blog.golang.org/go-slices-usage-and-internals_slice-1.png" alt><br>The length is the number of elements referred to by the slice. The capacity is the number of elements in the <strong><em>underlying array</em></strong> (beginning at the element referred to by the slice pointer). The distinction between length and capacity will be made clear as we walk through the next few examples<br>As we slice s, observe the changes in the slice data structure and their relation to the underlying array: s= s[2:4]<br><img src="https://blog.golang.org/go-slices-usage-and-internals_slice-2.png" alt><br>Slicing does not copy the slice’s data. It creates a new slice value that points to the original array. This makes slice operations as efficient as manipulating array indices</p>
 </blockquote>
-<p>ps:<br>Rob Pike大爷写的一个讲slice的博文：<br><a href="https://blog.golang.org/slices" target="_blank" rel="external">Arrays, slices (and strings): The mechanics of ‘append’</a></p>
+<p>ps:<br>Rob Pike大爷写的一个讲slice的博文：<br><a href="https://blog.golang.org/slices" target="_blank" rel="noopener">Arrays, slices (and strings): The mechanics of ‘append’</a></p>
 
       
     </div>
@@ -508,9 +503,7 @@
 
       <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-          <img class="site-author-image" itemprop="image"
-               src="https://img3.doubanio.com/icon/ul54452955-3.jpg"
-               alt="不知火" />
+          <img class="site-author-image" itemprop="image" src="https://img3.doubanio.com/icon/ul54452955-3.jpg" alt="不知火">
           <p class="site-author-name" itemprop="name">不知火</p>
            
               <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
@@ -521,7 +514,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -543,7 +536,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -593,7 +586,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright" >
+        <div class="copyright">
   
   &copy; 
   <span itemprop="copyrightYear">2019</span>
