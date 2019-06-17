@@ -1,0 +1,823 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="presto,hive,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="问题还原： 集群环境    hive 2.3.3    presto 0.208    hadoop 2.6集群有张hive表使用hive-cli查询是OK， 但是使用presto cli进行select * from table_name 同样的sql 语法查询会报错，error stack大致如下：">
+<meta name="keywords" content="presto,hive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="presto查询hive表报错:end index must not be greater than size问题分析和解决">
+<meta property="og:url" content="http://yoursite.com/2019/06/17/201906-presto查询hive表报错end index must not be greater than size/index.html">
+<meta property="og:site_name" content="不知火">
+<meta property="og:description" content="问题还原： 集群环境    hive 2.3.3    presto 0.208    hadoop 2.6集群有张hive表使用hive-cli查询是OK， 但是使用presto cli进行select * from table_name 同样的sql 语法查询会报错，error stack大致如下：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-06-17T14:00:28.280Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="presto查询hive表报错:end index must not be greater than size问题分析和解决">
+<meta name="twitter:description" content="问题还原： 集群环境    hive 2.3.3    presto 0.208    hadoop 2.6集群有张hive表使用hive-cli查询是OK， 但是使用presto cli进行select * from table_name 同样的sql 语法查询会报错，error stack大致如下：">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/06/17/201906-presto查询hive表报错end index must not be greater than size/">
+
+
+
+
+
+  <title> presto查询hive表报错:end index must not be greater than size问题分析和解决 | 不知火 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2519991216496e1fcf56707e51436dd2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不知火</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/17/201906-presto查询hive表报错end index must not be greater than size/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="不知火">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知火">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                presto查询hive表报错:end index must not be greater than size问题分析和解决
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-17T20:44:09+08:00">
+                2019-06-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/06/17/201906-presto查询hive表报错end index must not be greater than size/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/06/17/201906-presto查询hive表报错end index must not be greater than size/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="问题还原："><a href="#问题还原：" class="headerlink" title="问题还原："></a>问题还原：</h3><blockquote>
+<p>集群环境<br>    hive 2.3.3<br>    presto 0.208<br>    hadoop 2.6<br>集群有张hive表使用hive-cli查询是OK， 但是使用presto cli进行select * from table_name 同样的sql 语法查询会报错，error stack大致如下：</p>
+</blockquote>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">java.lang.RuntimeException: Error fetching next at http://uhadoop-am0xlqvv-master1:28080/v1/statement/20190617_120110_00027_yetvx/2 returned an invalid response: JsonResponse&#123;statusCode=500, statusMessage=Internal Server Error, headers=&#123;content-length=[5070], content-type=[text/plain], date=[Mon, 17 Jun 2019 12:01:10 GMT]&#125;, hasValue=false&#125; [Error: com.fasterxml.jackson.databind.JsonMappingException: end index (4) must not be greater than size (1) (through reference chain: com.facebook.presto.client.QueryResults[&quot;data&quot;])</span><br><span class="line">	at com.fasterxml.jackson.databind.JsonMappingException.wrapWithPath(JsonMappingException.java:379)</span><br><span class="line">	at com.fasterxml.jackson.databind.JsonMappingException.wrapWithPath(JsonMappingException.java:339)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.std.StdSerializer.wrapAndThrow(StdSerializer.java:343)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.std.BeanSerializerBase.serializeFields(BeanSerializerBase.java:698)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.BeanSerializer.serialize(BeanSerializer.java:155)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.DefaultSerializerProvider.serializeValue(DefaultSerializerProvider.java:292)</span><br><span class="line">	at com.fasterxml.jackson.databind.ObjectWriter$Prefetch.serialize(ObjectWriter.java:1419)</span><br><span class="line">	at com.fasterxml.jackson.databind.ObjectWriter.writeValue(ObjectWriter.java:940)</span><br><span class="line">	at io.airlift.jaxrs.JsonMapper.writeTo(JsonMapper.java:233)</span><br><span class="line">	at org.glassfish.jersey.message.internal.WriterInterceptorExecutor$TerminalWriterInterceptor.invokeWriteTo(WriterInterceptorExecutor.java:266)</span><br><span class="line">	at org.glassfish.jersey.message.internal.WriterInterceptorExecutor$TerminalWriterInterceptor.aroundWriteTo(WriterInterceptorExecutor.java:251)</span><br><span class="line">	at org.glassfish.jersey.message.internal.WriterInterceptorExecutor.proceed(WriterInterceptorExecutor.java:163)</span><br><span class="line">	at org.glassfish.jersey.server.internal.JsonWithPaddingInterceptor.aroundWriteTo(JsonWithPaddingInterceptor.java:109)</span><br><span class="line">	at org.glassfish.jersey.message.internal.WriterInterceptorExecutor.proceed(WriterInterceptorExecutor.java:163)</span><br><span class="line">	at org.glassfish.jersey.server.internal.MappableExceptionWrapperInterceptor.aroundWriteTo(MappableExceptionWrapperInterceptor.java:85)</span><br><span class="line">	at org.glassfish.jersey.message.internal.WriterInterceptorExecutor.proceed(WriterInterceptorExecutor.java:163)</span><br><span class="line">	at org.glassfish.jersey.message.internal.MessageBodyFactory.writeTo(MessageBodyFactory.java:1135)</span><br><span class="line">	at org.glassfish.jersey.server.ServerRuntime$Responder.writeResponse(ServerRuntime.java:662)</span><br><span class="line">	at org.glassfish.jersey.server.ServerRuntime$Responder.processResponse(ServerRuntime.java:395)</span><br><span class="line">	at org.glassfish.jersey.server.ServerRuntime$Responder.process(ServerRuntime.java:385)</span><br><span class="line">	at org.glassfish.jersey.server.ServerRuntime$AsyncResponder$3.run(ServerRuntime.java:884)</span><br><span class="line">	at org.glassfish.jersey.internal.Errors$1.call(Errors.java:272)</span><br><span class="line">	at org.glassfish.jersey.internal.Errors$1.call(Errors.java:268)</span><br><span class="line">	at org.glassfish.jersey.internal.Errors.process(Errors.java:316)</span><br><span class="line">	at org.glassfish.jersey.internal.Errors.process(Errors.java:298)</span><br><span class="line">	at org.glassfish.jersey.internal.Errors.process(Errors.java:268)</span><br><span class="line">	at org.glassfish.jersey.process.internal.RequestScope.runInScope(RequestScope.java:289)</span><br><span class="line">	at org.glassfish.jersey.server.ServerRuntime$AsyncResponder.resume(ServerRuntime.java:916)</span><br><span class="line">	at org.glassfish.jersey.server.ServerRuntime$AsyncResponder.resume(ServerRuntime.java:872)</span><br><span class="line">	at io.airlift.http.server.AsyncResponseHandler$1.onSuccess(AsyncResponseHandler.java:102)</span><br><span class="line">	at com.google.common.util.concurrent.Futures$CallbackListener.run(Futures.java:1347)</span><br><span class="line">	at io.airlift.concurrent.BoundedExecutor.drainQueue(BoundedExecutor.java:78)</span><br><span class="line">	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)</span><br><span class="line">	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)</span><br><span class="line">	at java.lang.Thread.run(Thread.java:748)</span><br></pre></td></tr></table></figure>
+<p>后面进一步排查，发现presto-cli中，查询的sql只要指定部分int/bigint类型的字段就会报错，对其他string类型的字段不报错。</p>
+<h3 id="排查思路"><a href="#排查思路" class="headerlink" title="排查思路"></a>排查思路</h3><p>step 1:<br>     hive-cli中执行show create table table_name,得到表结构，并在自己的测试环境创建同样的表test_table;</p>
+<p>step 2:<br>     从hive表对应的hdfs文件出导出部分文件，在hive-cli中执行load data local 语句，导入抽样数据到test_table中</p>
+<p>step 3:<br>     hive-cli和presto-cli中分别执行查询语句看问题是否复现<br>        （hive-cli中 执行 select * from test_table limit 1， 返回结果正常， presto-cli中执行报错，问题复现，同时发现只有查询表中的int/bigint类型字段会出问题）<br>step 4:<br>    step1的时候发现表内容的存储格式是orc ,所以执行 hive  –orcfiledump    /user/hive/warehouse/test_table/part-00000-4ae99c5d-9fec-47ab-a19c-c970f4ec40be-c000.snappy.orc 看orc文件的统计信息</p>
+<p>step4发现异常： table中定义为int,bigint类型的字段在步骤4的类型统计部分显示全部都是string类型，所以就怀疑是orc文件的文件部分字段类型和hive table中定义的不一致造成presto 在读取相关orc文件的时候报错。至于为什么hive-sql读取不报错，可我是hive对orc文件的处理和presto不一样吧。<br>抱着这 样的猜想，决定去进行一次实验，去构建一个表结构定义和orc文件字段定义类型不一致的场景， 实验过程如下：</p>
+<h3 id="错误复现实验"><a href="#错误复现实验" class="headerlink" title="错误复现实验"></a>错误复现实验</h3><h4 id="创建测试表test-string"><a href="#创建测试表test-string" class="headerlink" title="创建测试表test_string"></a>创建测试表test_string</h4><pre><code>tips:这里创建test_string表是为了将表中的orc文件拷贝到另外的test_int表
+</code></pre><blockquote>
+<p>create table :<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `test_string`(</span><br><span class="line">`server` string,</span><br><span class="line">`uid` string)</span><br><span class="line">ROW FORMAT SERDE</span><br><span class="line">    &apos;org.apache.hadoop.hive.ql.io.orc.OrcSerde&apos;</span><br><span class="line">STORED AS INPUTFORMAT</span><br><span class="line">    &apos;org.apache.hadoop.hive.ql.io.orc.OrcInputFormat&apos;</span><br><span class="line">OUTPUTFORMAT</span><br><span class="line">    &apos;org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat&apos;</span><br><span class="line"></span><br><span class="line">/* 或者可以简写为如下</span><br><span class="line">    CREATE TABLE `test_string`(</span><br><span class="line">        `server` string,</span><br><span class="line">        `uid` string)</span><br><span class="line">        STORED AS orc</span><br><span class="line">*/</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>hive-cli中执行show create table test_string输出如下:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `test_string`(</span><br><span class="line">`server` string,</span><br><span class="line">`uid` string)</span><br><span class="line">ROW FORMAT SERDE</span><br><span class="line">&apos;org.apache.hadoop.hive.ql.io.orc.OrcSerde&apos;</span><br><span class="line">STORED AS INPUTFORMAT</span><br><span class="line">&apos;org.apache.hadoop.hive.ql.io.orc.OrcInputFormat&apos;</span><br><span class="line">OUTPUTFORMAT</span><br><span class="line">&apos;org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat&apos;</span><br><span class="line">LOCATION</span><br><span class="line">&apos;hdfs://Ucluster/user/hive/warehouse/test_string&apos;</span><br><span class="line">TBLPROPERTIES (</span><br><span class="line">&apos;last_modified_by&apos;=&apos;work&apos;,</span><br><span class="line">&apos;last_modified_time&apos;=&apos;1560497239&apos;,</span><br><span class="line">&apos;transient_lastDdlTime&apos;=&apos;1560772601&apos;)</span><br><span class="line"></span><br><span class="line">// 这里看到hive表的location在hdfs的/user/hive/warehouse/test_string目录</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>向test_string表导入部分数据：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hive-cli&gt; </span><br><span class="line">insert into table test_string values (&apos;server1&apos;, &apos;1&apos;),(&apos;server2&apos;, &apos;2&apos;);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>退出hive-cli,查看test_string在hdfs上的orc文件信息概览</p>
+</blockquote>
+<p>hadoop fs -ls /user/hive/warehouse/test_string (发现其下有一个000000_0,这是test_string的orc存储文件,输出如下）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Found 1 items</span><br><span class="line">-rwxrwxrwt   3 root supergroup        323 2019-06-17 21:14 /user/hive/warehouse/test_string/000000_0</span><br></pre></td></tr></table></figure>
+<p>hive –orcfiledump /user/hive/warehouse/test_string/000000_0   （执行这个命令查看orc文件的概览信息, 输出如下）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">Processing data file /user/hive/warehouse/test_string/000000_0 [length: 323]</span><br><span class="line">Structure for /user/hive/warehouse/test_string/000000_0</span><br><span class="line">File Version: 0.12 with ORC_135</span><br><span class="line">Rows: 2</span><br><span class="line">Compression: ZLIB</span><br><span class="line">Compression size: 262144</span><br><span class="line">Type: struct&lt;server:string,uid:string&gt; (这里可以看到orc文件每行有两个字段，server和uid，且都是string类型)</span><br><span class="line"></span><br><span class="line">Stripe Statistics:</span><br><span class="line">  Stripe 1:</span><br><span class="line">    Column 0: count: 2 hasNull: false</span><br><span class="line">    Column 1: count: 2 hasNull: false min: server1 max: server2 sum: 14</span><br><span class="line">    Column 2: count: 2 hasNull: false min: 1 max: 2 sum: 2</span><br><span class="line"></span><br><span class="line">File Statistics:</span><br><span class="line">  Column 0: count: 2 hasNull: false</span><br><span class="line">  Column 1: count: 2 hasNull: false min: server1 max: server2 sum: 14</span><br><span class="line">  Column 2: count: 2 hasNull: false min: 1 max: 2 sum: 2</span><br><span class="line"></span><br><span class="line">Stripes:</span><br><span class="line">  Stripe: offset: 3 data: 32 rows: 2 tail: 51 index: 72</span><br><span class="line">    Stream: column 0 section ROW_INDEX start: 3 length 11</span><br><span class="line">    Stream: column 1 section ROW_INDEX start: 14 length 34</span><br><span class="line">    Stream: column 2 section ROW_INDEX start: 48 length 27</span><br><span class="line">    Stream: column 1 section DATA start: 75 length 15</span><br><span class="line">    Stream: column 1 section LENGTH start: 90 length 6</span><br><span class="line">    Stream: column 2 section DATA start: 96 length 5</span><br><span class="line">    Stream: column 2 section LENGTH start: 101 length 6</span><br><span class="line">    Encoding column 0: DIRECT</span><br><span class="line">    Encoding column 1: DIRECT_V2</span><br><span class="line">    Encoding column 2: DIRECT_V2</span><br><span class="line"></span><br><span class="line">File length: 323 bytes</span><br><span class="line">Padding length: 0 bytes</span><br><span class="line">Padding ratio: 0%</span><br></pre></td></tr></table></figure>
+<h4 id="创建测试表test-int"><a href="#创建测试表test-int" class="headerlink" title="创建测试表test_int"></a>创建测试表test_int</h4><blockquote>
+<p>create table (注意，这里创建表的uid字段是int类型)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `test_int`(</span><br><span class="line">       `server` string,</span><br><span class="line">       `uid` int)</span><br><span class="line">       STORED AS orc</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>此时，hive-cli中执行show create table test_int,输出内容内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE `test_int`(</span><br><span class="line">`server` string,</span><br><span class="line">`uid` bigint)</span><br><span class="line">ROW FORMAT SERDE</span><br><span class="line">&apos;org.apache.hadoop.hive.ql.io.orc.OrcSerde&apos;</span><br><span class="line">STORED AS INPUTFORMAT</span><br><span class="line">&apos;org.apache.hadoop.hive.ql.io.orc.OrcInputFormat&apos;</span><br><span class="line">OUTPUTFORMAT</span><br><span class="line">&apos;org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat&apos;</span><br><span class="line">LOCATION</span><br><span class="line">&apos;hdfs://Ucluster/user/hive/warehouse/test_int&apos;</span><br><span class="line">TBLPROPERTIES (</span><br><span class="line">&apos;last_modified_by&apos;=&apos;work&apos;,</span><br><span class="line">&apos;last_modified_time&apos;=&apos;1560497239&apos;,</span><br><span class="line">&apos;transient_lastDdlTime&apos;=&apos;1560770506&apos;)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>试着将test_string表的hdfs orc文件移动到test_int表的location下（这里是hdfs://Ucluster/user/hive/warehouse/test_int）</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">load data inpath &apos;hdfs://Ucluster/user/hive/warehouse/test_string/000000_0&apos; overwrite into table test_int;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>此时退出hive-cli ,查看test_int表的orc文件概览信息</p>
+</blockquote>
+<p> hive –orcfiledump /user/hive/warehouse/test_int/000000_0 </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">Processing data file /user/hive/warehouse/test_int/000000_0 [length: 323]</span><br><span class="line">Structure for /user/hive/warehouse/test_int/000000_0</span><br><span class="line">File Version: 0.12 with ORC_135</span><br><span class="line">Rows: 2</span><br><span class="line">Compression: ZLIB</span><br><span class="line">Compression size: 262144</span><br><span class="line">Type: struct&lt;server:string,uid:string&gt;</span><br><span class="line"></span><br><span class="line">Stripe Statistics:</span><br><span class="line">Stripe 1:</span><br><span class="line">    Column 0: count: 2 hasNull: false</span><br><span class="line">    Column 1: count: 2 hasNull: false min: server1 max: server2 sum: 14</span><br><span class="line">    Column 2: count: 2 hasNull: false min: 1 max: 2 sum: 2</span><br><span class="line"></span><br><span class="line">File Statistics:</span><br><span class="line">Column 0: count: 2 hasNull: false</span><br><span class="line">Column 1: count: 2 hasNull: false min: server1 max: server2 sum: 14</span><br><span class="line">Column 2: count: 2 hasNull: false min: 1 max: 2 sum: 2</span><br><span class="line"></span><br><span class="line">Stripes:</span><br><span class="line">Stripe: offset: 3 data: 32 rows: 2 tail: 51 index: 72</span><br><span class="line">    Stream: column 0 section ROW_INDEX start: 3 length 11</span><br><span class="line">    Stream: column 1 section ROW_INDEX start: 14 length 34</span><br><span class="line">    Stream: column 2 section ROW_INDEX start: 48 length 27</span><br><span class="line">    Stream: column 1 section DATA start: 75 length 15</span><br><span class="line">    Stream: column 1 section LENGTH start: 90 length 6</span><br><span class="line">    Stream: column 2 section DATA start: 96 length 5</span><br><span class="line">    Stream: column 2 section LENGTH start: 101 length 6</span><br><span class="line">    Encoding column 0: DIRECT</span><br><span class="line">    Encoding column 1: DIRECT_V2</span><br><span class="line">    Encoding column 2: DIRECT_V2</span><br><span class="line"></span><br><span class="line">File length: 323 bytes</span><br><span class="line">Padding length: 0 bytes</span><br><span class="line">Padding ratio: 0%</span><br></pre></td></tr></table></figure>
+<h3 id="hive-presto查询结果对比"><a href="#hive-presto查询结果对比" class="headerlink" title="hive/presto查询结果对比"></a>hive/presto查询结果对比</h3><p>经过上面两个建表的步骤，我们就得到了一个符合预期的test_int表（表的定义中uid为int类型， 表的hdfs orc文件中的uid的类型为string</p>
+<blockquote>
+<p>进入hive-cli，进行查询测试：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; select * from test_int;</span><br><span class="line">OK</span><br><span class="line">server1	1</span><br><span class="line">server2	2</span><br><span class="line">Time taken: 4.186 seconds, Fetched: 2 row(s)</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; select uid  from test_int;</span><br><span class="line">OK</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">Time taken: 0.178 seconds, Fetched: 2 row(s)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>进入presto-cli进行测试：</p>
+</blockquote>
+<p>presto-cli  –debug –server hadoop-master1:28080 –catalog hive –schema default  这里的hadoop-master1:28080为presto coordinator的主机名和监听端口，database使用默认的default库， 从结果发现，查询test_int表的string 类型字段是ok的，查询int类型的uid字段会报错。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// presto 查询string 类型的字段ok</span><br><span class="line">presto:default&gt; select server  from test_int;</span><br><span class="line"> server</span><br><span class="line">---------</span><br><span class="line"> server1</span><br><span class="line"> server2</span><br><span class="line">(2 rows)</span><br><span class="line">`</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">// 查询int类型的字段报错，复现之前的问题。</span><br><span class="line">presto:default&gt; select uid from test_int;</span><br><span class="line">java.lang.RuntimeException: Error fetching next at http://uhadoop-am0xlqvv-master1:28080/v1/statement/20190617_133934_00034_yetvx/2 returned an invalid response: JsonResponse&#123;statusCode=500, statusMessage=Internal Server Error, headers=&#123;content-length=[5070], content-type=[text/plain], date=[Mon, 17 Jun 2019 13:39:34 GMT]&#125;, hasValue=false&#125; [Error: com.fasterxml.jackson.databind.JsonMappingException: end index (8) must not be greater than size (1) (through reference chain: com.facebook.presto.client.QueryResults[&quot;data&quot;])</span><br><span class="line">	at com.fasterxml.jackson.databind.JsonMappingException.wrapWithPath(JsonMappingException.java:379)</span><br><span class="line">	at com.fasterxml.jackson.databind.JsonMappingException.wrapWithPath(JsonMappingException.java:339)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.std.StdSerializer.wrapAndThrow(StdSerializer.java:343)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.std.BeanSerializerBase.serializeFields(BeanSerializerBase.java:698)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.BeanSerializer.serialize(BeanSerializer.java:155)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.DefaultSerializerProvider.serializeValue(DefaultSerializerProvider.java:292)</span><br><span class="line">	at com.fasterxml.jackson.databind.ObjectWriter$Prefetch.serialize(ObjectWriter.java:1419)</span><br><span class="line">	at com.fasterxml.jackson.databind.ObjectWriter.writeValue(ObjectWriter.java:940)</span><br><span class="line">	at io.airlift.jaxrs.JsonMapper.writeTo(JsonMapper.java:233)</span><br><span class="line">	at org.glassfish.jersey.message.internal.WriterInterceptorExecutor$TerminalWriterInterceptor.invokeWriteTo(WriterInterceptorExecutor.java:266)</span><br><span class="line">	at org.glassfish.jersey.message.internal.WriterInterceptorExecutor$TerminalWriterInterceptor.aroundWriteTo(WriterInterceptorExecutor.java:251)</span><br><span class="line">	at org.glassfish.jersey.message.internal.WriterInterceptorExecutor.proceed(WriterInterceptorExecutor.java:163)</span><br><span class="line">	at org.glassfish.jersey.server.internal.JsonWithPaddingInterceptor.aroundWriteTo(JsonWithPaddingInterceptor.java:109)</span><br><span class="line">	at org.glassfish.jersey.message.internal.WriterInterceptorExecutor.proceed(WriterInterceptorExecutor.java:163)</span><br><span class="line">	at org.glassfish.jersey.server.internal.MappableExceptionWrapperInterceptor.aroundWriteTo(MappableExceptionWrapperInterceptor.java:85)</span><br><span class="line">	at org.glassfish.jersey.message.internal.WriterInterceptorExecutor.proceed(WriterInterceptorExecutor.java:163)</span><br><span class="line">	at org.glassfish.jersey.message.internal.MessageBodyFactory.writeTo(MessageBodyFactory.java:1135)</span><br><span class="line">	at org.glassfish.jersey.server.ServerRuntime$Responder.writeResponse(ServerRuntime.java:662)</span><br><span class="line">	at org.glassfish.jersey.server.ServerRuntime$Responder.processResponse(ServerRuntime.java:395)</span><br><span class="line">	at org.glassfish.jersey.server.ServerRuntime$Responder.process(ServerRuntime.java:385)</span><br><span class="line">	at org.glassfish.jersey.server.ServerRuntime$AsyncResponder$3.run(ServerRuntime.java:884)</span><br><span class="line">	at org.glassfish.jersey.internal.Errors$1.call(Errors.java:272)</span><br><span class="line">	at org.glassfish.jersey.internal.Errors$1.call(Errors.java:268)</span><br><span class="line">	at org.glassfish.jersey.internal.Errors.process(Errors.java:316)</span><br><span class="line">	at org.glassfish.jersey.internal.Errors.process(Errors.java:298)</span><br><span class="line">	at org.glassfish.jersey.internal.Errors.process(Errors.java:268)</span><br><span class="line">	at org.glassfish.jersey.process.internal.RequestScope.runInScope(RequestScope.java:289)</span><br><span class="line">	at org.glassfish.jersey.server.ServerRuntime$AsyncResponder.resume(ServerRuntime.java:916)</span><br><span class="line">	at org.glassfish.jersey.server.ServerRuntime$AsyncResponder.resume(ServerRuntime.java:872)</span><br><span class="line">	at io.airlift.http.server.AsyncResponseHandler$1.onSuccess(AsyncResponseHandler.java:102)</span><br><span class="line">	at com.google.common.util.concurrent.Futures$CallbackListener.run(Futures.java:1347)</span><br><span class="line">	at io.airlift.concurrent.BoundedExecutor.drainQueue(BoundedExecutor.java:78)</span><br><span class="line">	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)</span><br><span class="line">	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)</span><br><span class="line">	at java.lang.Thread.run(Thread.java:748)</span><br><span class="line">Caused by: java.lang.IndexOutOfBoundsException: end index (8) must not be greater than size (1)</span><br><span class="line">	at io.airlift.slice.Preconditions.checkPositionIndexes(Preconditions.java:81)</span><br><span class="line">	at io.airlift.slice.Slice.checkIndexLength(Slice.java:1267)</span><br><span class="line">	at io.airlift.slice.Slice.getLong(Slice.java:479)</span><br><span class="line">	at com.facebook.presto.spi.block.AbstractVariableWidthBlock.getLong(AbstractVariableWidthBlock.java:63)</span><br><span class="line">	at com.facebook.presto.spi.type.BigintType.getObjectValue(BigintType.java:38)</span><br><span class="line">	at com.facebook.presto.server.protocol.RowIterable$RowIterator.computeNext(RowIterable.java:77)</span><br><span class="line">	at com.facebook.presto.server.protocol.RowIterable$RowIterator.computeNext(RowIterable.java:50)</span><br><span class="line">	at com.google.common.collect.AbstractIterator.tryToComputeNext(AbstractIterator.java:141)</span><br><span class="line">	at com.google.common.collect.AbstractIterator.hasNext(AbstractIterator.java:136)</span><br><span class="line">	at com.google.common.collect.Iterators$ConcatenatedIterator.hasNext(Iterators.java:1331)</span><br><span class="line">	at com.google.common.collect.Iterators$1.hasNext(Iterators.java:136)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.std.IterableSerializer.serializeContents(IterableSerializer.java:83)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.std.IterableSerializer.serialize(IterableSerializer.java:74)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.std.IterableSerializer.serialize(IterableSerializer.java:12)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.std.StdDelegatingSerializer.serialize(StdDelegatingSerializer.java:170)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.BeanPropertyWriter.serializeAsField(BeanPropertyWriter.java:693)</span><br><span class="line">	at com.fasterxml.jackson.databind.ser.std.BeanSerializerBase.serializeFields(BeanSerializerBase.java:690)</span><br><span class="line">	... 31 more</span><br><span class="line">]</span><br><span class="line">	at com.facebook.presto.client.StatementClientV1.requestFailedException(StatementClientV1.java:436)</span><br><span class="line">	at com.facebook.presto.client.StatementClientV1.advance(StatementClientV1.java:383)</span><br><span class="line">	at com.facebook.presto.cli.StatusPrinter.printInitialStatusUpdates(StatusPrinter.java:123)</span><br><span class="line">	at com.facebook.presto.cli.Query.renderQueryOutput(Query.java:137)</span><br><span class="line">	at com.facebook.presto.cli.Query.renderOutput(Query.java:121)</span><br><span class="line">	at com.facebook.presto.cli.Console.process(Console.java:312)</span><br><span class="line">	at com.facebook.presto.cli.Console.runConsole(Console.java:256)</span><br><span class="line">	at com.facebook.presto.cli.Console.run(Console.java:146)</span><br><span class="line">	at com.facebook.presto.cli.Presto.main(Presto.java:31)</span><br><span class="line">Query is gone (server restarted?)</span><br></pre></td></tr></table></figure>
+<h3 id="测试总结"><a href="#测试总结" class="headerlink" title="测试总结"></a>测试总结</h3><p>如果想让hive以orc格式存储的表能正常在presto中查询，最好保证orc文件的字段类型定义和create table时的定义一致，否则，有可能会造成hive-cli中查询正常，在presto-cli 中查询异常的情况。 特别是在从别处拷贝orc文件过来的时候，需要先做一下类型比对。<br>ps: 为何hive-cli中查询可以兼容字段类型不一致，而presto中确不行，就需要看presto的源码了。之前从网上看文档，presto在读取hdfs orc文件是进行了一些优化的，有了解细节的大大可以告诉我一声哈。另，测试是发现，test_int表在hive中查询uid字段，如果有非法字段，会显示为null.</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/presto/" rel="tag"># presto</a>
+          
+            <a href="/tags/hive/" rel="tag"># hive</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/21/201904-cdh发行版下phoenix on hbase使用/" rel="next" title="cdh发行版下Phoenix on hbase的使用">
+                <i class="fa fa-chevron-left"></i> cdh发行版下Phoenix on hbase的使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="https://img3.doubanio.com/icon/ul54452955-3.jpg" alt="不知火">
+          <p class="site-author-name" itemprop="name">不知火</p>
+           
+              <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/54452955" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题还原："><span class="nav-number">1.</span> <span class="nav-text">问题还原：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#排查思路"><span class="nav-number">2.</span> <span class="nav-text">排查思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#错误复现实验"><span class="nav-number">3.</span> <span class="nav-text">错误复现实验</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#创建测试表test-string"><span class="nav-number">3.1.</span> <span class="nav-text">创建测试表test_string</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建测试表test-int"><span class="nav-number">3.2.</span> <span class="nav-text">创建测试表test_int</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hive-presto查询结果对比"><span class="nav-number">4.</span> <span class="nav-text">hive/presto查询结果对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试总结"><span class="nav-number">5.</span> <span class="nav-text">测试总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知火</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://buqisuitu.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2019/06/17/201906-presto查询hive表报错end index must not be greater than size/';
+          this.page.identifier = '2019/06/17/201906-presto查询hive表报错end index must not be greater than size/';
+          this.page.title = 'presto查询hive表报错:end index must not be greater than size问题分析和解决';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://buqisuitu.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
