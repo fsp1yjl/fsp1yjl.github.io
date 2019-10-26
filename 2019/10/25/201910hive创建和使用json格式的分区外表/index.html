@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="不知火">
 <meta property="og:description" content="引子记录这篇博文是因为是因为有客户反馈过来一个hive问题：对一个hive中的json数据外表执行 select * from table_name limit 1;报错：RuntimeException org.apache.hadoop.hive.ql.metadata.HiveException: Failed with exception nulljava.lang.NullPointer">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-26T12:13:12.517Z">
+<meta property="og:updated_time" content="2019-10-26T12:20:50.321Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="hive创建和使用json格式的分区外表">
 <meta name="twitter:description" content="引子记录这篇博文是因为是因为有客户反馈过来一个hive问题：对一个hive中的json数据外表执行 select * from table_name limit 1;报错：RuntimeException org.apache.hadoop.hive.ql.metadata.HiveException: Failed with exception nulljava.lang.NullPointer">
@@ -376,7 +376,7 @@
 
       
         <h3 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h3><p>记录这篇博文是因为是因为有客户反馈过来一个hive问题：<br>对一个hive中的json数据外表执行 select * from table_name limit 1;报错：RuntimeException org.apache.hadoop.hive.ql.metadata.HiveException: Failed with exception nulljava.lang.NullPointerException</p>
-<p>就先用自己的集群做了测试，发现是OK，最后去客户的集群操作同样的测试会报错，最后发现客户的集群hive版本很老1.1的，而我在hive1.2.1, hive 2.3.3上测试都是ok, 最后去社区去查了下，发现是hive 1.1版本的一个bug, 在1.2.0版本已经修复，最后推荐客户升级版本解决问题。<br>1.1.0修复的patch在<a href="https://issues.apache.org/jira/browse/HIVE-10437" target="_blank" rel="noopener">这里</a>，问题描述大概是， 如果对定义了分区的hive表做查询但不包含map/reduce任务但话，会报错。除了历史原因，应该没多少会在生产中用这个版本了。</p>
+<p>就先用自己的集群做了测试，发现是OK，最后去客户的集群操作同样的测试会报错，最后发现客户的集群hive版本很老1.1的，而我在hive1.2.1, hive 2.3.3上测试都是ok, 最后去社区去查了下，发现是hive 1.1版本的一个bug, 在1.2.0版本已经修复，最后推荐客户升级版本解决问题。<br><a id="more"></a><br>1.1.0修复的patch在<a href="https://issues.apache.org/jira/browse/HIVE-10437" target="_blank" rel="noopener">这里</a>，问题描述大概是， 如果对定义了分区的hive表做查询但不包含map/reduce任务但话，会报错。除了历史原因，应该没多少会在生产中用这个版本了。</p>
 <p>这里记录下测试创建json类型的带分区hive外表的操作过程:(在hive1.2.1， hive2.3.3两个版本下进行过测试)</p>
 <h3 id="测试过程"><a href="#测试过程" class="headerlink" title="测试过程"></a>测试过程</h3><ul>
 <li>创建外表</li>
