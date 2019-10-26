@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="presto,hive,">
+  <meta name="keywords" content="hive,presto,">
 
 
 
@@ -87,18 +87,18 @@
 
 
 
-<meta name="description" content="问题还原： 集群环境    hive 2.3.3    presto 0.208    hadoop 2.6集群有张hive表使用hive-cli查询是OK， 但是使用presto cli进行select * from table_name 同样的sql 语法查询会报错，error stack大致如下：">
-<meta name="keywords" content="presto,hive">
+<meta name="description" content="tips:presto 0.208连接hive有不少坑，请尽量不要选择这个版本。 presto0.208以上的版本，jdk需要8_151+. 问题还原： 集群环境    hive 2.3.3    presto 0.208    hadoop 2.6集群有张hive表使用hive-cli查询是OK， 但是使用presto cli进行select * from table_name 同样的sql 语">
+<meta name="keywords" content="hive,presto">
 <meta property="og:type" content="article">
 <meta property="og:title" content="presto查询hive表报错:end index must not be greater than size问题分析和解决">
 <meta property="og:url" content="http://yoursite.com/2019/06/17/201906-presto查询hive表报错end index must not be greater than size/index.html">
 <meta property="og:site_name" content="不知火">
-<meta property="og:description" content="问题还原： 集群环境    hive 2.3.3    presto 0.208    hadoop 2.6集群有张hive表使用hive-cli查询是OK， 但是使用presto cli进行select * from table_name 同样的sql 语法查询会报错，error stack大致如下：">
+<meta property="og:description" content="tips:presto 0.208连接hive有不少坑，请尽量不要选择这个版本。 presto0.208以上的版本，jdk需要8_151+. 问题还原： 集群环境    hive 2.3.3    presto 0.208    hadoop 2.6集群有张hive表使用hive-cli查询是OK， 但是使用presto cli进行select * from table_name 同样的sql 语">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-06-17T14:00:28.280Z">
+<meta property="og:updated_time" content="2019-10-26T07:59:44.491Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="presto查询hive表报错:end index must not be greater than size问题分析和解决">
-<meta name="twitter:description" content="问题还原： 集群环境    hive 2.3.3    presto 0.208    hadoop 2.6集群有张hive表使用hive-cli查询是OK， 但是使用presto cli进行select * from table_name 同样的sql 语法查询会报错，error stack大致如下：">
+<meta name="twitter:description" content="tips:presto 0.208连接hive有不少坑，请尽量不要选择这个版本。 presto0.208以上的版本，jdk需要8_151+. 问题还原： 集群环境    hive 2.3.3    presto 0.208    hadoop 2.6集群有张hive表使用hive-cli查询是OK， 但是使用presto cli进行select * from table_name 同样的sql 语">
 
 
 
@@ -375,7 +375,8 @@
       
 
       
-        <h3 id="问题还原："><a href="#问题还原：" class="headerlink" title="问题还原："></a>问题还原：</h3><blockquote>
+        <p>tips:<br>presto 0.208连接hive有不少坑，请尽量不要选择这个版本。 presto0.208以上的版本，jdk需要8_151+.</p>
+<h3 id="问题还原："><a href="#问题还原：" class="headerlink" title="问题还原："></a>问题还原：</h3><blockquote>
 <p>集群环境<br>    hive 2.3.3<br>    presto 0.208<br>    hadoop 2.6<br>集群有张hive表使用hive-cli查询是OK， 但是使用presto cli进行select * from table_name 同样的sql 语法查询会报错，error stack大致如下：</p>
 </blockquote>
 <a id="more"></a>
@@ -459,9 +460,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/presto/" rel="tag"># presto</a>
-          
             <a href="/tags/hive/" rel="tag"># hive</a>
+          
+            <a href="/tags/presto/" rel="tag"># presto</a>
           
         </div>
       
@@ -483,6 +484,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/21/201910hive动态分区用法及注意事项/" rel="prev" title="hive动态分区用法及注意事项">
+                hive动态分区用法及注意事项 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -559,7 +564,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">33</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

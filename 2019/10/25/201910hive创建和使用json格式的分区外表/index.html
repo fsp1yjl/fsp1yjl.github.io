@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="ambari,">
+  <meta name="keywords" content="hive,">
 
 
 
@@ -87,26 +87,18 @@
 
 
 
-<meta name="description" content="引言Cloudera和Hortonworks算是最著名的两个做Hadoop产品发行版的公司了，之前在坐一个监控系统的时候，需要一个时序数据库去存放监控的时许数据，最后选择了opentsdb,因为opentsdb是一个基于HBase构建的数据库，所以，为了部署一个opentsdb集群，就不得不先部署一个HBase集群，当时为了和部门统一，使用了cdh发行版去安装，当时，是根据Cloudera官网都文">
-<meta name="keywords" content="ambari">
+<meta name="description" content="引子记录这篇博文是因为是因为有客户反馈过来一个hive问题：对一个hive中的json数据外表执行 select * from table_name limit 1;报错：RuntimeException org.apache.hadoop.hive.ql.metadata.HiveException: Failed with exception nulljava.lang.NullPointer">
+<meta name="keywords" content="hive">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用ambari快速构建Hadoop集群">
-<meta property="og:url" content="http://yoursite.com/2019/01/21/201901-使用ambari快速构建Hadoop集群/index.html">
+<meta property="og:title" content="hive创建和使用json格式的分区外表">
+<meta property="og:url" content="http://yoursite.com/2019/10/25/201910hive创建和使用json格式的分区外表/index.html">
 <meta property="og:site_name" content="不知火">
-<meta property="og:description" content="引言Cloudera和Hortonworks算是最著名的两个做Hadoop产品发行版的公司了，之前在坐一个监控系统的时候，需要一个时序数据库去存放监控的时许数据，最后选择了opentsdb,因为opentsdb是一个基于HBase构建的数据库，所以，为了部署一个opentsdb集群，就不得不先部署一个HBase集群，当时为了和部门统一，使用了cdh发行版去安装，当时，是根据Cloudera官网都文">
+<meta property="og:description" content="引子记录这篇博文是因为是因为有客户反馈过来一个hive问题：对一个hive中的json数据外表执行 select * from table_name limit 1;报错：RuntimeException org.apache.hadoop.hive.ql.metadata.HiveException: Failed with exception nulljava.lang.NullPointer">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/2019/01/ambari-https-verify.png">
-<meta property="og:image" content="http://yoursite.com/images/2019/01/ambari-agent-host.png">
-<meta property="og:image" content="http://yoursite.com/images/2019/01/ambari-login.png">
-<meta property="og:image" content="http://yoursite.com/images/2019/01/ambari-dashboard.png">
-<meta property="og:image" content="http://yoursite.com/images/2019/01/ambari-services.png">
-<meta property="og:image" content="http://yoursite.com/images/2019/01/ambari-hosts.png">
-<meta property="og:image" content="http://yoursite.com/images/2019/01/ambari-stacks.png">
-<meta property="og:updated_time" content="2019-02-16T08:45:46.812Z">
+<meta property="og:updated_time" content="2019-10-26T12:13:12.517Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用ambari快速构建Hadoop集群">
-<meta name="twitter:description" content="引言Cloudera和Hortonworks算是最著名的两个做Hadoop产品发行版的公司了，之前在坐一个监控系统的时候，需要一个时序数据库去存放监控的时许数据，最后选择了opentsdb,因为opentsdb是一个基于HBase构建的数据库，所以，为了部署一个opentsdb集群，就不得不先部署一个HBase集群，当时为了和部门统一，使用了cdh发行版去安装，当时，是根据Cloudera官网都文">
-<meta name="twitter:image" content="http://yoursite.com/images/2019/01/ambari-https-verify.png">
+<meta name="twitter:title" content="hive创建和使用json格式的分区外表">
+<meta name="twitter:description" content="引子记录这篇博文是因为是因为有客户反馈过来一个hive问题：对一个hive中的json数据外表执行 select * from table_name limit 1;报错：RuntimeException org.apache.hadoop.hive.ql.metadata.HiveException: Failed with exception nulljava.lang.NullPointer">
 
 
 
@@ -134,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/01/21/201901-使用ambari快速构建Hadoop集群/">
+  <link rel="canonical" href="http://yoursite.com/2019/10/25/201910hive创建和使用json格式的分区外表/">
 
 
 
 
 
-  <title> 使用ambari快速构建Hadoop集群 | 不知火 </title>
+  <title> hive创建和使用json格式的分区外表 | 不知火 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -279,7 +271,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/21/201901-使用ambari快速构建Hadoop集群/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/25/201910hive创建和使用json格式的分区外表/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
@@ -300,7 +292,7 @@
             
             
               
-                使用ambari快速构建Hadoop集群
+                hive创建和使用json格式的分区外表
               
             
           </h1>
@@ -315,8 +307,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-21T18:44:09+08:00">
-                2019-01-21
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-25T19:20:10+08:00">
+                2019-10-25
               </time>
             
 
@@ -356,8 +348,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/01/21/201901-使用ambari快速构建Hadoop集群/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/21/201901-使用ambari快速构建Hadoop集群/" itemprop="commentCount"></span>
+                <a href="/2019/10/25/201910hive创建和使用json格式的分区外表/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/10/25/201910hive创建和使用json格式的分区外表/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -383,29 +375,29 @@
       
 
       
-        <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>Cloudera和Hortonworks算是最著名的两个做Hadoop产品发行版的公司了，之前在坐一个监控系统的时候，需要一个时序数据库去存放监控的时许数据，最后选择了opentsdb,因为opentsdb是一个基于HBase构建的数据库，所以，为了部署一个opentsdb集群，就不得不先部署一个HBase集群，当时为了和部门统一，使用了cdh发行版去安装，当时，是根据Cloudera官网都文档step by step一点点部署起来（我并没有选择免费版的cloudera manager)，可谓是极其耗时，因为不熟悉，我需要一步步敲命令，确认每一步的结果，如果遇到问题，还还要花时间却Google解决办法。<br><a id="more"></a></p>
-<p>Hadoop生态中的组建实在是太多了， zookeeper、Hadoop core、HBase、Yarn、Strom、Spark…, 如果有个管理控制台让我只要点点点就可以创建一个集群，并按自己需求管理组建就好了。当然了，这个肯定是有的，付费的自然也是很多的，比如华为的FusionCloud,cloudera的付费版cloudera manager, 说起免费的，被提到次数最多的就是Hortonworks的ambari和 Cloudera的cdh manager了，最近部门同事在基于ambari做二次开发，我也顺手去学习了一下，虽然现在hortonworks和Cloudera合并了，但是毕竟ambari相对于cdh, 是一个完全开源的Apache顶级项目，还是值得使用的。</p>
-<p>维基百科上看到的关于ambari项目的说明：</p>
-<blockquote>
-<p>Apache Ambari is a software project of the Apache Software Foundation. Ambari enables system administrators to provision, manage and monitor a Hadoop cluster, and also to integrate Hadoop with the existing enterprise infrastructure. Ambari was a sub-project of Hadoop but is now a top-level project in its own right.<br>Ambari is used by companies including IBM, Hortonworks, Cardinal Health, EBay, Expedia, Kayak.com, Lending club, Neustar, Pandora Radio, Samsung, Shutterfly, and Spotify.</p>
-</blockquote>
-<h3 id="部署踩坑"><a href="#部署踩坑" class="headerlink" title="部署踩坑"></a>部署踩坑</h3><p>分布式系统实践的一大障碍就是，往往需要3+台机器去完成部署测试，而目前我手头上我没有那么多机器，所以首先想到的是docker, 我想在我的mac上启动3个centos7的容器来进行我的测试，实践证明，这是一个苦涩的体验，建议有条件的小伙伴，还是乖乖地搞几个虚拟机或者云主机去实验吧。(写这个总结都时候，距离我实验已经过去一个月了，里面很多坑由于疏于记录，已经忘记了😭)</p>
-<ol>
-<li>“docker Failed to get D-Bus connection”报错<br>在容器中安装启动httpd，postgresql，sshd的时候，可能会启动报错，这个在stackoverflow查到不少解决方案，<a href="https://serverfault.com/questions/824975/failed-to-get-d-bus-connection-operation-not-permitted" target="_blank" rel="noopener">参考</a>，我是使用如下方式解决的这个问题：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 容器启动时，带上--privileged参数， 并指明启动脚本/usr/lib/systemd/systemd --system &amp;</span><br><span class="line">docker run --name httpd -p 8080:80 -itd  --privileged centos /usr/lib/systemd/systemd --system &amp;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>2.解决https报错问题(certificate verify failed)：<br>    yum install openssl<br>    vim /etc/python/cert-verification.cfg    (set verify to disable)<br><img src="/images/2019/01/ambari-https-verify.png" alt></p>
-<p>3.解决远程访问问题：<br>yum -y install openssh-server<br>systemctl start sshd.service</p>
-<p>4.解决host验证失败问题：<br>vim /etc/ambari-agent/conf/ambari-agent.ini<br>security下增加：force_https_protocol=PROTOCOL_TLSv1_2</p>
-<p><img src="/images/2019/01/ambari-agent-host.png" alt></p>
-<p>5.ambari默认的postgresql数据库无法初始化问题<br>容器下的数据库需要我们自己去做初始化，可以用常见的mysql或者postgresql来做，基本流程是数据库服务启动，创建用户和数据库，然后做用户授权，最后使用初始化sql脚步进行数据初始化,手动初始化Postgres 参考ambari<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.6.2.0/bk_ambari-administration/content/using_ambari_with_postgresql.html" target="_blank" rel="noopener">官方文档</a>(注意，必须要先修改pg_hba的配置，保证psql -U ambari -d ambari能够正常登录，后续脚本导入需要导入到ambari 这个schema下）</p>
-<p>经过一些列的折腾，终于在docker下把ambari安装完成，可以从web ui开始Hadoop组件安装了，但奈何我的机器只有8g内存，已经扛不住这样折腾的，最后，还是使用公司的测试账号，在我们的控制台上申请了祭台云主机进行测试。经过之前的踩坑，这次的测试已经顺畅了很多，其实也是依靠别人的参考文档，这里主要参考了官方文档和一个知乎的文。<br>1.<a href="https://docs.hortonworks.com/HDPDocuments/Ambari-2.5.2.0/bk_ambari-installation/content/ch_Getting_Ready.html" target="_blank" rel="noopener">官方文档</a>,可以根据自己的需要选择合理的版本，这里用较老的ambari-2.5进行测试<br>2.<a href="https://zhuanlan.zhihu.com/p/29673506" target="_blank" rel="noopener">知乎文档</a></p>
-<h3 id="页面功能展示"><a href="#页面功能展示" class="headerlink" title="页面功能展示"></a>页面功能展示</h3><p>登录页：<br><img src="/images/2019/01/ambari-login.png" alt></p>
-<p>dashboard:<br><img src="/images/2019/01/ambari-dashboard.png" alt></p>
-<p>服务列表:<br><img src="/images/2019/01/ambari-services.png" alt></p>
-<p>主机节点信息:<br><img src="/images/2019/01/ambari-hosts.png" alt></p>
-<p>组件版本信息:<br><img src="/images/2019/01/ambari-stacks.png" alt></p>
+        <h3 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h3><p>记录这篇博文是因为是因为有客户反馈过来一个hive问题：<br>对一个hive中的json数据外表执行 select * from table_name limit 1;报错：RuntimeException org.apache.hadoop.hive.ql.metadata.HiveException: Failed with exception nulljava.lang.NullPointerException</p>
+<p>就先用自己的集群做了测试，发现是OK，最后去客户的集群操作同样的测试会报错，最后发现客户的集群hive版本很老1.1的，而我在hive1.2.1, hive 2.3.3上测试都是ok, 最后去社区去查了下，发现是hive 1.1版本的一个bug, 在1.2.0版本已经修复，最后推荐客户升级版本解决问题。<br>1.1.0修复的patch在<a href="https://issues.apache.org/jira/browse/HIVE-10437" target="_blank" rel="noopener">这里</a>，问题描述大概是， 如果对定义了分区的hive表做查询但不包含map/reduce任务但话，会报错。除了历史原因，应该没多少会在生产中用这个版本了。</p>
+<p>这里记录下测试创建json类型的带分区hive外表的操作过程:(在hive1.2.1， hive2.3.3两个版本下进行过测试)</p>
+<h3 id="测试过程"><a href="#测试过程" class="headerlink" title="测试过程"></a>测试过程</h3><ul>
+<li>创建外表</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hive&gt; </span><br><span class="line">CREATE EXTERNAl TABLE test_json_dt(id BIGINT,text STRING) PARTITIONED BY (</span><br><span class="line">  `dt` string) ROW FORMAT SERDE &apos;org.apache.hive.hcatalog.data.JsonSerDe&apos; STORED AS TEXTFILE LOCATION</span><br><span class="line">  &apos;hdfs://Ucluster/tmp/test_json/&apos;;</span><br><span class="line"></span><br><span class="line">  #这里也可以直接写hdfs path的决定路径/tmp/test_json/</span><br><span class="line">  # 这里是使用 hcatalog的json包，如果是别的json包，可以使用add jar的方式加载进来 </span><br><span class="line">  # hive 1.2.1我测试，使用的是org.apache.hadoop.hive.contrib.serde2.JsonSerde, jar目录在/home/hadoop/hive/lib/hive-json-serde.jar. 如果使用org.apache.hive.hcatalog.data.JsonSerD,则 add jar /home/hadoop/hive/hcatalog/share/hcatalog/hive-hcatalog-core-1.2.1.jar</span><br><span class="line">  # hive 2.3.3我测试，使用的是org.apache.hive.hcatalog.data.JsonSerDe,jar目录在/home/hadoop/hive/hcatalog/share/hcatalog/hive-hcatalog-core-2.3.3.jar</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># 之后show create查看完整的创建语句如下</span><br><span class="line">hive&gt; show create table test_json_dt;</span><br><span class="line">OK</span><br><span class="line">CREATE EXTERNAL TABLE `test_json_dt`(</span><br><span class="line">  `id` bigint COMMENT &apos;from deserializer&apos;,</span><br><span class="line">  `text` string COMMENT &apos;from deserializer&apos;)</span><br><span class="line">PARTITIONED BY (</span><br><span class="line">  `dt` string)</span><br><span class="line">ROW FORMAT SERDE</span><br><span class="line">  &apos;org.apache.hive.hcatalog.data.JsonSerDe&apos;</span><br><span class="line">STORED AS INPUTFORMAT</span><br><span class="line">  &apos;org.apache.hadoop.mapred.TextInputFormat&apos;</span><br><span class="line">OUTPUTFORMAT</span><br><span class="line">  &apos;org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat&apos;</span><br><span class="line">LOCATION</span><br><span class="line">  &apos;hdfs://Ucluster/tmp/test_json&apos;</span><br><span class="line">TBLPROPERTIES (</span><br><span class="line">  &apos;transient_lastDdlTime&apos;=&apos;1572089495&apos;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>创建测试文件，并上传到分区表hdfs对应目录</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">shell&gt;</span><br><span class="line">echo &apos;&#123;&quot;id&quot;:1234544353,&quot;text&quot;:&quot;test_hive_json&quot;&#125;&apos; &gt; test.json</span><br><span class="line"></span><br><span class="line">hadoop fs  -mkdir -p /tmp/test_json/dt=2019-11</span><br><span class="line"></span><br><span class="line">hdfs dfs -put test.json /tmp/test_json/dt=2019-11/</span><br></pre></td></tr></table></figure>
+<ul>
+<li>修复表分区元信息，并测试</li>
+</ul>
+<pre><code>hive&gt;
+show partitions test_json_dt;
+msck repair table test_json_dt;
+show partitions test_json_dt;
 
+select * from test_json_dt;
+select * from test_json_dt;
+</code></pre>
       
     </div>
 
@@ -434,7 +426,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/ambari/" rel="tag"># ambari</a>
+            <a href="/tags/hive/" rel="tag"># hive</a>
           
         </div>
       
@@ -447,8 +439,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/16/201901-js中new的运算符优先级问题记录/" rel="next" title="js中new的运算符优先级问题记录">
-                <i class="fa fa-chevron-left"></i> js中new的运算符优先级问题记录
+              <a href="/2019/10/21/201910hive动态分区用法及注意事项/" rel="next" title="hive动态分区用法及注意事项">
+                <i class="fa fa-chevron-left"></i> hive动态分区用法及注意事项
               </a>
             
           </div>
@@ -456,10 +448,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/02/02/2019火车记忆-1/" rel="prev" title="火车记忆-1">
-                火车记忆-1 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -604,7 +592,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署踩坑"><span class="nav-number">2.</span> <span class="nav-text">部署踩坑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#页面功能展示"><span class="nav-number">3.</span> <span class="nav-text">页面功能展示</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#引子"><span class="nav-number">1.</span> <span class="nav-text">引子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试过程"><span class="nav-number">2.</span> <span class="nav-text">测试过程</span></a></li></ol></div>
             
 
           </div>
@@ -741,9 +729,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2019/01/21/201901-使用ambari快速构建Hadoop集群/';
-          this.page.identifier = '2019/01/21/201901-使用ambari快速构建Hadoop集群/';
-          this.page.title = '使用ambari快速构建Hadoop集群';
+          this.page.url = 'http://yoursite.com/2019/10/25/201910hive创建和使用json格式的分区外表/';
+          this.page.identifier = '2019/10/25/201910hive创建和使用json格式的分区外表/';
+          this.page.title = 'hive创建和使用json格式的分区外表';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://buqisuitu.disqus.com/embed.js';
