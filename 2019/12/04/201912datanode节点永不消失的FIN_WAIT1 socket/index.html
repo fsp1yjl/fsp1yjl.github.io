@@ -1,0 +1,760 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="hdfs,socket,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="有个hadoop集群的datanode节点,datanode rpc端口50010， netstat -antp|grep 50010会发现大量FIN_WAIT1状态的socket，且长时间不消失，看了socket的对端机器，发现同一个连接，显示的状态一直是established. 根据网上的资料，做了一个实验,重现了这个现象">
+<meta name="keywords" content="hdfs,socket">
+<meta property="og:type" content="article">
+<meta property="og:title" content="datanode节点大量长驻FIN_WAIT1 socket">
+<meta property="og:url" content="http://yoursite.com/2019/12/04/201912datanode节点永不消失的FIN_WAIT1 socket/index.html">
+<meta property="og:site_name" content="不知火">
+<meta property="og:description" content="有个hadoop集群的datanode节点,datanode rpc端口50010， netstat -antp|grep 50010会发现大量FIN_WAIT1状态的socket，且长时间不消失，看了socket的对端机器，发现同一个连接，显示的状态一直是established. 根据网上的资料，做了一个实验,重现了这个现象">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-06-09T09:44:38.788Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="datanode节点大量长驻FIN_WAIT1 socket">
+<meta name="twitter:description" content="有个hadoop集群的datanode节点,datanode rpc端口50010， netstat -antp|grep 50010会发现大量FIN_WAIT1状态的socket，且长时间不消失，看了socket的对端机器，发现同一个连接，显示的状态一直是established. 根据网上的资料，做了一个实验,重现了这个现象">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/12/04/201912datanode节点永不消失的FIN_WAIT1 socket/">
+
+
+
+
+
+  <title> datanode节点大量长驻FIN_WAIT1 socket | 不知火 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2519991216496e1fcf56707e51436dd2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不知火</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/04/201912datanode节点永不消失的FIN_WAIT1 socket/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="不知火">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知火">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                datanode节点大量长驻FIN_WAIT1 socket
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-04T17:05:34+08:00">
+                2019-12-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/12/04/201912datanode节点永不消失的FIN_WAIT1 socket/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/12/04/201912datanode节点永不消失的FIN_WAIT1 socket/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>有个hadoop集群的datanode节点,datanode rpc端口50010， netstat -antp|grep 50010会发现大量FIN_WAIT1状态的socket，且长时间不消失，看了socket的对端机器，发现同一个连接，显示的状态一直是established. 根据网上的资料，做了一个实验,重现了这个现象</p>
+<a id="more"></a>
+<p>datanode机器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#fin_wait, socket发送缓冲区大量堵包</span><br><span class="line">tcp        0 517122 10.42.67.209:50010          10.42.51.120:41218          FIN_WAIT1   -</span><br></pre></td></tr></table></figure>
+<p>对端机器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#established, socket接收端缓冲区大量堵包</span><br><span class="line">tcp   527752      0 10.42.51.120:41218          10.42.67.209:50010          ESTABLISHED 4765/java</span><br></pre></td></tr></table></figure>
+<p>server.cpp:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ctype.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;malloc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sockSrv = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">struct</span> sockaddr_in addrSrv;</span><br><span class="line">	addrSrv.sin_family = AF_INET;</span><br><span class="line">	addrSrv.sin_addr.s_addr = INADDR_ANY;</span><br><span class="line">	addrSrv.sin_port = htons(<span class="number">8765</span>);</span><br><span class="line"></span><br><span class="line">	bind(sockSrv, (<span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *)&amp;addrSrv, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_in));</span><br><span class="line"></span><br><span class="line">	listen(sockSrv, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">struct</span> sockaddr_in addrClient;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_in);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> sockConn = accept(sockSrv, (<span class="keyword">struct</span> sockaddr *)&amp;addrClient, (<span class="keyword">socklen_t</span>*)&amp;len);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">        <span class="comment">// server端，如果不执行会车，会导致server一直阻塞在这里，不消费socket接收缓冲区，造成接收缓冲区堵塞</span></span><br><span class="line">		getchar();</span><br><span class="line">		<span class="keyword">char</span> szRecvBuf[<span class="number">50001</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">		<span class="keyword">int</span> iRet = recv(sockConn, szRecvBuf, <span class="keyword">sizeof</span>(szRecvBuf) - <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"iRet is %d\n"</span>, iRet);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	close(sockConn);</span><br><span class="line">	close(sockSrv);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// g++ server.cpp -o server</span></span><br></pre></td></tr></table></figure></p>
+<p>client.cpp:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;ctype.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;malloc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;netinet/in.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdarg.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> sockClient = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> sockaddr_in addrSrv;</span><br><span class="line">    addrSrv.sin_addr.s_addr = inet_addr(<span class="string">"10.9.174.174"</span>);</span><br><span class="line">    addrSrv.sin_family = AF_INET;</span><br><span class="line">    addrSrv.sin_port = htons(<span class="number">8765</span>);</span><br><span class="line">    connect(sockClient, ( <span class="keyword">const</span> <span class="keyword">struct</span> sockaddr *)&amp;addrSrv, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_in));</span><br><span class="line"></span><br><span class="line">	<span class="meta">#<span class="meta-keyword">define</span> N 2000</span></span><br><span class="line">	<span class="keyword">char</span> szSendBuf[N] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">unsigned</span> <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) <span class="comment">//字符数组最后一个字符不要求是‘\0’</span></span><br><span class="line">	&#123;</span><br><span class="line">		szSendBuf[i] = <span class="string">'a'</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> total = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> iRet = send(sockClient, szSendBuf, <span class="keyword">sizeof</span>(szSendBuf) , <span class="number">0</span>);</span><br><span class="line">		total += iRet;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"iRet is %d, total send is %d\n"</span>, iRet, total);</span><br><span class="line">        <span class="comment">//启动后，会阻塞在这里，每次键盘会车一次，就会发一次包到server</span></span><br><span class="line">		getchar();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    close(sockClient);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// g++ client.cpp -o client</span></span><br></pre></td></tr></table></figure>
+<p>这里如果多个client发起请求，netstat -antp|grep 8765, listen socket会看到recv-q数值会不断增大(代表current syn backlog)，因为新的客户端请求并没有accept去处理，server端，新的socket的接收缓冲区也会会不断增大(tcpdump抓包看到新连接的三次握手已经完成，server端socket接收缓冲区已经在堆积，在缓冲区未满，还是能接收客户端发过来的数据，但是无法消费）。这个时候，即使client退出，server端listen socket的 syn backlog也不会减少。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tcp        3      0 0.0.0.0:8765            0.0.0.0:*               LISTEN      20479/./server</span><br><span class="line">tcp     2001      0 10.9.174.174:8765       10.9.153.134:34150      CLOSE_WAIT  -</span><br><span class="line">tcp        0      0 10.9.174.174:8765       10.9.153.134:32894      CLOSE_WAIT  20479/./server</span><br><span class="line">tcp     4001      0 10.9.174.174:8765       10.9.153.134:32980      CLOSE_WAIT  -</span><br><span class="line">tcp     2001      0 10.9.174.174:8765       10.9.153.134:33570      CLOSE_WAIT  -</span><br></pre></td></tr></table></figure>
+<p>单个客户端不断回车发送消息给服务端，服务端socket如果接收缓冲区未满，会接收数据，并回复确认包，这个过程中，server端socket接收缓冲区不断堆积，告知客户端端滑动窗口先会上升，然后慢慢下降，因为缓冲区可用空间在不断下降。同时，如果server端socket接收窗口变为0后，client继续发送包，无法送到server端， 会看到client端socket 发送缓冲区开始堵包。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># tcpdump -i eth0 port 8765</span><br><span class="line"></span><br><span class="line">17:51:31.471769 IP uhadoop-0b232ove-master2.37154 &gt; uhadoop-0b232ove-master1.ultraseek-http: Flags [P.], seq 65403:66001, ack 1, win 221, options [nop,nop,TS val 1561362974 ecr 1561340287], length 598</span><br><span class="line">17:51:31.511212 IP uhadoop-0b232ove-master1.ultraseek-http &gt; uhadoop-0b232ove-master2.37154: Flags [.], ack 66001, win 587, options [nop,nop,TS val 1561363820 ecr 1561362974], length 0</span><br><span class="line">17:51:31.650382 IP uhadoop-0b232ove-master2.37154 &gt; uhadoop-0b232ove-master1.ultraseek-http: Flags [.], seq 66001:67403, ack 1, win 221, options [nop,nop,TS val 1561363153 ecr 1561363820], length 1402</span><br><span class="line">17:51:31.650387 IP uhadoop-0b232ove-master2.37154 &gt; uhadoop-0b232ove-master1.ultraseek-http: Flags [P.], seq 67403:68001, ack 1, win 221, options [nop,nop,TS val 1561363153 ecr 1561363820], length 598</span><br><span class="line">17:51:31.690253 IP uhadoop-0b232ove-master1.ultraseek-http &gt; uhadoop-0b232ove-master2.37154: Flags [.], ack 68001, win 572, options [nop,nop,TS val 1561363999 ecr 1561363153], length 0</span><br><span class="line">17:51:31.989746 IP uhadoop-0b232ove-master2.37154 &gt; uhadoop-0b232ove-master1.ultraseek-http: Flags [.], seq 68001:69403, ack 1, win 221, options [nop,nop,TS val 1561363492 ecr 1561363999], length 1402</span><br><span class="line">17:51:31.989764 IP uhadoop-0b232ove-master2.37154 &gt; uhadoop-0b232ove-master1.ultraseek-http: Flags [P.], seq 69403:70001, ack 1, win 221, options [nop,nop,TS val 1561363492 ecr 1561363999], length 598</span><br><span class="line">17:51:32.029119 IP uhadoop-0b232ove-master1.ultraseek-http &gt; uhadoop-0b232ove-master2.37154: Flags [.], ack 70001, win 557, options [nop,nop,TS val 1561364338 ecr 1561363492], length 0</span><br><span class="line">17:51:32.469041 IP uhadoop-0b232ove-master2.37154 &gt; uhadoop-0b232ove-master1.ultraseek-http: Flags [.], seq 70001:71403, ack 1, win 221, options [nop,nop,TS val 1561363972 ecr 1561364338], length 1402</span><br><span class="line">17:51:32.469060 IP uhadoop-0b232ove-master2.37154 &gt; uhadoop-0b232ove-master1.ultraseek-http: Flags [P.], seq 71403:72001, ack 1, win 221, options [nop,nop,TS val 1561363972 ecr 1561364338], length 598</span><br><span class="line">17:51:32.509158 IP uhadoop-0b232ove-master1.ultraseek-http &gt; uhadoop-0b232ove-master2.37154: Flags [.], ack 72001, win 542, options [nop,nop,TS val 1561364818 ecr 1561363972], length 0</span><br><span class="line">17:51:32.820495 IP uhadoop-0b232ove-master2.37154 &gt; uhadoop-0b232ove-master1.ultraseek-http: Flags [.], seq 72001:73403, ack 1, win 221, options [nop,nop,TS val 1561364323 ecr 1561364818], length 1402</span><br><span class="line">17:51:32.820504 IP uhadoop-0b232ove-master2.37154 &gt; uhadoop-0b232ove-master1.ultraseek-http: Flags [P.], seq 73403:74001, ack 1, win 221, options [nop,nop,TS val 1561364323 ecr 1561364818], length 598</span><br><span class="line">17:51:32.860173 IP uhadoop-0b232ove-master1.ultraseek-http &gt; uhadoop-0b232ove-master2.37154: Flags [.], ack 74001, win 527, options [nop,nop,TS val 1561365169 ecr 1561364323], length 0</span><br><span class="line">...</span><br><span class="line">18:35:01.617225 IP uhadoop-0b232ove-master1.ultraseek-http &gt; uhadoop-0b232ove-master2.37154: Flags [.], ack 332769, win 0, options [nop,nop,TS val 1563973926 ecr 1563491546], length 0</span><br><span class="line"></span><br><span class="line"># 最后窗口变为0</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hdfs/" rel="tag"># hdfs</a>
+          
+            <a href="/tags/socket/" rel="tag"># socket</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/30/201910mapreduce耗时任务调优/" rel="next" title="mapreduce耗时任务调优">
+                <i class="fa fa-chevron-left"></i> mapreduce耗时任务调优
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/09/20206golang中文件读取的多种姿势/" rel="prev" title="golang中文件读取的多种姿势">
+                golang中文件读取的多种姿势 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="https://img3.doubanio.com/icon/ul54452955-3.jpg" alt="不知火">
+          <p class="site-author-name" itemprop="name">不知火</p>
+           
+              <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/54452955" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知火</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://buqisuitu.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2019/12/04/201912datanode节点永不消失的FIN_WAIT1 socket/';
+          this.page.identifier = '2019/12/04/201912datanode节点永不消失的FIN_WAIT1 socket/';
+          this.page.title = 'datanode节点大量长驻FIN_WAIT1 socket';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://buqisuitu.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

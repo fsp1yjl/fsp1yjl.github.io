@@ -87,18 +87,18 @@
 
 
 
-<meta name="description" content="偶然看到一个google的一个golang实现的内存中b-tree包(传送门)，就细看了其实现. 对其他平衡术感谢趣的可以看这里：Left-Leaning Red-Black Tree, B+tree reddit上有个github.com/google/btree和 github.com/cznic/b比较的讨论，可以看到这个包的作者与用户的一些讨论。">
+<meta name="description" content="偶然看到一个google的一个golang实现的内存中b-tree包(传送门)，就细看了其实现. 对其他平衡树感谢趣的可以看这里：Left-Leaning Red-Black Tree, B+tree reddit上有个github.com/google/btree和 github.com/cznic/b比较的讨论，可以看到这个包的作者与用户的一些讨论。">
 <meta name="keywords" content="数据结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="由一个golang的B-Tree包展开-1(属性介绍)">
 <meta property="og:url" content="http://yoursite.com/2018/12/25/201812btree-1/index.html">
 <meta property="og:site_name" content="不知火">
-<meta property="og:description" content="偶然看到一个google的一个golang实现的内存中b-tree包(传送门)，就细看了其实现. 对其他平衡术感谢趣的可以看这里：Left-Leaning Red-Black Tree, B+tree reddit上有个github.com/google/btree和 github.com/cznic/b比较的讨论，可以看到这个包的作者与用户的一些讨论。">
+<meta property="og:description" content="偶然看到一个google的一个golang实现的内存中b-tree包(传送门)，就细看了其实现. 对其他平衡树感谢趣的可以看这里：Left-Leaning Red-Black Tree, B+tree reddit上有个github.com/google/btree和 github.com/cznic/b比较的讨论，可以看到这个包的作者与用户的一些讨论。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-27T13:27:29.142Z">
+<meta property="og:updated_time" content="2019-10-31T02:33:49.575Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="由一个golang的B-Tree包展开-1(属性介绍)">
-<meta name="twitter:description" content="偶然看到一个google的一个golang实现的内存中b-tree包(传送门)，就细看了其实现. 对其他平衡术感谢趣的可以看这里：Left-Leaning Red-Black Tree, B+tree reddit上有个github.com/google/btree和 github.com/cznic/b比较的讨论，可以看到这个包的作者与用户的一些讨论。">
+<meta name="twitter:description" content="偶然看到一个google的一个golang实现的内存中b-tree包(传送门)，就细看了其实现. 对其他平衡树感谢趣的可以看这里：Left-Leaning Red-Black Tree, B+tree reddit上有个github.com/google/btree和 github.com/cznic/b比较的讨论，可以看到这个包的作者与用户的一些讨论。">
 
 
 
@@ -375,7 +375,7 @@
       
 
       
-        <p>偶然看到一个google的一个golang实现的内存中b-tree包<a href="https://github.com/google/btree" target="_blank" rel="noopener">(传送门)</a>，就细看了其实现. 对其他平衡术感谢趣的可以看这里：<a href="https://github.com/petar/GoLLRB" target="_blank" rel="noopener">Left-Leaning Red-Black Tree</a>, <a href="https://github.com/cznic/b" target="_blank" rel="noopener">B+tree</a></p>
+        <p>偶然看到一个google的一个golang实现的内存中b-tree包<a href="https://github.com/google/btree" target="_blank" rel="noopener">(传送门)</a>，就细看了其实现. 对其他平衡树感谢趣的可以看这里：<a href="https://github.com/petar/GoLLRB" target="_blank" rel="noopener">Left-Leaning Red-Black Tree</a>, <a href="https://github.com/cznic/b" target="_blank" rel="noopener">B+tree</a></p>
 <p>reddit上有个github.com/google/btree和 github.com/cznic/b比较的讨论，可以看到这个包的作者与用户的一些讨论。</p>
 <a id="more"></a>
 <h3 id="b-tree的定义"><a href="#b-tree的定义" class="headerlink" title="b-tree的定义"></a>b-tree的定义</h3><p>关于btree的结构定义，《计算机程序设计艺术》和《算法导论》中的描述有点儿出入，知乎上有个细微区别的讨论(<a href="https://www.zhihu.com/question/19836260" target="_blank" rel="noopener">传送门</a>)， 记得我上学时数据结构教材是清华严蔚敏那版， 里面对btree的定义是参考了Knuth在《计算机程序设计艺术》的， 里面有个“阶“的概念，就是指一个节点可以有的最大子树的个数，一棵m阶b-tree的定义就如下了：</p>
@@ -580,7 +580,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">36</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -602,7 +602,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -671,7 +671,7 @@
         <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
