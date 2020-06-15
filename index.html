@@ -271,7 +271,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/09/20206golang中文件读取的多种姿势/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/15/202006golang文件下载的两种方式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="不知火">
@@ -293,7 +293,168 @@
             
               
                 
-                <a class="post-title-link" href="/2020/06/09/20206golang中文件读取的多种姿势/" itemprop="url">
+                <a class="post-title-link" href="/2020/06/15/202006golang文件下载的两种方式/" itemprop="url">
+                  golang中文件下载的两种方式
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-15T15:38:34+08:00">
+                2020-06-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/golang/" itemprop="url" rel="index">
+                    <span itemprop="name">golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/06/15/202006golang文件下载的两种方式/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/15/202006golang文件下载的两种方式/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>前面对golang中io读取文件的多种方式做了一个总结，这里记录下golang中文件下载保存的两种常用方式</p>
+<ul>
+<li>小文件下载保存<br>  小文件的话，因为http返回的Response.Body 对象是 io.ReadCloser类型，调用io/ioutil包提供的ReadAll可以将其内容全部读取放入一个临时的slice中，然后使用ioutil.WriteFile将内容写入目标文件中。</li>
+<li>大文件下载保存<br>  如果文件很大的，将文件内容全部读入一个临时的slice再一次性写入磁盘将占用大量的内存空间，同时写入效率也比较低。 比较推荐使用bufio包创建一个带缓冲区的writer对象，然后使用io.Copy方法实现 Response.Body这个reader到 writer对象的直接写入， 避免了内存大量占用的情况，同时提高了文件写入效率。</li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/06/15/202006golang文件下载的两种方式/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/09/202006golang中文件读取的多种姿势/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="不知火">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知火">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2020/06/09/202006golang中文件读取的多种姿势/" itemprop="url">
                   golang中文件读取的多种姿势
                 </a>
               
@@ -351,8 +512,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2020/06/09/20206golang中文件读取的多种姿势/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/09/20206golang中文件读取的多种姿势/" itemprop="commentCount"></span>
+                <a href="/2020/06/09/202006golang中文件读取的多种姿势/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/09/202006golang中文件读取的多种姿势/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -379,7 +540,7 @@
 
       
         
-          <p>在golang中有多种文件读取的方式，这里自己做了个总结，可以根据自己的喜好合理选择。 总结来说，主要就是如下集中：</p>
+          <p>在golang中有多种文件读取的方式，这里自己做了个总结，可以根据自己的喜好合理选择。 总结来说，主要就是如下几种：</p>
 <ul>
 <li>实现io.Reader接口的对象r，调用对应的r.Read()方法</li>
 <li>实现io.Reader接口的对象r,传入io.ReadFull()方法，进行读取</li>
@@ -388,7 +549,7 @@
 </ul>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2020/06/09/20206golang中文件读取的多种姿势/#more" rel="contents">
+            <a class="btn" href="/2020/06/09/202006golang中文件读取的多种姿势/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1687,163 +1848,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/16/201902-个人对openresty使用的反思/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="不知火">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="不知火">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2019/02/16/201902-个人对openresty使用的反思/" itemprop="url">
-                  对openresty使用的反思
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-16T17:03:09+08:00">
-                2019-02-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/nginx/" itemprop="url" rel="index">
-                    <span itemprop="name">nginx</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/02/16/201902-个人对openresty使用的反思/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/02/16/201902-个人对openresty使用的反思/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="总结反思"><a href="#总结反思" class="headerlink" title="总结反思"></a>总结反思</h3><p>如题，这是一个个人对openresty使用的反思贴，也是一个记录贴。说起来，在项目中使用openresty已经有不短的时间了，主要是做API网关和一些动态负载均衡的功能，转眼已经是2019年了，过完年回来，又要开始紧锣密鼓地推进工作进度了，其中一块功能又选择了使用openresty来做。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/02/16/201902-个人对openresty使用的反思/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </p></div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1891,7 +1895,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-count">37</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
