@@ -1,0 +1,786 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="golang-log,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="上一篇blog记录了实现一个基本日志包的过程，这里自己尝试实现一个带有rolling功能的日志包 其实从性能和功能单一的角度来说，很多日志库是不支持rolling相关的功能的，比如uber推出的zap日志包，就推荐用户自己通过logrotate等方式自己去处理日志rolling的问题。 不过有些场景下，我们希望日志文件能不需要外界干预的情况下正常运行。 可以通过实现一个支持rolling的io.W">
+<meta name="keywords" content="golang-log">
+<meta property="og:type" content="article">
+<meta property="og:title" content="golang中实现一个log包-2">
+<meta property="og:url" content="http://yoursite.com/2020/06/18/202006golang中实现一个log包-2/index.html">
+<meta property="og:site_name" content="不知火">
+<meta property="og:description" content="上一篇blog记录了实现一个基本日志包的过程，这里自己尝试实现一个带有rolling功能的日志包 其实从性能和功能单一的角度来说，很多日志库是不支持rolling相关的功能的，比如uber推出的zap日志包，就推荐用户自己通过logrotate等方式自己去处理日志rolling的问题。 不过有些场景下，我们希望日志文件能不需要外界干预的情况下正常运行。 可以通过实现一个支持rolling的io.W">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-06-19T17:59:49.980Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="golang中实现一个log包-2">
+<meta name="twitter:description" content="上一篇blog记录了实现一个基本日志包的过程，这里自己尝试实现一个带有rolling功能的日志包 其实从性能和功能单一的角度来说，很多日志库是不支持rolling相关的功能的，比如uber推出的zap日志包，就推荐用户自己通过logrotate等方式自己去处理日志rolling的问题。 不过有些场景下，我们希望日志文件能不需要外界干预的情况下正常运行。 可以通过实现一个支持rolling的io.W">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/06/18/202006golang中实现一个log包-2/">
+
+
+
+
+
+  <title> golang中实现一个log包-2 | 不知火 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2519991216496e1fcf56707e51436dd2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不知火</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/18/202006golang中实现一个log包-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="不知火">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知火">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                golang中实现一个log包-2
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-18T20:38:34+08:00">
+                2020-06-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/golang/" itemprop="url" rel="index">
+                    <span itemprop="name">golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/06/18/202006golang中实现一个log包-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/18/202006golang中实现一个log包-2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上一篇blog记录了实现一个基本日志包的过程，这里自己尝试实现一个带有rolling功能的日志包</p>
+<p>其实从性能和功能单一的角度来说，很多日志库是不支持rolling相关的功能的，比如uber推出的zap日志包，就推荐用户自己通过logrotate等方式自己去处理日志rolling的问题。 不过有些场景下，我们希望日志文件能不需要外界干预的情况下正常运行。 可以通过实现一个支持rolling的io.Writer来解决这个问题。</p>
+<a id="more"></a>
+<h3 id="基本功能"><a href="#基本功能" class="headerlink" title="基本功能"></a>基本功能</h3><ul>
+<li>支持多种rolling类型， 不切割，按日期切割，按文件大小切割</li>
+<li>能设置备份文件大小和个数，支持多余日志自动清理</li>
+</ul>
+<p>在github上看到一个已经有人实现了一个这样的工具包<a href="https://github.com/natefinch/lumberjack" target="_blank" rel="noopener">lumberjack</a>,从包中的Logger对象定义看，可以指定备份文件的大小/个数/保存日期，会按照时间来命令备份文件，并自动清除过期或者超过备份文件总数的日志，同时提供备份日志压缩功能。</p>
+<p>所以犯懒，直接集成这个包来做日志切割了,如下是lumberjack包中Logger struct的定义</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">type Logger struct &#123;</span><br><span class="line">	// Filename is the file to write logs to.  Backup log files will be retained</span><br><span class="line">	// in the same directory.  It uses &lt;processname&gt;-lumberjack.log in</span><br><span class="line">	// os.TempDir() if empty.</span><br><span class="line">	Filename string `json:&quot;filename&quot; yaml:&quot;filename&quot;`</span><br><span class="line"></span><br><span class="line">	// MaxSize is the maximum size in megabytes of the log file before it gets</span><br><span class="line">	// rotated. It defaults to 100 megabytes.</span><br><span class="line">	MaxSize int `json:&quot;maxsize&quot; yaml:&quot;maxsize&quot;`</span><br><span class="line"></span><br><span class="line">	// MaxAge is the maximum number of days to retain old log files based on the</span><br><span class="line">	// timestamp encoded in their filename.  Note that a day is defined as 24</span><br><span class="line">	// hours and may not exactly correspond to calendar days due to daylight</span><br><span class="line">	// savings, leap seconds, etc. The default is not to remove old log files</span><br><span class="line">	// based on age.</span><br><span class="line">	MaxAge int `json:&quot;maxage&quot; yaml:&quot;maxage&quot;`</span><br><span class="line"></span><br><span class="line">	// MaxBackups is the maximum number of old log files to retain.  The default</span><br><span class="line">	// is to retain all old log files (though MaxAge may still cause them to get</span><br><span class="line">	// deleted.)</span><br><span class="line">	MaxBackups int `json:&quot;maxbackups&quot; yaml:&quot;maxbackups&quot;`</span><br><span class="line"></span><br><span class="line">	// LocalTime determines if the time used for formatting the timestamps in</span><br><span class="line">	// backup files is the computer&apos;s local time.  The default is to use UTC</span><br><span class="line">	// time.</span><br><span class="line">	LocalTime bool `json:&quot;localtime&quot; yaml:&quot;localtime&quot;`</span><br><span class="line"></span><br><span class="line">	// Compress determines if the rotated log files should be compressed</span><br><span class="line">	// using gzip. The default is not to perform compression.</span><br><span class="line">	Compress bool `json:&quot;compress&quot; yaml:&quot;compress&quot;`</span><br><span class="line"></span><br><span class="line">	size int64</span><br><span class="line">	file *os.File</span><br><span class="line">	mu   sync.Mutex</span><br><span class="line"></span><br><span class="line">	millCh    chan bool</span><br><span class="line">	startMill sync.Once</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="v2版本日志包设计思路"><a href="#v2版本日志包设计思路" class="headerlink" title="v2版本日志包设计思路"></a>v2版本日志包设计思路</h3><p>这里在上篇博文的v1版本基础上，设计v2版本的日记包。<br>在包中声明一个RollingConf对象，来指明日志滚动切割配置,RollingType=0 则不切割日志，RollingType=1则按照文件大小来切割，这里暂时不支持按天进行日志文件滚动切割。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">type RollingConf struct &#123;</span><br><span class="line">	RollingType   int  // 0不切割，1按文件大小切割</span><br><span class="line">	MaxSize       int  // 单个文件最大容量，单位megabytes， 如果传0 ，则使用默认值100进行处理</span><br><span class="line">	MaxBackups    int  // 最大文件备份文件个数，如果为0，则不限制备份文件个数</span><br><span class="line">	MaxAge        int  //备份文件最大保留日期，单位为天，依据日志文件中的时间后缀做判断，如果为0，则不进行过期判断</span><br><span class="line">	CompressFlag  bool // 备份日志是否压缩，true开启压缩</span><br><span class="line">	LocaltimeFlag bool //是否使用本地时间格式标注备份文件，true表示使用</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个v2版本的初始化日志对象函数NewLogger进行修改，传参增加一个RollingConf参数，完整的日志对象初始化函数如下。基本思路就是，如果不开启rolling，则使用os.OpenFile去实现io.Writer接口，如果开启rolling，则调用lumberjack包，创建一个支持rolling的对象，这个对象同样实现了io.Writer接口。v2版本其他部分和v1保持一致，使用的时候，对v1,v2两个版本的变化是无感知的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">#v2/log.go</span><br><span class="line">func NewLogger(level int, logPath string, logFile string, r *RollingConf) *ELog &#123;</span><br><span class="line">	mkLogDir(logPath)</span><br><span class="line">	file := logPath + &quot;/&quot; + logFile</span><br><span class="line">	// writer, err := os.OpenFile(file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777)</span><br><span class="line">	// if err != nil &#123;</span><br><span class="line">	// 	panic(&quot;open log file error&quot;)</span><br><span class="line">	// &#125;</span><br><span class="line"></span><br><span class="line">	var writer io.Writer</span><br><span class="line"></span><br><span class="line">	switch r.RollingType &#123;</span><br><span class="line">	case 0: //不进行日志切割</span><br><span class="line">		var err error</span><br><span class="line">		if writer, err = os.OpenFile(file, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777); err != nil &#123;</span><br><span class="line">			panic(&quot;open log file error&quot;)</span><br><span class="line">		&#125;</span><br><span class="line">	case 1: //按文件大小进行切割，并指定</span><br><span class="line">		writer = &amp;lumberjack.Logger&#123;</span><br><span class="line">			Filename:   file,</span><br><span class="line">			MaxSize:    r.MaxSize,       // 单个文件最大容量，单位megabytes， 如果传0 ，则使用默认值100进行处理</span><br><span class="line">			MaxBackups: r.MaxBackups,    // 最大文件备份文件个数，如果为0，则不限制备份文件个数</span><br><span class="line">			MaxAge:     r.MaxAge,        //备份文件最大保留日期，单位为天，依据日志文件中的时间后缀做判断，如果为0，则不进行过期判断</span><br><span class="line">			Compress:   r.CompressFlag,  // 是否进行备份文件压缩，默认不压缩</span><br><span class="line">			LocalTime:  r.LocaltimeFlag, // 默认为false 代表使用utc输出</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	infoLog := log.New(writer, &quot;[info]&quot;, log.Ldate|log.Ltime)</span><br><span class="line">	warnLog := log.New(writer, &quot;[warn]&quot;, log.Ldate|log.Ltime|log.Llongfile)</span><br><span class="line">	errLog := log.New(writer, &quot;[err]&quot;, log.Ldate|log.Ltime|log.Lshortfile)</span><br><span class="line"></span><br><span class="line">	now := time.Now()</span><br><span class="line"></span><br><span class="line">	infoLogFile := &amp;fileLogger&#123;</span><br><span class="line">		logger:      infoLog,</span><br><span class="line">		curOpenFile: file,</span><br><span class="line">		writer:      writer,</span><br><span class="line">		openTime:    now,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	warnLogFile := &amp;fileLogger&#123;</span><br><span class="line">		logger:      warnLog,</span><br><span class="line">		curOpenFile: file,</span><br><span class="line">		writer:      writer,</span><br><span class="line">		openTime:    now,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	errLogFile := &amp;fileLogger&#123;</span><br><span class="line">		logger:      errLog,</span><br><span class="line">		curOpenFile: file,</span><br><span class="line">		writer:      writer,</span><br><span class="line">		openTime:    now,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	l := &amp;ELog&#123;</span><br><span class="line">		infoLogger: infoLogFile,</span><br><span class="line">		warnLogger: warnLogFile,</span><br><span class="line">		errLogger:  errLogFile,</span><br><span class="line">		minLevel:   level,</span><br><span class="line">	&#125;</span><br><span class="line">	return l</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="v2版本使用测试"><a href="#v2版本使用测试" class="headerlink" title="v2版本使用测试"></a>v2版本使用测试</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">#main.go</span><br><span class="line"></span><br><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">	log &quot;elog/log/v2&quot;</span><br><span class="line">	&quot;time&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">var logger *log.ELog</span><br><span class="line"></span><br><span class="line">func initLogger() &#123;</span><br><span class="line">	logPath := &quot;./logs&quot;</span><br><span class="line">	logFile := &quot;1.log&quot;</span><br><span class="line">	logLevel := log.InfoLevel</span><br><span class="line"></span><br><span class="line">	rollingConf := &amp;log.RollingConf&#123;</span><br><span class="line">		RollingType:   1,    // 0不切割，1按文件大小切割</span><br><span class="line">		MaxSize:       10,   // 单个文件最大容量，单位megabytes， 如果传0 ，则使用默认值100进行处理</span><br><span class="line">		MaxBackups:    5,    // 最大文件备份文件个数，如果为0，则不限制备份文件个数</span><br><span class="line">		MaxAge:        30,   //备份文件最大保留日期，单位为天，依据日志文件中的时间后缀做判断，如果为0，则不进行过期判断</span><br><span class="line">		CompressFlag:  true, // 备份日志是否压缩，true开启压缩</span><br><span class="line">		LocaltimeFlag: true, //是否使用本地时间格式标注备份文件，true表示使用</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	logger = log.NewLogger(logLevel, logPath, logFile, rollingConf)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line"></span><br><span class="line">	initLogger()</span><br><span class="line"></span><br><span class="line">	logger.Info(&quot;hello info&quot;)</span><br><span class="line"></span><br><span class="line">	for n := 0; n &lt; 10000; n++ &#123;</span><br><span class="line">		test()</span><br><span class="line">		time.Sleep(time.Millisecond * 50)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func test() &#123;</span><br><span class="line">	logger.Info(&quot;hello info &quot;)</span><br><span class="line">	logger.Warn(&quot;hello waring&quot;, &quot;warn1&quot;)</span><br><span class="line">	logger.Err(&quot;hello err&quot;, &quot;err1&quot;, &quot;kkkkkkk&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参考：<br><a href="https://github.com/arthurkiller/rollingWriter" target="_blank" rel="noopener">rolling writer</a><br><a href="https://github.com/natefinch/lumberjack" target="_blank" rel="noopener">lumberjack</a><br><a href="https://github.com/pingcap/log" target="_blank" rel="noopener">pingcap-log</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/golang-log/" rel="tag"># golang-log</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/18/202006golang中实现一个log包-1/" rel="next" title="golang中实现一个log包-1">
+                <i class="fa fa-chevron-left"></i> golang中实现一个log包-1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/19/202006hadoop使用及一些问题记录/" rel="prev" title="hadoop使用过程中的一些问题记录">
+                hadoop使用过程中的一些问题记录 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="https://img3.doubanio.com/icon/ul54452955-3.jpg" alt="不知火">
+          <p class="site-author-name" itemprop="name">不知火</p>
+           
+              <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/54452955" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本功能"><span class="nav-number">1.</span> <span class="nav-text">基本功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#v2版本日志包设计思路"><span class="nav-number">2.</span> <span class="nav-text">v2版本日志包设计思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#v2版本使用测试"><span class="nav-number">3.</span> <span class="nav-text">v2版本使用测试</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知火</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://buqisuitu.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2020/06/18/202006golang中实现一个log包-2/';
+          this.page.identifier = '2020/06/18/202006golang中实现一个log包-2/';
+          this.page.title = 'golang中实现一个log包-2';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://buqisuitu.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
