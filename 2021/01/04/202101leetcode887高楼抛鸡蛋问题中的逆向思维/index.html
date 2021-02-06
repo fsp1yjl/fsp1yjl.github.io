@@ -1,0 +1,797 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="之前在家里带宝宝之余，也刷了一些有意思的leetcode题目，把他们记录下来也是有意义的。这里是887 扔鸡蛋问题的基本描述：给你k个鸡蛋，可以使用这些鸡蛋对1到n共n层楼的每一层扔下，在这些楼层中第f层扔下时鸡蛋会碎，我们需要在不知道f的情况下，最少做多少次测试能确定鸡蛋刚好会碎的楼层f. 因为f不确定，我们的答案需要保证在最坏的情况下，最高效的检测方案。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="leetcode887super-egg-drop扔鸡蛋问题中的逆向思维">
+<meta property="og:url" content="http://yoursite.com/2021/01/04/202101leetcode887高楼抛鸡蛋问题中的逆向思维/index.html">
+<meta property="og:site_name" content="不知火">
+<meta property="og:description" content="之前在家里带宝宝之余，也刷了一些有意思的leetcode题目，把他们记录下来也是有意义的。这里是887 扔鸡蛋问题的基本描述：给你k个鸡蛋，可以使用这些鸡蛋对1到n共n层楼的每一层扔下，在这些楼层中第f层扔下时鸡蛋会碎，我们需要在不知道f的情况下，最少做多少次测试能确定鸡蛋刚好会碎的楼层f. 因为f不确定，我们的答案需要保证在最坏的情况下，最高效的检测方案。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-02-06T18:11:44.469Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="leetcode887super-egg-drop扔鸡蛋问题中的逆向思维">
+<meta name="twitter:description" content="之前在家里带宝宝之余，也刷了一些有意思的leetcode题目，把他们记录下来也是有意义的。这里是887 扔鸡蛋问题的基本描述：给你k个鸡蛋，可以使用这些鸡蛋对1到n共n层楼的每一层扔下，在这些楼层中第f层扔下时鸡蛋会碎，我们需要在不知道f的情况下，最少做多少次测试能确定鸡蛋刚好会碎的楼层f. 因为f不确定，我们的答案需要保证在最坏的情况下，最高效的检测方案。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/01/04/202101leetcode887高楼抛鸡蛋问题中的逆向思维/">
+
+
+
+
+
+  <title> leetcode887super-egg-drop扔鸡蛋问题中的逆向思维 | 不知火 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2519991216496e1fcf56707e51436dd2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">不知火</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/01/04/202101leetcode887高楼抛鸡蛋问题中的逆向思维/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="不知火">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://img3.doubanio.com/icon/ul54452955-3.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="不知火">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                leetcode887super-egg-drop扔鸡蛋问题中的逆向思维
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-01-04T17:35:34+08:00">
+                2021-01-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/leetcode/" itemprop="url" rel="index">
+                    <span itemprop="name">leetcode</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/leetcode/动态规划/" itemprop="url" rel="index">
+                    <span itemprop="name">动态规划</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/01/04/202101leetcode887高楼抛鸡蛋问题中的逆向思维/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/01/04/202101leetcode887高楼抛鸡蛋问题中的逆向思维/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前在家里带宝宝之余，也刷了一些有意思的leetcode题目，把他们记录下来也是有意义的。<br>这里是887 扔鸡蛋问题的基本描述：<br>给你k个鸡蛋，可以使用这些鸡蛋对1到n共n层楼的每一层扔下，在这些楼层中第f层扔下时鸡蛋会碎，我们需要在不知道f的情况下，最少做多少次测试能确定鸡蛋刚好会碎的楼层f. 因为f不确定，我们的答案需要保证在最坏的情况下，最高效的检测方案。<br><a id="more"></a></p>
+<h3 id="1-问题描述"><a href="#1-问题描述" class="headerlink" title="1.问题描述"></a>1.问题描述</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">You are given K eggs, and you have access to a building with N floors from 1 to N.</span><br><span class="line"></span><br><span class="line">Each egg is identical in function, and if an egg breaks, you cannot drop it again.</span><br><span class="line"></span><br><span class="line">You know that there exists a floor F with 0 &lt;= F &lt;= N such that any egg dropped at a floor higher than F will break, and any egg dropped at or below floor F will not break.</span><br><span class="line"></span><br><span class="line">Each move, you may take an egg (if you have an unbroken one) and drop it from any floor X (with 1 &lt;= X &lt;= N).</span><br><span class="line"></span><br><span class="line">Your goal is to know with certainty what the value of F is.</span><br><span class="line"></span><br><span class="line">What is the minimum number of moves that you need to know with certainty what F is, regardless of the initial value of F?</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Example 1:</span><br><span class="line"></span><br><span class="line">Input: K = 1, N = 2</span><br><span class="line">Output: 2</span><br><span class="line">Explanation:</span><br><span class="line">Drop the egg from floor 1.  If it breaks, we know with certainty that F = 0.</span><br><span class="line">Otherwise, drop the egg from floor 2.  If it breaks, we know with certainty that F = 1.</span><br><span class="line">If it didn&apos;t break, then we know with certainty F = 2.</span><br><span class="line">Hence, we needed 2 moves in the worst case to know what F is with certainty.</span><br><span class="line">Example 2:</span><br><span class="line"></span><br><span class="line">Input: K = 2, N = 6</span><br><span class="line">Output: 3</span><br><span class="line">Example 3:</span><br><span class="line"></span><br><span class="line">Input: K = 3, N = 14</span><br><span class="line">Output: 4</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="2-基本示例分析"><a href="#2-基本示例分析" class="headerlink" title="2.基本示例分析"></a>2.基本示例分析</h3><ul>
+<li><p>如果有1个鸡蛋，2层楼， 答案为2<br>分析：因为只有一个鸡蛋，由于f不确定，我们只能从第1层依次向上做测试,因为最坏的情况下，鸡蛋在第2层才能知道检测结果，所以答案是2 </p>
+</li>
+<li><p>如果有两个鸡蛋，6层楼，答案为3<br>分析：2个鸡蛋的情况下，最少测试次数为k的情况下，需要满足如下： k + k-1  + … + 1 &gt;= 6,可以得到答案，最小的k为3。这个计算公式是怎么来的呢，假设最少次数为k,表示每次尝试都有两种可能，要么碎，要么不碎，如果要在第一次碎的楼层f不确定的情况下，保证最少的检测次数，就要让每次检测碎与不碎的情况下，尝试的结果都比较均匀。如果每次测试鸡蛋都碎了。</p>
+<ul>
+<li><p>第1次抛在t层：<br>如果碎了，因为还剩一个鸡蛋，子问题就变成了1个鸡蛋测试t-1楼； 加起来总共需要t次（t &lt;=k ,因为如果t大于k,表明k并不是解)</p>
+</li>
+<li><p>第一次抛没有碎：<br>则进行第二次抛，此时考虑到第二次可能会碎，而此时还剩k-1次抛的机会，所以第二次需要从t + k -1 层开始抛. 如果第2次碎了，则不用继续向上，直接用剩下到一个鸡蛋对下面到 k-2层进行测试；总共需要k次</p>
+</li>
+<li>如果第二次没有碎：<br>此时已经顺利检测了t + k-1层，还剩k-2次抛的机会。 所以第三次可以从t + k-1  + k-2层开始抛；<br>依此类推，如果一直不碎， 最后一次检测时候共可以检测 sum = t + k-1 + k-2 + … + 1层， 题目中楼高6层，则sum必须大于等于6才能保证一定覆盖完， 即t + k-1 + k-2 +…+ 1 &gt;=6，有因为 k &gt;= t ,得到 问题转换为求 k + k-1 + … + 1 &gt;= 6,得到最小满足条件的k为3</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-通用算法分析"><a href="#3-通用算法分析" class="headerlink" title="3.通用算法分析"></a>3.通用算法分析</h3><p>已经有了1个鸡蛋和2个鸡蛋的情况下问题的求解，那么怎么推广到k个鸡蛋n层楼到问题呢，其实在2个鸡蛋到问题分析中已经看出，这里是存在子问题的，第一反应就是动态规划，先保存子问题的解，然后推导状态转移方程楼。</p>
+<h4 id="3-1-思路1-直接思考"><a href="#3-1-思路1-直接思考" class="headerlink" title="3.1 思路1-直接思考"></a>3.1 思路1-直接思考</h4><p>已知问题的解,这里用f(k,n)表示k个鸡蛋n层楼的最小可测试次数<br>k=1时，和楼层n相关f(1,n) = n<br>当k=2时，可以特殊分析，f(2,n) = { min(x) | x + x-1 +… +1 &gt;=n}   x(x+1) &gt;= 2n</p>
+<p>那3个鸡蛋n层楼的问题f(3,n)怎么解呢，因为状态转换右鸡蛋的碎与不碎引起，这里从鸡蛋状态入手假设最优解的第一个鸡蛋从t层drop，有两种情况<br>    碎了： 则f(3,n) = f(2,t-1) + 1 ,表示用2个鸡蛋继续检测1到t-1层，t层以上不再需要检测<br>    没碎： 则f(3,n) = f(3, n-t) +1 ，表示只有t+1到n共n-t层需要继续检测，t层以下不再需要检测。<br>    为了保证检测到绝对覆盖，f(3,n)取两者到最大值，推广到k个鸡蛋，则f(k,n) = max (f(k-1, t-1) + 1, f(k, n-t) + 1 ) , 这里可以看出t的选择会影响最终结果的计算， k不变t变的情况下，f(k-1,t-1)单调递增，f(k,n-t)单调递减  1&lt;= t &lt;= n<br>所以，最终的状态转移方程如下：<br>    f(k,n) = min(helper(k,n,t)) |  1&lt;=t &lt;=n<br>    辅助函数：    helper(k,n,t) = max(f(k-1,t-1)+1, f(k,n-t)+1) </p>
+<p>如下是用golang实现的代码:<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">superEggDrop2</span><span class="params">(K <span class="keyword">int</span> , N <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    <span class="comment">// dp[i][j]表示 i个鸡蛋 j层楼的最少测试次数</span></span><br><span class="line">    dp := <span class="built_in">make</span>([][]<span class="keyword">int</span>, K+<span class="number">1</span>)</span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">1</span>; i&lt;=K; i++ &#123;</span><br><span class="line">		dp[i] = <span class="built_in">make</span>([]<span class="keyword">int</span>, N+<span class="number">1</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//只有一个鸡蛋，按楼高更新</span></span><br><span class="line">	<span class="keyword">for</span> j:=<span class="number">1</span>; j &lt;=N; j++ &#123;</span><br><span class="line">		dp[<span class="number">1</span>][j] = j</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//如果楼高为1， 则需要1次</span></span><br><span class="line">	<span class="keyword">for</span> i:=<span class="number">1</span>;i&lt;=K;i++ &#123;</span><br><span class="line">		dp[i][<span class="number">1</span>] = <span class="number">1</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">var</span> helper  <span class="function"><span class="keyword">func</span><span class="params">(<span class="keyword">int</span>,  <span class="keyword">int</span>)</span> <span class="title">int</span></span></span><br><span class="line"><span class="function">	<span class="title">helper</span> = <span class="title">func</span><span class="params">(k <span class="keyword">int</span>, n <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">		<span class="keyword">if</span> n == <span class="number">0</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> k &gt; n &#123;</span><br><span class="line">			<span class="keyword">return</span> helper(n, n)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> dp[k][n] != <span class="number">0</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> dp[k][n]</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		min := n</span><br><span class="line">		<span class="keyword">for</span> t:= <span class="number">1</span>; t&lt;=n; t++&#123;</span><br><span class="line">			<span class="comment">// if drop egg broke, check lower floor</span></span><br><span class="line">			brokeCase := helper(k<span class="number">-1</span>,t<span class="number">-1</span>) + <span class="number">1</span></span><br><span class="line">			<span class="comment">// if not break, check upper floor</span></span><br><span class="line">			safeCase := helper(k, n-t) + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">			curMax := brokeCase</span><br><span class="line">			<span class="keyword">if</span> safeCase &gt; curMax &#123;</span><br><span class="line">				curMax = safeCase</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			curRes := curMax</span><br><span class="line">			<span class="keyword">if</span> curRes &lt; min &#123;</span><br><span class="line">				min = curRes</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> min</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> helper(K, N)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-2-思路2-逆向思考"><a href="#3-2-思路2-逆向思考" class="headerlink" title="3.2 思路2-逆向思考"></a>3.2 思路2-逆向思考</h3><p>在思路1的状态转移方程里，因为每次都确定第一次drop的楼层t,所以会需要把所有的情况都做一次计算，然后取最小值。整体运行下来的效率并不高,当数据量加大，会有运行超时的情况出现。 这里我们换个思路，在思路1的状态转移方程中，自变量是鸡蛋个数k和楼层高度n， 这次我们换个思路，在最优策略的情况下，我们能保证测试的楼层高度是和鸡蛋个数和drop个数有正相关的<br><b>这里我们可以逆向思考以下，用一个方程dp(k,d)表示还有k个鸡蛋和d次drop机会的情况下，我们能够覆盖的测试楼层数</b></p>
+<p>状态转移分析：<br>如果第d次drop鸡蛋没有碎，则还剩k鸡蛋和d-1次drop的机会，后面的测试方向是向更高的楼层。<br>如果第d次鸡蛋碎了，则还剩下k-1和鸡蛋和d-1次drop的机会，后面的测试需要在更低的楼层进行</p>
+<p>dp(k,d) = dp(k,d-1) + 1 + dp(k-1,d-1)<br>初始情况：<br>当k=1即只有一个鸡蛋的情况下，测试覆盖楼层数等于 drop机会次数d: dp(1,d) = d<br>当d=0即无drop机会的时候，测试覆盖楼层数为0</p>
+<p>基于状态转移方程的问题求解：<br>将dp(k,d)的解存入一个二维数组，比如求4个鸡蛋14层测试楼层最少需要多少次drop的问题， 我们可以遍历 dp[4][0]到dp[4][i]，知道找到第一个大于等于14的下标i，即表示最少的drop次数</p>
+<p>golang代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">//superEggDrop的运行时间复杂度比superEggDrop2要好很多，同时状态转移方程也更清晰</span><br><span class="line">func superEggDrop(K int, N int) int &#123;</span><br><span class="line">	dp := make([][]int, K+1) //dp[i][j] 表示i鸡蛋，j次drop可以确定的楼层数</span><br><span class="line">	for i := 0; i &lt;= K; i++ &#123;</span><br><span class="line">		dp[i] = make([]int, N+1)</span><br><span class="line">		// for j := 0; j &lt;= N; j++ &#123;</span><br><span class="line">		// 	dp[i][j] = -1</span><br><span class="line">		// &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	dp[0][0] = 0</span><br><span class="line">	if K == 0 || N == 0 &#123;</span><br><span class="line">		return 0</span><br><span class="line">	&#125;</span><br><span class="line">	if K == 1 &#123;</span><br><span class="line">		return N</span><br><span class="line">	&#125;</span><br><span class="line">	//如果只有一个鸡蛋，dp[1][j]均初始化为drop次数j</span><br><span class="line">	for i := 0; i &lt;= N; i++ &#123;</span><br><span class="line">		dp[1][i] = i</span><br><span class="line">		dp[0][i] = 0</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//如果drop次数为0，则可检测楼数为0</span><br><span class="line">	for i := 0; i &lt;= K; i++ &#123;</span><br><span class="line">		dp[i][0] = 0</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	for i := 1; i &lt;= K; i++ &#123;</span><br><span class="line">		for j := 1; j &lt;= N; j++ &#123;</span><br><span class="line">			dp[i][j] = dp[i-1][j-1] + 1 + dp[i][j-1]</span><br><span class="line">			if dp[i][j] &gt;= N &#123;</span><br><span class="line"></span><br><span class="line">				// fmt.Println(&quot;i,j&quot;, i, j)</span><br><span class="line">				break</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(&quot;dp:&quot;, dp)</span><br><span class="line">	for j := 1; j &lt;= N; j++ &#123;</span><br><span class="line">		if dp[K][j] &gt;= N &#123;</span><br><span class="line">			return j</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return N</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>很多时候对数据模型的定义决定了处理逻辑的清晰成都，在处理动态规划类型的问题时，这个表现得也很明显，一个好的数据集定义，附带了更简洁清晰的数据转换。反过来说，正确理解数据变换的因果关系，找到合适的自变量和因变量，必然会带来更合适的数据定义。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/19/202006hadoop使用及一些问题记录/" rel="next" title="hadoop使用过程中的一些问题记录">
+                <i class="fa fa-chevron-left"></i> hadoop使用过程中的一些问题记录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="https://img3.doubanio.com/icon/ul54452955-3.jpg" alt="不知火">
+          <p class="site-author-name" itemprop="name">不知火</p>
+           
+              <p class="site-description motion-element" itemprop="description">梦见它们都在草地上吃草</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">42</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://douban.com/people/54452955" target="_blank" title="豆瓣">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  豆瓣
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-问题描述"><span class="nav-number">1.</span> <span class="nav-text">1.问题描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-基本示例分析"><span class="nav-number">2.</span> <span class="nav-text">2.基本示例分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-通用算法分析"><span class="nav-number">3.</span> <span class="nav-text">3.通用算法分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-思路1-直接思考"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 思路1-直接思考</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-思路2-逆向思考"><span class="nav-number">4.</span> <span class="nav-text">3.2 思路2-逆向思考</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">4.1.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">不知火</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://buqisuitu.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2021/01/04/202101leetcode887高楼抛鸡蛋问题中的逆向思维/';
+          this.page.identifier = '2021/01/04/202101leetcode887高楼抛鸡蛋问题中的逆向思维/';
+          this.page.title = 'leetcode887super-egg-drop扔鸡蛋问题中的逆向思维';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://buqisuitu.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
